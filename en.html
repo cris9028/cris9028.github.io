@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>GasSpring Pro – Professional Gas Spring Calculator | Selection & Sizing Tool</title>
+  <meta name="description" content="GasSpring Pro: professional software for gas spring selection and sizing. Automatic calculation of R1, R2, geometry, forces and catalog matching. Try the free demo.">
+  <meta name="keywords" content="gas spring calculator, gas spring selection, gas spring sizing, gas strut calculator, gas spring configurator, gas damper calculator, gas spring design tool, gas spring software, molla a gas, pistone a gas, gas spring engineering, gas strut selection, gas spring R1 R2, gas spring lever arm, Gasfeder Berechnung, ressort à gaz, gas spring lid support">
+  <meta name="author" content="GasSpring Pro">
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical" href="https://cris9028.github.io/en.html">
+  <link rel="alternate" hreflang="it" href="https://cris9028.github.io/">
+  <link rel="alternate" hreflang="en" href="https://cris9028.github.io/en.html">
+  <link rel="alternate" hreflang="x-default" href="https://cris9028.github.io/">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cris9028.github.io/en.html">
+  <meta property="og:title" content="GasSpring Pro – Professional Gas Spring Calculator">
+  <meta property="og:description" content="Professional tool for gas spring selection and sizing. Calculate R1, R2, geometry, forces and match catalog models automatically.">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="it_IT">
+  <meta property="og:site_name" content="GasSpring Pro">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="GasSpring Pro – Gas Spring Calculator">
+  <meta name="twitter:description" content="Professional tool for gas spring selection and sizing. Try the free demo.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "GasSpring Pro",
+    "applicationCategory": "EngineeringApplication",
+    "operatingSystem": "Web Browser",
+    "description": "Professional software for gas spring selection and sizing. Automatically calculates forces, geometry, and finds optimal models from the catalog.",
+    "featureList": [
+      "Automatic R1 and R2 lever arm calculation",
+      "Geometric solver using Brent's method",
+      "Opening and closing equilibrium verification",
+      "Mass catalog search for gas springs",
+      "Advanced mode: temperature, friction, pivot radius",
+      "Force, moment and operator effort graphs"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "description": "Free demo available. License available on request.",
+      "url": "https://cris9028.github.io/en.html"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "GasSpring Pro",
+      "email": "betacristudios@gmail.com"
+    },
+    "url": "https://cris9028.github.io/en.html",
+    "inLanguage": ["en", "it"]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+      --border: #30363d; --blue: #007acc; --blue-light: #58a6ff;
+      --text: #e6edf3; --text2: #8b949e; --green: #3fb950; --radius: 8px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: var(--blue-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,17,23,0.95); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--blue-light); }
+    .nav-brand .icon { width: 32px; height: 32px; background: var(--blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .nav-links { display: flex; gap: 24px; align-items: center; font-size: 14px; }
+    .nav-links a { color: var(--text2); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .lang-switch { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; font-size: 12px; color: var(--text2); cursor: pointer; }
+    .lang-switch:hover { color: var(--text); border-color: var(--blue); text-decoration: none; }
+
+    .hero { text-align: center; padding: 80px 24px 60px; max-width: 800px; margin: 0 auto; }
+    .hero-badge { display: inline-block; background: rgba(0,122,204,0.15); border: 1px solid rgba(0,122,204,0.4); color: var(--blue-light); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-bottom: 24px; letter-spacing: 0.5px; }
+    .hero h1 { font-size: clamp(28px,5vw,48px); font-weight: 700; line-height: 1.2; margin-bottom: 20px; background: linear-gradient(135deg,#e6edf3 0%,#58a6ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 18px; color: var(--text2); max-width: 600px; margin: 0 auto 32px; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--blue); color: white; border: none; border-radius: var(--radius); padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s, transform 0.1s; }
+    .btn-primary:hover { background: #0069b3; text-decoration: none; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 28px; font-size: 15px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.2s; }
+    .btn-secondary:hover { border-color: var(--blue-light); text-decoration: none; }
+
+    .section { max-width: 1000px; margin: 0 auto; padding: 60px 24px; }
+    .section-title { text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .section-sub { text-align: center; color: var(--text2); margin-bottom: 48px; font-size: 16px; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 20px; }
+    .feature-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: border-color 0.2s, transform 0.2s; }
+    .feature-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+    .feature-icon { font-size: 28px; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { color: var(--text2); font-size: 14px; line-height: 1.5; }
+
+    .steps { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 32px; counter-reset: steps; }
+    .step { position: relative; padding-left: 48px; }
+    .step::before { counter-increment: steps; content: counter(steps); position: absolute; left: 0; top: 0; width: 32px; height: 32px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+    .step h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .step p { color: var(--text2); font-size: 13px; }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .usecase-tag { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 13px; color: var(--text2); }
+
+    .cta-section { background: linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d1117 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; padding: 60px 24px; }
+    .cta-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+    .cta-section p { color: var(--text2); margin-bottom: 28px; font-size: 16px; }
+
+    .contact-section { max-width: 600px; margin: 0 auto; padding: 60px 24px; text-align: center; }
+    .contact-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; margin-top: 24px; }
+    .contact-box h3 { font-size: 20px; margin-bottom: 12px; }
+    .contact-box p { color: var(--text2); font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+    .contact-email { display: inline-flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 20px; font-size: 15px; color: var(--blue-light); font-weight: 500; transition: border-color 0.2s; }
+    .contact-email:hover { border-color: var(--blue-light); text-decoration: none; }
+    .contact-topics { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; }
+    .contact-topic { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); color: var(--green); border-radius: 4px; padding: 4px 10px; font-size: 12px; }
+
+    footer { border-top: 1px solid var(--border); padding: 24px; text-align: center; color: var(--text2); font-size: 13px; }
+    footer a { color: var(--text2); }
+    footer a:hover { color: var(--text); }
+    .divider { border: none; border-top: 1px solid var(--border); }
+    @media (max-width: 600px) { .nav-links { display: none; } .hero { padding: 48px 16px 40px; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">
+      <div class="icon">&#9881;</div>
+      GasSpring Pro
+    </div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#contact">Contact</a>
+      <a href="index.html" class="lang-switch">IT</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-badge">Professional Engineering Software</div>
+    <h1>Gas Spring Calculator &amp; Selection Tool</h1>
+    <p>
+      GasSpring Pro automatically calculates the optimal mounting geometry,
+      lever arms R1 and R2, opening and closing forces, and matches
+      compatible gas spring models from the catalog — in seconds.
+    </p>
+    <div class="hero-actions">
+      <a href="app.html" class="btn-primary">
+        &#9654; Try the Free Demo
+      </a>
+      <a href="#contact" class="btn-secondary">
+        &#9993; Request a License
+      </a>
+    </div>
+  </header>
+
+  <section class="section" id="features">
+    <h2 class="section-title">Key Features</h2>
+    <p class="section-sub">
+      Everything you need for professional gas spring and gas strut selection.
+    </p>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128200;</div>
+        <h3>Complete Geometric Solver</h3>
+        <p>
+          Numerical solver using Brent's method for precise calculation of
+          anchor points A, B1, B2 and lever arms R1 and R2 of the gas spring.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#9878;</div>
+        <h3>Equilibrium Verification</h3>
+        <p>
+          Automatic equilibrium check in both open and closed positions,
+          with percentage error and convergence indicator for each configuration.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128218;</div>
+        <h3>Catalog Search</h3>
+        <p>
+          Mass search across hundreds of gas spring catalog models.
+          Filter by brand, series and force to find the ideal gas strut for your project.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128293;</div>
+        <h3>Advanced Mode</h3>
+        <p>
+          Temperature correction, friction coefficient and pivot radius for
+          high-precision simulations under real operating conditions.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128202;</div>
+        <h3>Interactive Charts</h3>
+        <p>
+          Force, moment and operator effort charts across the full gas spring stroke.
+          Realistic animated visualization of the mechanism in motion.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128736;</div>
+        <h3>Multi-spring &amp; Multi-start</h3>
+        <p>
+          Support for configurations with two or more parallel gas springs.
+          Multi-start algorithm to ensure convergence even in edge cases.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">Three steps to size the perfect gas spring for your lid or panel.</p>
+    <div class="steps">
+      <div class="step">
+        <h3>Enter Parameters</h3>
+        <p>Panel mass, center of gravity position, opening angle, nominal force and desired gas spring stroke.</p>
+      </div>
+      <div class="step">
+        <h3>Calculate</h3>
+        <p>The calculation engine automatically determines the optimal lever arms R1 and R2 and mounting geometry with sub-millimeter precision.</p>
+      </div>
+      <div class="step">
+        <h3>Verify &amp; Select</h3>
+        <p>Check equilibrium in the charts, view the animated kinematics, and search the catalog for a compatible gas spring model.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section">
+    <h2 class="section-title">Typical Applications</h2>
+    <p class="section-sub">
+      GasSpring Pro is used for gas spring sizing across many industrial sectors.
+    </p>
+    <div class="usecases">
+      <span class="usecase-tag">Machine tool doors</span>
+      <span class="usecase-tag">Automotive hoods &amp; tailgates</span>
+      <span class="usecase-tag">Furniture &amp; cabinetry</span>
+      <span class="usecase-tag">Industrial control panels</span>
+      <span class="usecase-tag">Hatches &amp; covers</span>
+      <span class="usecase-tag">Seats &amp; backrests</span>
+      <span class="usecase-tag">Medical equipment</span>
+      <span class="usecase-tag">Access systems</span>
+      <span class="usecase-tag">Gas strut selection</span>
+      <span class="usecase-tag">Gas spring sizing</span>
+      <span class="usecase-tag">Lid support calculation</span>
+    </div>
+  </section>
+
+  <div class="cta-section">
+    <h2>Try GasSpring Pro for Free</h2>
+    <p>The full demo runs directly in your browser — no installation required.</p>
+    <a href="app.html" class="btn-primary" style="font-size: 16px; padding: 14px 36px;">
+      &#9654; Open the Calculator
+    </a>
+  </div>
+
+  <section class="contact-section" id="contact">
+    <h2 class="section-title">Contact</h2>
+    <p class="section-sub">
+      Interested in a professional license or custom integration?
+    </p>
+    <div class="contact-box">
+      <h3>Get in Touch</h3>
+      <p>
+        For license requests, commercial use, software integration
+        or technical information about the gas spring calculator, contact us by email.
+      </p>
+      <a href="mailto:betacristudios@gmail.com" class="contact-email">
+        &#9993; betacristudios@gmail.com
+      </a>
+      <div class="contact-topics">
+        <span class="contact-topic">Software license</span>
+        <span class="contact-topic">Commercial use</span>
+        <span class="contact-topic">API integration</span>
+        <span class="contact-topic">Technical support</span>
+        <span class="contact-topic">Training</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      &copy; 2025 GasSpring Pro &mdash;
+      Professional gas spring selection software &bull;
+      <a href="index.html">Versione italiana</a> &bull;
+      <a href="mailto:betacristudios@gmail.com">betacristudios@gmail.com</a>
+    </p>
+    <p style="margin-top: 6px; font-size: 11px; color: #484f58;">
+      Gas spring calculator &bull; Gas strut sizing tool &bull; Gas spring selection software &bull; Gas spring configurator
+    </p>
+  </footer>
+
+</body>
+</html>

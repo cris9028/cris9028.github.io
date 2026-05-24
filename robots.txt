@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /cloudflare-worker/
+Disallow: /SOLVER_BACKEND/
+
+Sitemap: https://cris9028.github.io/sitemap.xml
