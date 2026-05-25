@@ -5286,7 +5286,7 @@ async function calculateSpring() {
             // ── Popola placeholder Fase 2 con tabella iterazioni ──
             let iterTableRows = '';
             iterHistory.forEach((h, idx) => {
-                const isConv = converged && idx === iterHistory.length - 1;
+                const isConv = idx === iterHistory.length - 1;
                 iterTableRows += `<tr class="${isConv ? 'iter-conv' : ''}">
                   <td>${h.iter + 1}</td>
                   <td>${h.x_guess.toFixed(3)}</td>
