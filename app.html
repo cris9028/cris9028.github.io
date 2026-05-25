@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GasSpring Pro - Professional Calculator v2.0</title>
+    <title data-i18n-title="page_title">GasSpring Pro - Professional Calculator v2.0</title>
     <style>
         :root {
             --bg-primary: #1e1e1e;
@@ -628,6 +628,93 @@
     <!-- Librerie per PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- ── i18n engine ─────────────────────────────────────────────────────── -->
+    <script>
+    const i18n = {
+        _strings: {},
+        _lang: 'it',
+
+        async load(lang) {
+            try {
+                let data;
+                if (window.location.protocol === 'file:') {
+                    if (this._cache && this._cache[lang]) {
+                        data = this._cache[lang];
+                    } else {
+                        console.warn(`i18n: offline, lingua "${lang}" non ancora caricata.`);
+                        return;
+                    }
+                } else {
+                    const resp = await fetch(`lang_${lang}.json`);
+                    if (!resp.ok) { console.warn(`i18n: file lang_${lang}.json non trovato`); return; }
+                    data = await resp.json();
+                }
+                this._strings = data;
+                this._lang = lang;
+                localStorage.setItem('gsplang', lang);
+                this.apply();
+                this._updateSelector();
+                if (typeof calculateSpring === 'function' && typeof currentSolutions !== 'undefined' && currentSolutions && currentSolutions.length > 0) {
+                    calculateSpring();
+                }
+            } catch(e) { console.error('i18n load error:', e); }
+        },
+
+        loadFromFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        const lang = data._meta && data._meta.lang ? data._meta.lang : file.name.replace('lang_','').replace('.json','');
+                        if (!this._cache) this._cache = {};
+                        this._cache[lang] = data;
+                        console.log(`i18n: caricato "${lang}" offline`);
+                        resolve(lang);
+                    } catch(err) { reject(err); }
+                };
+                reader.readAsText(file);
+            });
+        },
+
+        t(key) {
+            return this._strings[key] || key;
+        },
+
+        apply() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const val = this.t(key);
+                if (val !== key) el.textContent = val;
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const val = this.t(key);
+                if (val !== key) el.placeholder = val;
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                const key = el.getAttribute('data-i18n-title');
+                const val = this.t(key);
+                if (val !== key) el.textContent = val;
+            });
+        },
+
+        _updateSelector() {
+            const sel = document.getElementById('lang-selector');
+            if (sel) sel.value = this._lang;
+        },
+
+        init() {
+            const saved = localStorage.getItem('gsplang') || 'it';
+            if (window.location.protocol !== 'file:') {
+                this.load(saved);
+            }
+        }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => i18n.init());
+    </script>
 </head>
 <body>
     <!-- Header Professionale -->
@@ -638,17 +725,17 @@
         
         <!-- Menu File integrato nell'header -->
         <div class="menu-item">
-            <span class="menu-label">File</span>
+            <span class="menu-label" data-i18n="menu_file">File</span>
             <div class="menu-dropdown">
                 <div class="menu-option" onclick="saveProject()">
-                    💾 Salva Progetto
+                    💾 <span data-i18n="menu_save_text">Salva Progetto</span>
                 </div>
                 <div class="menu-option" onclick="loadProject()">
-                    📂 Carica Progetto
+                    📂 <span data-i18n="menu_load_text">Carica Progetto</span>
                 </div>
                 <div class="menu-divider"></div>
                 <div class="menu-option" onclick="exportPDF()">
-                    📄 Esporta PDF
+                    📄 <span data-i18n="menu_export_pdf_text">Esporta PDF</span>
                 </div>
             </div>
         </div>
@@ -661,48 +748,58 @@
                   text-decoration:none; cursor:pointer; transition:background 0.2s;"
            onmouseover="this.style.background='rgba(255,0,0,0.28)'"
            onmouseout="this.style.background='rgba(255,0,0,0.15)'">
-            ▶ Tutorial
+            <span data-i18n="btn_tutorial">▶ Tutorial</span>
         </a>
+
+        <!-- Selettore lingua -->
+        <select id="lang-selector"
+                style="padding:4px 8px; background:#1e2a1e; border:1px solid #3a5a3a;
+                       border-radius:5px; color:#7ec8e3; font-size:12px; cursor:pointer;
+                       font-family:inherit;"
+                onchange="i18n.load(this.value)">
+            <option value="it">🇮🇹 IT</option>
+            <option value="en">🇬🇧 EN</option>
+        </select>
     </div>
 
     <div class="container">
         <div class="input-panel">
-            <h1 style="font-size: 15px; margin-bottom: 10px; line-height: 1.2;">Solver Molla a Gas</h1>
+            <h1 style="font-size: 15px; margin-bottom: 10px; line-height: 1.2;"><span data-i18n="app_title">Solver Molla a Gas</span></h1>
             
             <!-- PARAMETRI FISICI -->
             <div class="input-section">
-                <div class="input-section-title">⚙️ Parametri Fisici</div>
+                <div class="input-section-title"><span data-i18n="section_physical">⚙️ Parametri Fisici</span></div>
                 <div class="input-grid">
                     <div class="input-group-compact">
-                        <label for="massa">Massa (kg)</label>
+                        <label for="massa" data-i18n="label_mass">Massa (kg)</label>
                         <input type="number" id="massa" value="10" step="0.1" min="0.01">
                     </div>
                     <div class="input-group-compact">
-                        <label for="alfa">Angolo α (°)</label>
+                        <label for="alfa" data-i18n="label_angle">Angolo α (°)</label>
                         <input type="number" id="alfa" value="60" step="0.1">
                     </div>
                     <div class="input-group-compact">
-                        <label for="Xg">Baricentro Xg (mm)</label>
+                        <label for="Xg" data-i18n="label_xg">Baricentro Xg (mm)</label>
                         <input type="number" id="Xg" value="150" step="0.1">
                     </div>
                     <div class="input-group-compact">
-                        <label for="Yg">Baricentro Yg (mm)</label>
+                        <label for="Yg" data-i18n="label_yg">Baricentro Yg (mm)</label>
                         <input type="number" id="Yg" value="0" step="0.1">
                     </div>
                     <div class="input-group-compact">
-                        <label for="Xm">Maniglia Xm (mm)</label>
+                        <label for="Xm" data-i18n="label_xm">Maniglia Xm (mm)</label>
                         <input type="number" id="Xm" value="200" step="0.1">
                     </div>
                     <div class="input-group-compact">
-                        <label for="Ym">Maniglia Ym (mm)</label>
+                        <label for="Ym" data-i18n="label_ym">Maniglia Ym (mm)</label>
                         <input type="number" id="Ym" value="0" step="0.1">
                     </div>
                     <div class="input-group-compact">
-                        <label for="Fa">Forza apert. (kgf)</label>
+                        <label for="Fa" data-i18n="label_fa">Forza apert. (kgf)</label>
                         <input type="number" id="Fa" value="2" step="0.1" min="0">
                     </div>
                     <div class="input-group-compact">
-                        <label for="Fc">Forza chiusura (kgf)</label>
+                        <label for="Fc" data-i18n="label_fc">Forza chiusura (kgf)</label>
                         <input type="number" id="Fc" value="2" step="0.1" min="0">
                     </div>
                 </div>
@@ -710,24 +807,24 @@
             
             <!-- PARAMETRI MOLLA -->
             <div class="input-section">
-                <div class="input-section-title">🔧 Parametri Molla</div>
+                <div class="input-section-title"><span data-i18n="section_spring">🔧 Parametri Molla</span></div>
                 
                 <!-- Parametri diretti (senza tab) -->
                 <div class="input-grid">
                     <div class="input-group-compact">
-                        <label for="F_molla">Forza nom. (N)</label>
+                        <label for="F_molla" data-i18n="label_fnom">Forza nom. (N)</label>
                         <input type="number" id="F_molla" value="200" step="1">
                     </div>
                     <div class="input-group-compact">
-                        <label for="k_prog">Progressione k</label>
+                        <label for="k_prog" data-i18n="label_kprog">Progressione k</label>
                         <input type="number" id="k_prog" value="1.3" step="0.01">
                     </div>
                     <div class="input-group-compact">
-                        <label for="L0">L₀ (mm)</label>
+                        <label for="L0" data-i18n="label_l0">L₀ (mm)</label>
                         <input type="number" id="L0" value="150" step="0.1">
                     </div>
                     <div class="input-group-compact">
-                        <label for="corsa">Corsa (mm)</label>
+                        <label for="corsa" data-i18n="label_corsa">Corsa (mm)</label>
                         <input type="number" id="corsa" value="100" step="0.1">
                     </div>
                 </div>
@@ -735,7 +832,7 @@
                 <!-- N° MOLLE (comune a manuale e catalogo) -->
                 <div style="margin-top: 5px; padding: 4px 0;">
                     <div class="input-group-compact">
-                        <label for="n_molle">N° molle a gas</label>
+                        <label for="n_molle" data-i18n="label_nmolle">N° molle a gas</label>
                         <input type="number" id="n_molle" value="2" min="1" max="6" step="1" style="width: 60px;">
                     </div>
                 </div>
@@ -744,30 +841,30 @@
                 <div style="margin-top: 8px; padding: 6px 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px;">
                     <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--text-primary);">
                         <input type="checkbox" id="advanced-mode" onchange="toggleAdvancedMode()" style="cursor: pointer;">
-                        <span>⚙️ Advanced Mode</span>
+                        <span data-i18n="section_advanced">⚙️ Advanced Mode</span>
                     </label>
                     
                     <!-- Parametri avanzati (nascosti di default) -->
                     <div id="advanced-params" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--border-color);">
                         <div class="input-grid">
                             <div class="input-group-compact">
-                                <label for="temp-esercizio">Temperatura (°C)</label>
+                                <label for="temp-esercizio" data-i18n="label_temp">Temperatura (°C)</label>
                                 <input type="number" id="temp-esercizio" value="20" step="1" style="font-size: 11px;" 
                                        onchange="temperatureEsercizio = parseFloat(this.value)">
                             </div>
                             <div class="input-group-compact">
-                                <label for="coeff-attrito">Coeff. attrito μ</label>
+                                <label for="coeff-attrito" data-i18n="label_mu">Coeff. attrito μ</label>
                                 <input type="number" id="coeff-attrito" value="0.05" step="0.01" min="0" max="1" style="font-size: 11px;"
                                        onchange="coefficienteAttrito = parseFloat(this.value)">
                             </div>
                             <div class="input-group-compact">
-                                <label for="raggio-perno">Raggio perno (mm)</label>
+                                <label for="raggio-perno" data-i18n="label_rpin">Raggio perno (mm)</label>
                                 <input type="number" id="raggio-perno" value="6" step="0.5" min="0" style="font-size: 11px;"
                                        onchange="raggioPerno = parseFloat(this.value)">
                             </div>
                         </div>
                         <div style="margin-top: 4px; font-size: 9px; color: var(--text-secondary); font-style: italic;">
-                            🌡️ T rif. 20°C | attrito: M = 2·μ·F·r_perno (per occhiello)
+                            <span data-i18n="advanced_note">🌡️ T rif. 20°C | attrito: M = 2·μ·F·r_perno (per occhiello)</span>
                         </div>
 
                     </div>
@@ -788,13 +885,13 @@
                                 style="flex:1; padding:4px 6px; font-size:10px; border-radius:4px;
                                        background:#0a1a0a; border:1px solid #2a5a2a; color:#4dbb4d;
                                        cursor:pointer; transition:all .15s; font-family:inherit;">
-                                📍 Scegli A (struttura)
+                                <span data-i18n="btn_pick_a">📍 Scegli A (struttura)</span>
                             </button>
                             <button id="sel-btn-pb" onclick="startPickPoint('PB')"
                                 style="flex:1; padding:4px 6px; font-size:10px; border-radius:4px;
                                        background:#1a0a00; border:1px solid #5a3000; color:#cc7700;
                                        cursor:pointer; transition:all .15s; font-family:inherit;">
-                                📍 Scegli B (sportello)
+                                <span data-i18n="btn_pick_b">📍 Scegli B (sportello)</span>
                             </button>
                         </div>
                         <!-- Coordinate PA -->
@@ -804,14 +901,14 @@
                         <!-- Raggi tolleranza -->
                         <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-bottom:6px;">
                             <div>
-                                <label style="font-size:9px; color:#7ec8e3; display:block; margin-bottom:2px;">Raggio rA (mm)</label>
+                                <label style="font-size:9px; color:#7ec8e3; display:block; margin-bottom:2px;" data-i18n="label_ra">Raggio rA (mm)</label>
                                 <input type="number" id="sel-radius-a" value="15" min="1" max="200" step="1"
                                     style="width:100%; padding:3px 5px; font-size:10px; border-radius:3px;
                                            background:#111; color:#4dbb4d; border:1px solid #2a5a2a;"
                                     oninput="selectionRadiusA=parseFloat(this.value)||15; updateVisualization();">
                             </div>
                             <div>
-                                <label style="font-size:9px; color:#7ec8e3; display:block; margin-bottom:2px;">Raggio rB (mm)</label>
+                                <label style="font-size:9px; color:#cc7700; display:block; margin-bottom:2px;" data-i18n="label_rb">Raggio rB (mm)</label>
                                 <input type="number" id="sel-radius-b" value="15" min="1" max="200" step="1"
                                     style="width:100%; padding:3px 5px; font-size:10px; border-radius:3px;
                                            background:#111; color:#cc7700; border:1px solid #5a3000;"
@@ -822,16 +919,16 @@
                         <!-- FILTRO SERIE -->
                         <div style="margin-bottom:6px;">
                             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-                                <span style="font-size:9px; color:#7ec8e3; font-weight:600;">📦 Serie da cercare</span>
+                                <span style="font-size:9px; color:#7ec8e3; font-weight:600;"><span data-i18n="sel_series_label">📦 Serie da cercare</span></span>
                                 <div style="display:flex; gap:3px;">
                                     <button onclick="selFilterAll(true)"
                                         style="padding:1px 5px; font-size:9px; border-radius:3px;
                                                background:#0a1a2a; border:1px solid #1a4a6a; color:#7ec8e3;
-                                               cursor:pointer; font-family:inherit;">Tutte</button>
+                                               cursor:pointer; font-family:inherit;"><span data-i18n="sel_btn_all">Tutte</span></button>
                                     <button onclick="selFilterAll(false)"
                                         style="padding:1px 5px; font-size:9px; border-radius:3px;
                                                background:#1a0a0a; border:1px solid #4a1a1a; color:#cc5555;
-                                               cursor:pointer; font-family:inherit;">Nessuna</button>
+                                               cursor:pointer; font-family:inherit;"><span data-i18n="sel_btn_none">Nessuna</span></button>
                                 </div>
                             </div>
                             <!-- Lista serie — popolata dinamicamente da populateSeriesFilter() -->
@@ -839,7 +936,7 @@
                                  style="max-height:160px; overflow-y:auto; background:#0a0a10;
                                         border:1px solid #1a1a2a; border-radius:4px; padding:4px;">
                                 <div style="font-size:9px; color:#444; padding:4px;">
-                                    Abilita la modalità per caricare le serie…
+                                    <span data-i18n="sel_series_hint">Abilita la modalità per caricare le serie…</span>
                                 </div>
                             </div>
                             <!-- Contatore casi stimati -->
@@ -854,13 +951,13 @@
                                 style="flex:2; padding:5px 8px; font-size:10px; border-radius:4px;
                                        background:#181818; border:1px solid #282828; color:#333;
                                        cursor:not-allowed; font-family:inherit; font-weight:600; transition:all .15s;">
-                                🔍 Ricerca Massiva
+                                <span data-i18n="btn_search">🔍 Ricerca Massiva</span>
                             </button>
                             <button onclick="clearSelectionPoints()"
                                 style="flex:1; padding:5px 6px; font-size:10px; border-radius:4px;
                                        background:transparent; border:1px solid #444; color:#666;
                                        cursor:pointer; font-family:inherit;">
-                                ✕ Reset
+                                <span data-i18n="btn_reset_sel">✕ Reset</span>
                             </button>
                         </div>
                     </div>
@@ -868,18 +965,18 @@
             </div>
             
             <button onclick="calculateSpring()" style="width: 100%; padding: 8px; background: var(--accent-blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
-                🚀 Calcola
+                <span data-i18n="btn_calculate">🚀 Calcola</span>
             </button>
             
             <!-- SELETTORE SOLUZIONI -->
             <div style="margin-bottom: 8px; padding: 6px; background-color: var(--bg-tertiary); border-radius: 4px;">
                 <label style="display: flex; align-items: center; gap: 6px; font-size: 10px; margin-bottom: 6px;">
                     <input type="checkbox" id="showAll" checked onchange="updateVisualization()">
-                    <span>Mostra tutte le soluzioni</span>
+                    <span><span data-i18n="chk_show_all">Mostra tutte le soluzioni</span></span>
                 </label>
 
                 <div id="solutionSelector" style="display: none;">
-                    <label for="solutionIndex" style="display: block; margin-bottom: 5px; font-size: 11px;">Seleziona soluzione:</label>
+                    <label for="solutionIndex" style="display: block; margin-bottom: 5px; font-size: 11px;"><span data-i18n="label_select_sol">Seleziona soluzione:</span></label>
                     <select id="solutionIndex" onchange="updateVisualization()" style="width: 100%; padding: 6px; border-radius: 3px; background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); font-size: 11px;">
                     </select>
                 </div>
@@ -894,35 +991,35 @@
                     📐 Vista Geometrica
                 </button>
                 <button id="tab-realistic" class="canvas-tab active" onclick="switchTab('realistic')">
-                    🔧 Vista 3D
+                    <span data-i18n="tab_3d">🔧 Vista 3D</span>
                 </button>
                 <button id="tab-graphs" class="canvas-tab" onclick="switchTab('graphs')">
-                    📊 Grafici
+                    <span data-i18n="tab_graphs">📊 Grafici</span>
                 </button>
                 <button id="tab-catalog" class="canvas-tab" onclick="switchTab('catalog')">
-                    📦 Catalogo
+                    <span data-i18n="tab_catalog">📦 Catalogo</span>
                 </button>
             </div>
             
             <!-- CONTROLLI SELEZIONE GRAFICI (visibili solo in tab grafici) -->
             <div id="graph-controls" style="display: none; margin-top: 4px; margin-bottom: 4px; padding: 6px 10px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border-color); width: 100%; flex-shrink: 0;">
                 <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                    <span style="color: var(--text-secondary); font-size: 11px; font-weight: 600;">Visualizza:</span>
+                    <span style="color: var(--text-secondary); font-size: 11px; font-weight: 600;"><span data-i18n="graph_label_view">Visualizza:</span></span>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-moments" checked onchange="drawGraphs()">
-                        <span>📈 Momenti (Peso & Molla)</span>
+                        <span><span data-i18n="graph_moments">📈 Momenti (Peso & Molla)</span></span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-force" checked onchange="drawGraphs()">
-                        <span>⚡ Forza Linearizzata</span>
+                        <span><span data-i18n="graph_force">⚡ Forza Linearizzata</span></span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-effort" checked onchange="drawGraphs()">
-                        <span>💪 Sforzo Maniglia (kg)</span>
+                        <span><span data-i18n="graph_effort">💪 Sforzo Maniglia (kg)</span></span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-constraints" checked onchange="drawGraphs()">
-                        <span>🔩 Carichi Vincolari (N)</span>
+                        <span><span data-i18n="graph_loads">🔩 Carichi Vincolari (N)</span></span>
                     </label>
                 </div>
             </div>
@@ -935,14 +1032,14 @@
                        border:1px solid #2a6a2a; border-radius:5px; cursor:pointer;
                        font-size:11px; font-family:inherit; white-space:nowrap;
                        backdrop-filter:blur(4px); box-shadow:0 2px 8px rgba(0,0,0,0.4);">
-                📐 Integra DXF
+                <span data-i18n="btn_dxf_load">📐 Integra DXF</span>
               </button>
               <button id="btn-rimuovi-dxf" onclick="dxfIntegra.clear()"
                 style="display:none; padding:5px 10px; background:rgba(58,26,26,0.92); color:#e07070;
                        border:1px solid #6a2a2a; border-radius:5px; cursor:pointer;
                        font-size:11px; font-family:inherit;
                        backdrop-filter:blur(4px); box-shadow:0 2px 8px rgba(0,0,0,0.4);">
-                ✕ DXF
+                <span data-i18n="btn_dxf_remove">✕ DXF</span>
               </button>
             </div>
 
@@ -955,24 +1052,24 @@
               <div id="dxf-side-panel" style="width:210px; flex-shrink:0; background:#1a1d2e;
                    border-right:1px solid #2a2a3a; padding:18px 16px;
                    display:flex; flex-direction:column; gap:14px; font-family:'Courier New',monospace;">
-                <div style="color:#7ec8e3; font-size:12px; font-weight:bold; letter-spacing:1px;">📍 Assegna punti</div>
+                <div style="color:#7ec8e3; font-size:12px; font-weight:bold; letter-spacing:1px;"><span data-i18n="dxf_assign_title">📍 Assegna punti</span></div>
                 <div style="color:#555; font-size:9px; line-height:1.6;">
-                  Clicca un pulsante,<br>poi clicca sul punto<br>nel disegno a destra.
+                  <span data-i18n="dxf_assign_hint">Clicca un pulsante, poi clicca sul punto nel disegno a destra.</span>
                 </div>
 
                 <div style="background:#0d0e1a; border:1px solid #2a2a3a; border-radius:6px; padding:10px 12px;">
-                  <div style="color:#7ec8e3; font-size:10px; font-weight:bold; margin-bottom:6px;">📏 Scala disegno</div>
-                  <div style="color:#666; font-size:9px; margin-bottom:8px;">Scala applicata in Creo all'esportazione DXF.</div>
+                  <div style="color:#7ec8e3; font-size:10px; font-weight:bold; margin-bottom:6px;"><span data-i18n="dxf_scale_title">📏 Scala disegno</span></div>
+                  <div style="color:#666; font-size:9px; margin-bottom:8px;"><span data-i18n="dxf_scale_hint">Scala applicata in Creo all'esportazione DXF.</span></div>
                   <select id="dxf-scale-select" onchange="onScaleChange()"
                     style="width:100%; background:#111; color:#7ec8e3; border:1px solid #7ec8e330;
                            border-radius:4px; padding:5px 8px; font-family:'Courier New';
                            font-size:11px; cursor:pointer;">
-                    <option value="1" selected>1:1  — scala reale</option>
-                    <option value="2"  >1:2  — dimezzato</option>
-                    <option value="5"  >1:5  — un quinto</option>
-                    <option value="10" >1:10 — un decimo</option>
-                    <option value="0.5">2:1  — ingrandito ×2</option>
-                    <option value="0.2">5:1  — ingrandito ×5</option>
+                    <option value="1" selected><span data-i18n="dxf_scale_1_1">1:1  — scala reale</span></option>
+                    <option value="2"  ><span data-i18n="dxf_scale_1_2">1:2  — dimezzato</span></option>
+                    <option value="5"  ><span data-i18n="dxf_scale_1_5">1:5  — un quinto</span></option>
+                    <option value="10" ><span data-i18n="dxf_scale_1_10">1:10 — un decimo</span></option>
+                    <option value="0.5"><span data-i18n="dxf_scale_2_1">2:1  — ingrandito ×2</span></option>
+                    <option value="0.2"><span data-i18n="dxf_scale_5_1">5:1  — ingrandito ×5</span></option>
                   </select>
                 </div>
 
@@ -982,8 +1079,8 @@
                          font-size:11px;color:#999;text-align:left;width:100%;transition:all .15s;">
                   <span style="font-size:18px">⚙</span>
                   <div style="flex:1">
-                    Assegna fulcro
-                    <div id="dxf-st-pivot" style="font-size:9px;opacity:.75;margin-top:2px">non assegnato</div>
+                    <span data-i18n="dxf_btn_pivot">Assegna fulcro</span>
+                    <div id="dxf-st-pivot" style="font-size:9px;opacity:.75;margin-top:2px"><span data-i18n="dxf_not_assigned">non assegnato</span></div>
                   </div>
                 </button>
 
@@ -993,7 +1090,7 @@
                          font-size:11px;color:#999;text-align:left;width:100%;transition:all .15s;">
                   <span style="font-size:18px">✋</span>
                   <div style="flex:1">
-                    Assegna maniglia
+                    <span data-i18n="dxf_btn_handle">Assegna maniglia</span>
                     <div id="dxf-st-maniglia" style="font-size:9px;opacity:.75;margin-top:2px">non assegnato</div>
                   </div>
                 </button>
@@ -1004,7 +1101,7 @@
                          font-size:11px;color:#999;text-align:left;width:100%;transition:all .15s;">
                   <span style="font-size:18px">⚖</span>
                   <div style="flex:1">
-                    Assegna baricentro
+                    <span data-i18n="dxf_btn_cog">Assegna baricentro</span>
                     <div id="dxf-st-bari" style="font-size:9px;opacity:.75;margin-top:2px">non assegnato</div>
                   </div>
                 </button>
@@ -1015,12 +1112,12 @@
                   style="padding:10px;border-radius:8px;background:#181818;color:#333;
                          border:1px solid #282828;font-family:'Courier New';font-size:11px;
                          cursor:not-allowed;letter-spacing:1px;transition:all .15s;">
-                  ✓ OK
+                  <span data-i18n="btn_ok">✓ OK</span>
                 </button>
                 <button onclick="dxfIntegra.cancelOverlay()"
                   style="padding:6px;border-radius:6px;background:transparent;color:#555;
                          border:1px solid #333;font-family:'Courier New';font-size:10px;cursor:pointer;">
-                  Annulla
+                  <span data-i18n="btn_cancel">Annulla</span>
                 </button>
               </div>
               <!-- Canvas DXF -->
@@ -1033,10 +1130,10 @@
             <div id="animation-controls" style="display: none; margin-top: 4px; padding: 6px 10px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border-color); width: 100%; flex-shrink: 0;">
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                     <button id="btn-play" onclick="toggleAnimation()" style="padding: 4px 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; margin: 0;">
-                        ▶ Play
+                        <span data-i18n="anim_play">▶ Play</span>
                     </button>
                     <button onclick="resetAnimation()" style="padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; cursor: pointer; font-size: 11px; margin: 0;">
-                        ⏮ Reset
+                        <span data-i18n="anim_reset">⏮ Reset</span>
                     </button>
                     <span style="color: var(--text-secondary); font-size: 10px;">
                         Posizione: <span id="anim-percentage">0</span>%
@@ -1046,9 +1143,9 @@
                        style="width: 100%; margin: 0;" 
                        oninput="setAnimationProgress(this.value / 100)">
                 <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-secondary); margin-top: 2px;">
-                    <span>Chiuso (B1)</span>
-                    <span style="color: #E91E63;">🖱️ Trascina per ruotare la molla</span>
-                    <span>Aperto (B2)</span>
+                    <span><span data-i18n="anim_closed">Chiuso (B1)</span></span>
+                    <span style="color: #E91E63;"><span data-i18n="anim_drag_hint">🖱️ Trascina per ruotare la molla</span></span>
+                    <span><span data-i18n="anim_open">Aperto (B2)</span></span>
                 </div>
                 <div style="text-align:center; font-size:10px; color:var(--text-secondary); margin-top:2px;">
                     <span id="anim-degrees">0.0°</span>
@@ -1057,7 +1154,7 @@
             
             <div id="zoom-controls" style="margin-top: 3px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 10px; flex-shrink: 0;">
                 <button onclick="resetViewport()" style="padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 3px; cursor: pointer; font-size: 10px;">
-                    🎯 Reset
+                    <span data-i18n="btn_reset_view">🎯 Reset</span>
                 </button>
                 <span style="color: var(--text-secondary);">
                     Zoom: <span id="zoom-level">100</span>% | Pan: (<span id="pan-x">0</span>, <span id="pan-y">0</span>)
@@ -1068,16 +1165,16 @@
             <div id="catalog-content" style="display: none; padding: 0; flex: 1; background: var(--bg-primary); overflow-y: auto;">
                 <div style="width: 100%;">
                     <div id="brand-pills" style="display:flex; align-items:center; gap:5px; padding:6px 12px; border-bottom:1px solid var(--border-color);">
-                        <span style="font-size:9px; color:var(--text-secondary); margin-right:4px;">Marca:</span>
+                        <span style="font-size:9px; color:var(--text-secondary); margin-right:4px;"><span data-i18n="catalog_brand_label">Marca:</span></span>
                         <button class="brand-pill active" data-brand="Vapsint"  onclick="toggleBrand('Vapsint')"  style="padding:2px 10px; border-radius:12px; font-size:10px; font-family:'Courier New'; cursor:pointer; border:1px solid #FF9800; background:#FF9800; color:#fff; transition:all .15s;">Vapsint</button>
                         <button class="brand-pill active" data-brand="Stabilus" onclick="toggleBrand('Stabilus')" style="padding:2px 10px; border-radius:12px; font-size:10px; font-family:'Courier New'; cursor:pointer; border:1px solid #4CAF50; background:#4CAF50; color:#fff; transition:all .15s;">Stabilus</button>
                         <button class="brand-pill active" data-brand="Suspa"    onclick="toggleBrand('Suspa')"    style="padding:2px 10px; border-radius:12px; font-size:10px; font-family:'Courier New'; cursor:pointer; border:1px solid #2196F3; background:#2196F3; color:#fff; transition:all .15s;">Suspa</button>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 16px 16px 0 16px;">
                         <h2 style="color: var(--text-primary); font-size: 24px; margin: 0;">
-                            📦 Catalogo Molle a Gas Suspa
+                            <span data-i18n="catalog_title">📦 Catalogo Molle a Gas</span>
                         </h2>
-                        <input type="text" id="catalog-search" placeholder="🔍 Cerca serie, dimensioni..." 
+                        <input type="text" id="catalog-search" placeholder="🔍 Cerca serie, dimensioni..." data-i18n-placeholder="catalog_search_placeholder" 
                                style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary); font-size: 12px; width: 300px;"
                                onkeyup="filterCatalogTable()">
                     </div>
@@ -1091,17 +1188,17 @@
         
         <!-- PANNELLO DESTRO: RISULTATI -->
         <div class="results-panel">
-            <h2>📊 Risultati Sistema</h2>
+            <h2><span data-i18n="results_title">📊 Risultati Sistema</span></h2>
             <div id="results-summary">
                 <div class="result-card">
-                    <div class="result-card-title">ℹ️ In attesa di calcolo</div>
+                    <div class="result-card-title"><span data-i18n="results_waiting">ℹ️ In attesa di calcolo</span></div>
                     <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
-                        Inserisci i parametri e clicca "Calcola Sistema Completo"
+                        <span data-i18n="results_hint">Inserisci i parametri e clicca "Calcola Sistema Completo"</span>
                     </p>
                 </div>
             </div>
             <button class="btn-details" onclick="openDetailsModal()" style="display: none;">
-                📋 Vedi Calcoli Dettagliati
+                <span data-i18n="btn_show_details">📋 Vedi Calcoli Dettagliati</span>
             </button>
         </div>
     </div>
@@ -1110,7 +1207,7 @@
     <div id="details-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">📋 Calcoli Dettagliati</div>
+                <div class="modal-title"><span data-i18n="modal_details_title">📋 Calcoli Dettagliati</span></div>
                 <span class="modal-close" onclick="closeDetailsModal()">&times;</span>
             </div>
             <div class="modal-body" id="details-content">
@@ -1123,7 +1220,7 @@
     <div id="search-results-modal" class="modal" style="z-index:10001;">
         <div class="modal-content" style="max-width:960px;">
             <div class="modal-header">
-                <div class="modal-title">🔍 Risultati Ricerca Massiva</div>
+                <div class="modal-title"><span data-i18n="modal_search_title">🔍 Risultati Ricerca Massiva</span></div>
                 <span class="modal-close" onclick="closeSearchResultsModal()">&times;</span>
             </div>
             <div class="modal-body" id="search-results-content">
@@ -1233,11 +1330,11 @@
             const alfa = alfaDeg * Math.PI / 180; // Converti in radianti
             
             const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '<h2>Risultati:</h2>';
+            resultsDiv.innerHTML = `<h2>${i18n.t('results_title')}</h2>`;
             
             // Validazione input
             if (R1 <= 0 || R2 <= 0 || L <= 0) {
-                resultsDiv.innerHTML += '<p class="error">Errore: R1, R2 e L devono essere positivi!</p>';
+                resultsDiv.innerHTML += `<p class="error">${i18n.t('err_params_invalid')}</p>`;
                 return;
             }
             
@@ -1350,7 +1447,7 @@
             
             // Mostra risultati
             if (solutions.length === 0) {
-                resultsDiv.innerHTML += '<p class="error">Nessuna soluzione trovata!</p>';
+                resultsDiv.innerHTML += `<p class="error">${i18n.t('canvas_no_solution')}</p>`;
                 
                 // Mostra debug info
                 resultsDiv.innerHTML += '<div style="margin-top: 20px; padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px;">';
@@ -1379,9 +1476,9 @@
                     solDiv.onclick = () => selectSolution(index);
                     solDiv.innerHTML = `
                         <h3>Sol. ${index + 1}</h3>
-                        <p><strong>Angolo:</strong> ${sol.angle} (antioraria)</p>
+                        <p><strong>${i18n.t('sol_angle')}</strong> ${sol.angle} (antioraria)</p>
                         <p><strong>m:</strong> ${sol.m.toFixed(4)}</p>
-                        <p><strong>Segni (s1, s2):</strong> (${sol.signs.s1 > 0 ? '+' : '-'}, ${sol.signs.s2 > 0 ? '+' : '-'})</p>
+                        <p><strong>${i18n.t('sol_signs')}</strong> (${sol.signs.s1 > 0 ? '+' : '-'}, ${sol.signs.s2 > 0 ? '+' : '-'})</p>
                         <p><strong>A:</strong> <span class="point">(${sol.A.x.toFixed(1)}, ${sol.A.y.toFixed(1)})</span></p>
                         <p><strong>B2:</strong> <span class="point">(${sol.B2.x.toFixed(1)}, ${sol.B2.y.toFixed(1)})</span></p>
                         <p><strong>B1:</strong> <span class="point">(${sol.B1.x.toFixed(1)}, ${sol.B1.y.toFixed(1)})</span></p>
@@ -1476,15 +1573,15 @@ function drawRealisticView(solutions) {
         ctx.font = 'bold 24px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('⚠️ NESSUNA SOLUZIONE TROVATA', canvas.width / 2, canvas.height / 2 - 30);
+        ctx.fillText(i18n.t('canvas_no_solution'), canvas.width / 2, canvas.height / 2 - 30);
         
         ctx.fillStyle = '#666';
         ctx.font = '16px Arial';
-        ctx.fillText('Impossibile risolvere con i parametri attuali', canvas.width / 2, canvas.height / 2 + 10);
+        ctx.fillText(i18n.t('canvas_impossible'), canvas.width / 2, canvas.height / 2 + 10);
         
         ctx.font = '14px Arial';
         ctx.fillStyle = '#999';
-        ctx.fillText('Prova a modificare R1, R2, L o α', canvas.width / 2, canvas.height / 2 + 40);
+        ctx.fillText(i18n.t('canvas_try_modify'), canvas.width / 2, canvas.height / 2 + 40);
         
         // Reset text align
         ctx.textAlign = 'left';
@@ -2233,21 +2330,21 @@ function drawRealisticView(solutions) {
         
         if (hoveredElement.type === 'G') {
             lines = [
-                `Baricentro G`,
+                `${i18n.t('tooltip_cog')}`,
                 `Massa: ${hoveredElement.data.massa} kg`,
                 `Posizione: (${hoveredElement.data.Xg.toFixed(1)}, ${hoveredElement.data.Yg.toFixed(1)}) mm`
             ];
         } else if (hoveredElement.type === 'M') {
             lines = [
-                `Maniglia M`,
+                `${i18n.t('tooltip_handle')}`,
                 `Posizione: (${hoveredElement.data.Xm.toFixed(1)}, ${hoveredElement.data.Ym.toFixed(1)}) mm`,
-                `Apertura: ${hoveredElement.data.Fa_kgf} kgf`,
-                `Chiusura: ${hoveredElement.data.Fc_kgf} kgf`
+                `${i18n.t('tooltip_open')} ${hoveredElement.data.Fa_kgf} kgf`,
+                `${i18n.t('tooltip_close')} ${hoveredElement.data.Fc_kgf} kgf`
             ];
         } else if (hoveredElement.type === 'spring') {
             lines = [
-                `Molla a Gas`,
-                `Forza: ${hoveredElement.data.F_molla} N`,
+                `${i18n.t('tooltip_spring')}`,
+                `${i18n.t('tooltip_force')} ${hoveredElement.data.F_molla} N`,
                 `L₀: ${hoveredElement.data.L0} mm`,
                 `Corsa: ${hoveredElement.data.corsa} mm`
             ];
@@ -2343,7 +2440,7 @@ function drawRealisticView(solutions) {
         // Banner di istruzione picking
         if (selectionPickStep === 1 || selectionPickStep === 2) {
             const msg = selectionPickStep===1 ? '👆 Clicca sul canvas per scegliere il Punto A (attacco struttura)' 
-                                              : '👆 Clicca sul canvas per scegliere il Punto B (attacco sportello)';
+                                              : i18n.t('canvas_pick_b');
             ctx.save();
             ctx.fillStyle = 'rgba(0,0,0,0.75)';
             ctx.beginPath(); ctx.roundRect(10, 10, ctx.measureText(msg).width+20, 28, 5); ctx.fill();
@@ -2369,7 +2466,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
                 ctx.font = 'bold 24px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('⚠️ NESSUNA SOLUZIONE TROVATA', canvas.width / 2, canvas.height / 2 - 30);
+                ctx.fillText(i18n.t('canvas_no_solution'), canvas.width / 2, canvas.height / 2 - 30);
                 
                 ctx.fillStyle = '#666';
                 ctx.font = '16px Arial';
@@ -2862,7 +2959,7 @@ function brentMethod(f, a, b, tol, maxIter) {
 // ================================================================
 
 // ================================================================
-// 📋 CATALOGO MOLLE VAPSINT
+// 📋 CATALOGO MOLLE — caricato da file JSON esterni
 // ================================================================
 
 const SPRING_CATALOG = {
@@ -3211,7 +3308,7 @@ function drawGraphs() {
         ctx.fillStyle = '#666';
         ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Seleziona almeno un grafico da visualizzare', canvas.width / 2, canvas.height / 2);
+        ctx.fillText(i18n.t('canvas_no_graphs_select'), canvas.width / 2, canvas.height / 2);
         ctx.textAlign = 'left';
         ctx.restore();
         return;
@@ -3239,7 +3336,7 @@ function drawGraphs() {
         ctx.fillStyle = '#666';
         ctx.font = 'bold 18px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Calcola prima una soluzione per vedere i grafici', canvas.width / 2, canvas.height / 2);
+        ctx.fillText(i18n.t('canvas_no_graphs_calc'), canvas.width / 2, canvas.height / 2);
         ctx.textAlign = 'left';
         return;
     }
@@ -3360,19 +3457,19 @@ function drawMomentsGraph(params, area) {
     ctx.fillStyle = gc('#CCC', '#222');
     ctx.font = '14px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Angolo apertura θ (°)', area.x + area.width / 2, area.y + area.height - 10);
+    ctx.fillText(i18n.t('graph_x_angle'), area.x + area.width / 2, area.y + area.height - 10);
     
     ctx.save();
     ctx.translate(area.x + 15, area.y + area.height / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Momento (N·mm)', 0, 0);
+    ctx.fillText(i18n.t('graph_y_moment'), 0, 0);
     ctx.restore();
     
     // Titolo
     ctx.fillStyle = gc('#FFF', '#111');
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Momenti vs Angolo Apertura', area.x + area.width / 2, area.y + 20);
+    ctx.fillText(i18n.t('graph_title_moments'), area.x + area.width / 2, area.y + 20);
     
     // Indicatore zoom
     if (graphZoomLevel !== 1.0) {
@@ -3444,7 +3541,7 @@ function drawMomentsGraph(params, area) {
     // Legenda orizzontale — riga singola, top-right
     {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
-        const legItems = [{label: 'Momento Peso', color: '#4CAF50'}, {label: 'Momento Molla', color: '#2196F3'}];
+        const legItems = [{label: i18n.t('graph_leg_moment_weight'), color: '#4CAF50'}, {label: i18n.t('graph_leg_moment_spring'), color: '#2196F3'}];
         ctx.font = legFont;
         const itemWidths = legItems.map(it => legLineW + legGap + ctx.measureText(it.label).width);
         const legBoxW = legPad + itemWidths.reduce((s,w) => s + w, 0) + legSep * (legItems.length - 1) + legPad;
@@ -3517,19 +3614,19 @@ function drawForceGraph(params, area) {
     ctx.fillStyle = gc('#CCC', '#222');
     ctx.font = '14px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Corsa (mm)', area.x + area.width / 2, area.y + area.height - 10);
+    ctx.fillText(i18n.t('graph_x_stroke'), area.x + area.width / 2, area.y + area.height - 10);
     
     ctx.save();
     ctx.translate(area.x + 15, area.y + area.height / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Forza (N)', 0, 0);
+    ctx.fillText(i18n.t('graph_y_force'), 0, 0);
     ctx.restore();
     
     // Titolo
     ctx.fillStyle = gc('#FFF', '#111');
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Forza Linearizzata vs Corsa', area.x + area.width / 2, area.y + 20);
+    ctx.fillText(i18n.t('graph_title_force'), area.x + area.width / 2, area.y + 20);
     
     // Griglia Y
     ctx.strokeStyle = gc('rgba(100,100,100,0.3)', 'rgba(0,0,0,0.12)');
@@ -3594,8 +3691,8 @@ function drawForceGraph(params, area) {
     ctx.fillStyle = '#4CAF50';
     ctx.font = 'bold 11px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Chiuso', xStart, area.y + area.height - marginBottom + 35);
-    ctx.fillText('Aperto', xEnd, area.y + area.height - marginBottom + 35);
+    ctx.fillText(i18n.t('graph_closed'), xStart, area.y + area.height - marginBottom + 35);
+    ctx.fillText(i18n.t('graph_open'), xEnd, area.y + area.height - marginBottom + 35);
     
     // Curva Forza (parte non utilizzata in grigio)
     ctx.strokeStyle = gc('#555', '#AAAAAA');
@@ -3638,8 +3735,8 @@ function drawForceGraph(params, area) {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
         const corsaUtilizzata = corsa - stelo_chiuso;
         const legItems = [
-            {label: 'Zona Utilizzata',     color: '#FF9800'},
-            {label: 'Zona Non Utilizzata', color: gc('#888','#AAAAAA')},
+            {label: i18n.t('graph_leg_zone_used'),   color: '#FF9800'},
+            {label: i18n.t('graph_leg_zone_unused'), color: gc('#888','#AAAAAA')},
             {label: `Corsa: ${corsaUtilizzata.toFixed(1)} mm (${(corsaUtilizzata/corsa*100).toFixed(1)}%)`, color: '#4CAF50'},
         ];
         ctx.font = legFont;
@@ -3743,7 +3840,7 @@ function drawEffortGraph(params, area) {
     ctx.fillStyle = gc('#FFF', '#111');
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Sforzo alla Maniglia per Aprire vs Angolo', area.x + area.width / 2, area.y + 20);
+    ctx.fillText(i18n.t('graph_title_effort'), area.x + area.width / 2, area.y + 20);
     
     // Assi
     ctx.strokeStyle = gc('#444', '#555');
@@ -3816,12 +3913,12 @@ function drawEffortGraph(params, area) {
     ctx.translate(area.x + 15, area.y + area.height / 2);
     ctx.rotate(-Math.PI / 2);
     ctx.textAlign = 'center';
-    ctx.fillText('Sforzo per Aprire (kg)', 0, 0);
+    ctx.fillText(i18n.t('graph_y_effort'), 0, 0);
     ctx.restore();
     
     // Asse X
     ctx.textAlign = 'center';
-    ctx.fillText('Angolo θ (gradi)', area.x + area.width / 2, area.y + area.height - 10);
+    ctx.fillText(i18n.t('graph_x_angle2'), area.x + area.width / 2, area.y + area.height - 10);
     
     // Curva SFORZO PER APRIRE
     ctx.strokeStyle = '#4CAF50';
@@ -3842,8 +3939,8 @@ function drawEffortGraph(params, area) {
     {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
         const legItems = [
-            {label: 'Sforzo Apertura', color: '#4CAF50'},
-            {label: '(+) = Serve forza   (−) = Molla aiuta', color: gc('#AAA','#555')},
+            {label: i18n.t('graph_leg_effort'), color: '#4CAF50'},
+            {label: i18n.t('graph_leg_effort_note'), color: gc('#AAA','#555')},
         ];
         ctx.font = legFont;
         const itemWidths = legItems.map(it => legLineW + legGap + ctx.measureText(it.label).width);
@@ -3965,12 +4062,12 @@ function drawConstraintGraph(params, area) {
     ctx.fillStyle = gc('#FFF', '#111');
     ctx.font = 'bold 16px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Carichi Vincolari vs Angolo Apertura', area.x + area.width / 2, area.y + 20);
+    ctx.fillText(i18n.t('graph_title_loads'), area.x + area.width / 2, area.y + 20);
 
     // Etichette assi
     ctx.fillStyle = gc('#CCC', '#222');
     ctx.font = '14px Arial';
-    ctx.fillText('Angolo apertura θ (°)', area.x + area.width / 2, area.y + area.height - 10);
+    ctx.fillText(i18n.t('graph_x_angle'), area.x + area.width / 2, area.y + area.height - 10);
 
     ctx.save();
     ctx.translate(area.x + 15, area.y + area.height / 2);
@@ -4050,8 +4147,8 @@ function drawConstraintGraph(params, area) {
     {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
         const legItems = [
-            {label: '|F_A| = |F_B|  (attacchi molla)', color: '#FF9800'},
-            {label: '|R_O|  (cerniera portello)',        color: '#00BCD4'},
+            {label: i18n.t('graph_leg_fa'), color: '#FF9800'},
+            {label: i18n.t('graph_leg_ro'),              color: '#00BCD4'},
         ];
         ctx.font = legFont;
         const itemWidths = legItems.map(it => legLineW + legGap + ctx.measureText(it.label).width);
@@ -4178,12 +4275,12 @@ function buildCatalogTable() {
                 <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
                     <thead>
                         <tr style="background: var(--bg-primary); color: var(--text-secondary); text-align: left;">
-                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">Codice</th>
-                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">L Totale</th>
-                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">Corsa</th>
-                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">L₀ (riposo)</th>
-                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">Forza Desiderata (N)</th>
-                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color); text-align: center;">Applica</th>
+                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">${i18n.t('cat_col_code')}</th>
+                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">${i18n.t('cat_col_l')}</th>
+                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">${i18n.t('cat_col_stroke')}</th>
+                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">${i18n.t('cat_col_l0')}</th>
+                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color);">${i18n.t('cat_col_force_des')}</th>
+                            <th style="padding: 10px 15px; border-bottom: 1px solid var(--border-color); text-align: center;">${i18n.t('search_col_apply')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -4285,7 +4382,7 @@ function applyForceFromCatalog(seriesKey, modelCode, inputId, errorId, forceMin,
     
     // Validazione 1: Controllo range
     if (requestedForce < forceMin || requestedForce > forceMax) {
-        showForceError(errorId, `⚠️ Forza fuori range! Disponibile: ${forceMin}-${forceMax}N`);
+        showForceError(errorId, i18n.t('cat_force_outrange').replace('{min}',forceMin).replace('{max}',forceMax));
         return;
     }
     
@@ -4307,7 +4404,7 @@ function applyForceFromCatalog(seriesKey, modelCode, inputId, errorId, forceMin,
             }, 1500);
             return;
         } else {
-            showForceError(errorId, `⚠️ Forza deve essere multiplo di ${forceStep}N (es: ${forceMin}N, ${forceMin + forceStep}N...)`);
+            showForceError(errorId, i18n.t('cat_force_step').replace('{step}',forceStep).replace('{min}',forceMin));
             return;
         }
     }
@@ -4556,7 +4653,7 @@ function updateCaseCount() {
 function startPickPoint(which) {
     if (!selectionModeActive) return;
     if (currentSolutions.length === 0) {
-        alert('Calcola prima le soluzioni prima di usare il Selection Mode.');
+        alert(i18n.t('alert_calc_first'));
         return;
     }
     if (activeTab !== 'realistic') switchTab('realistic');
@@ -4586,7 +4683,7 @@ function updateSelectionModeUI() {
         statusEl.textContent = '👆 Clicca sul canvas: Punto A (attacco struttura)';
         statusEl.style.color = '#00FF88';
     } else if (selectionPickStep === 2) {
-        statusEl.textContent = '👆 Clicca sul canvas: Punto B (attacco sportello)';
+        statusEl.textContent = i18n.t('canvas_pick_b2');
         statusEl.style.color = '#FF8800';
     } else if (selectionPA && selectionPB) {
         statusEl.textContent = selectionSeriesFilter.size > 0
@@ -4668,7 +4765,7 @@ function quickSolve(massaP, XgP, YgP, XmP, YmP, FaP, FcP, alfaDegP, F_mollaP, k_
 async function runMassiveSearch() {
     if (!selectionPA || !selectionPB) return;
     if (selectionSeriesFilter.size === 0) {
-        alert('Seleziona almeno una serie dal pannello prima di avviare la ricerca.');
+        alert(i18n.t('alert_select_series'));
         return;
     }
 
@@ -4774,7 +4871,7 @@ async function runMassiveSearch() {
                     if (progressText) progressText.textContent =
                         `${totalChecked} / ${totalCases} combinazioni analizzate… (${pct}%)`;
                     if (foundText)    foundText.textContent =
-                        results.length ? `✓ ${results.length} soluzione/i trovata/e finora` : '';
+                        results.length ? i18n.t('search_progress').replace('{n}', results.length) : '';
                     if (seriesText)   seriesText.textContent =
                         `Serie corrente: ${seriesKey} — ${model.code} — ${F}N`;
                     await yieldFrame();
@@ -4808,8 +4905,8 @@ async function runMassiveSearch() {
                     if (!matchB1 && !matchB2) continue;
 
                     const bestB = (matchB1 && (!matchB2 || dB1 <= dB2))
-                        ? { type: 'B1 (chiuso)', d: dB1 }
-                        : { type: 'B2 (aperto)', d: dB2 };
+                        ? { type: i18n.t('search_config_b1'), d: dB1 }
+                        : { type: i18n.t('search_config_b2'), d: dB2 };
 
                     results.push({
                         seriesKey,
@@ -4845,12 +4942,12 @@ function showSearchResults(results, totalChecked, PA, PB, rA, rB) {
     if (results.length === 0) {
         content.innerHTML = `
         <div style="padding:20px; color:#FF5722;">
-            <p style="font-size:14px; font-weight:600;">❌ Nessuna soluzione trovata nei ${totalChecked} casi analizzati.</p>
-            <p style="font-size:12px; color:#888; margin-top:8px;">Suggerimenti:</p>
+            <p style="font-size:14px; font-weight:600;">${i18n.t('search_no_results').replace('{n}', totalChecked)}</p>
+            <p style="font-size:12px; color:#888; margin-top:8px;">${i18n.t('search_suggestions')}</p>
             <ul style="font-size:12px; color:#999; margin-top:6px; padding-left:20px;">
-                <li>Aumenta i raggi di tolleranza rA e rB</li>
-                <li>Sposta i punti PA/PB in posizioni fisicamente accessibili</li>
-                <li>Verifica che i punti siano vicini ai cerchi R1/R2 del sistema</li>
+                <li>${i18n.t('search_tip1')}</li>
+                <li>${i18n.t('search_tip2')}</li>
+                <li>${i18n.t('search_tip3')}</li>
             </ul>
             <p style="font-size:11px; color:#555; margin-top:12px;">PA=(${PA.x.toFixed(1)}, ${PA.y.toFixed(1)}) rA=${rA}mm &nbsp;|&nbsp; PB=(${PB.x.toFixed(1)}, ${PB.y.toFixed(1)}) rB=${rB}mm</p>
         </div>`;
@@ -4904,12 +5001,12 @@ function showSearchResults(results, totalChecked, PA, PB, rA, rB) {
     <table id="search-res-table" style="width:100%; border-collapse:collapse; font-size:11px;">
         <thead>
             <tr>
-                <th>#</th><th>Modello</th><th>Forza</th><th>L totale</th><th>Corsa</th>
+                <th>#</th><th>${i18n.t('search_col_model')}</th><th>${i18n.t('search_col_force')}</th><th>${i18n.t('search_col_l')}</th><th>${i18n.t('search_col_stroke')}</th>
                 <th style="color:#00FF88;">Δ PA (mm)</th>
                 <th style="color:#FF8800;">Δ PB (mm)</th>
-                <th>Config B</th>
-                <th>Rotaz.</th>
-                <th>Applica</th>
+                <th>${i18n.t('search_col_config')}</th>
+                <th>${i18n.t('search_col_rotation')}</th>
+                <th>${i18n.t('search_col_apply')}</th>
             </tr>
         </thead>
         <tbody>${rows}</tbody>
@@ -4950,7 +5047,7 @@ function closeSearchResultsModal() {
     document.getElementById('search-results-modal').classList.remove('active');
 }
 
-async function calculateSpring() {
+function calculateSpring() {
             // Reset rotazioni e animazione
             mollaRotations = [0, 0];
             selectedSpringIdx = -1;
@@ -5008,26 +5105,26 @@ async function calculateSpring() {
 
             // Validazione
             if (massa <= 0 || F_molla <= 0 || k_prog <= 1 || L0 <= 0 || corsa <= 0) {
-                resultsDiv.innerHTML += '<p style="color:red;font-weight:bold;">❌ Errore: parametri non validi!</p>';
+                resultsDiv.innerHTML += `<p style="color:red;font-weight:bold;">${i18n.t('err_params_invalid')}</p>`;
                 return;
             }
             if (massa <= 0) {
-                alert('❌ La massa deve essere maggiore di zero.');
+                alert(i18n.t('alert_mass_positive'));
                 return;
             }
             if (Fa < 0) {
-                alert('❌ La forza di apertura (Fa) non può essere negativa.');
+                alert(i18n.t('alert_fa_negative'));
                 return;
             }
             if (Fc < 0) {
-                alert('❌ La forza di chiusura (Fc) non può essere negativa.');
+                alert(i18n.t('alert_fc_negative'));
                 return;
             }
 
             // Alert se a fine apertura la gravità è a favore della rotazione
             const Xg_aperto = Xg * Math.cos(alfa) - Yg * Math.sin(alfa);
             if (Xg_aperto < 0) {
-                alert('⚠️ Attenzione: a fine apertura (θ = ' + alfaDeg + '°) il baricentro ha superato la verticale del perno.\nLa gravità agisce a FAVORE dell\'apertura (senso orario inverso): la molla non deve più contrastare il peso, ma potrebbe non riuscire a mantenere lo sportello aperto.\nVerificare il grafico sforzo/momento.');
+                alert(i18n.t('warn_gravity_title').replace('{deg}', alfaDeg) + '\n' + i18n.t('warn_gravity_body'));
             }
             
             const dist_maniglia = Math.sqrt(Xm * Xm + Ym * Ym);
@@ -5060,21 +5157,21 @@ async function calculateSpring() {
             resultsDiv.innerHTML += `
             <div class="fase-box" style="border:2px solid #1565c0;">
               <div class="fase-header" style="background:#1565c0;color:#fff;">
-                🔒 FASE 1 — Verifica inizio apertura (θ = 0°)
+                ${i18n.t('fase1_title')}
               </div>
               <div class="fase-body">
                 <p style="font-size:11px;color:#555;margin:0 0 10px 0;">
-                  A sportello chiuso la molla deve vincere il momento del peso e assistere l'operatore nell'apertura.<br>
-                  <strong>Condizione:</strong> F(x) × R1 × n = M_peso − M_maniglia_apertura
+                  ${i18n.t('fase1_desc')}<br>
+                  <strong>${i18n.t('res_phase1_cond')}</strong> F(x) × R1 × n = M_peso − M_maniglia_apertura
                 </p>
                 <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">Massa:</span><span class="fase-formula">m = ${massa} kg</span></div>
-                <div class="fase-row"><span class="fase-label">Baricentro Xg:</span><span class="fase-formula">Xg = ${Xg} mm</span></div>
-                <div class="fase-row"><span class="fase-label">Distanza maniglia:</span><span class="fase-formula">d = √(${Xm}² + ${Ym}²) = <strong>${dist_maniglia.toFixed(2)} mm</strong></span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mass')}</span><span class="fase-formula">m = ${massa} kg</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_xg')}</span><span class="fase-formula">Xg = ${Xg} mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_dist_handle')}</span><span class="fase-formula">d = √(${Xm}² + ${Ym}²) = <strong>${dist_maniglia.toFixed(2)} mm</strong></span></div>
                 <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">M_peso (chiuso):</span><span class="fase-formula">m × g × Xg = ${massa} × ${g} × ${Xg}</span><span class="fase-result">= ${M_peso_chiuso.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">M_maniglia (apertura):</span><span class="fase-formula">Fa × g × d = ${Fa} × ${g} × ${dist_maniglia.toFixed(2)}</span><span class="fase-result">= ${M_maniglia_apertura.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">M_molla richiesto:</span><span class="fase-formula">M_peso − M_maniglia</span><span class="fase-result">= ${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mpeso')}</span><span class="fase-formula">m × g × Xg = ${massa} × ${g} × ${Xg}</span><span class="fase-result">= ${M_peso_chiuso.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mman')}</span><span class="fase-formula">Fa × g × d = ${Fa} × ${g} × ${dist_maniglia.toFixed(2)}</span><span class="fase-result">= ${M_maniglia_apertura.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mreq')}</span><span class="fase-formula">${i18n.t('res_phase1_mpeso_formula')}</span><span class="fase-result">= ${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</span></div>
                 <hr class="section-sep">
                 <p style="font-size:10.5px;color:#666;margin:4px 0 0 0;">
                   ℹ️ R1 e F(x) vengono determinati per convergenza nella Fase 2. La verifica di equilibrio è riportata al termine.
@@ -5123,14 +5220,15 @@ async function calculateSpring() {
                 const errMsg = apiResult.error || 'Convergenza non raggiunta — verificare F_molla, corsa, L0, massa';
                 const R1_err = (M_peso_chiuso + M_maniglia_apertura) / (F_molla * n_molle);
                 resultsDiv.innerHTML += `<div style="padding:12px;background:#ffebee;border-radius:5px;margin:8px 0;border-left:4px solid #f44336;">
-                  <strong style="color:#c62828;">Convergenza non raggiunta</strong>
-                  <p style="font-size:11px;margin:4px 0 0 0;">${errMsg}</p>
+                  <strong style="color:#c62828;">${i18n.t('res_conv_fail')}</strong>
+                  <p style="font-size:11px;margin:4px 0 0 0;">${i18n.t('err_no_geom')}<br>
+                  ${i18n.t('err_check_params')}</p>
                 </div>`;
                 currentSolutions = [];
-                currentParams = {R1: R1_err, R2: 0, L: L0 + corsa, alfa: alfa};
+                currentParams = {R1: R1_err, R2: R2, L: L0 + corsa, alfa: alfa};
                 updateSolutionSelector();
                 updateVisualization();
-                updateResultsError('Nessuna Soluzione', errMsg);
+                updateResultsError(i18n.t('err_no_solution_title'), i18n.t('err_no_solution_body'));
                 return;
             }
 
@@ -5188,7 +5286,7 @@ async function calculateSpring() {
             // ── Popola placeholder Fase 2 con tabella iterazioni ──
             let iterTableRows = '';
             iterHistory.forEach((h, idx) => {
-                const isConv = idx === iterHistory.length - 1;
+                const isConv = converged && idx === iterHistory.length - 1;
                 iterTableRows += `<tr class="${isConv ? 'iter-conv' : ''}">
                   <td>${h.iter + 1}</td>
                   <td>${h.x_guess.toFixed(3)}</td>
@@ -5197,26 +5295,26 @@ async function calculateSpring() {
                   <td>${h.distAB1.toFixed(3)}</td>
                   <td>${h.x_new.toFixed(3)}</td>
                   <td>${h.error.toFixed(4)}</td>
-                  <td>${isConv ? '<span class="badge-ok">OK</span>' : ''}</td>
+                  <td>${isConv ? '<span class="badge-ok">✓</span>' : ''}</td>
                 </tr>`;
             });
             const fase2Extra = `
               <details style="margin-top:4px;">
                 <summary style="cursor:pointer;font-size:11px;color:#e65100;font-weight:700;">
-                  Dettaglio iterazioni (clicca per espandere)
+                  ${i18n.t('iter_details')}
                 </summary>
                 <table class="iter-table" style="margin-top:8px;">
-                  <tr><th>Iter</th><th>x_guess (mm)</th><th>F(x) (N)</th><th>R1 (mm)</th><th>|AB1| (mm)</th><th>x_new (mm)</th><th>Errore</th><th></th></tr>
+                  <tr><th>${i18n.t('iter_col_iter')}</th><th>${i18n.t('iter_col_xguess')}</th><th>F(x) (N)</th><th>R1 (mm)</th><th>|AB₁| (mm)</th><th>${i18n.t('iter_col_xnew')}</th><th>${i18n.t('iter_col_error')}</th><th></th></tr>
                   ${iterTableRows}
                 </table>
               </details>
               <div style="background:#e8f5e9;border-left:4px solid #4caf50;padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;">
-                <div style="font-weight:700;color:#2e7d32;font-size:12px;">Convergenza raggiunta in ${iterHistory.length} iterazioni</div>
-                <div class="fase-row" style="margin-top:6px;"><span class="fase-label">Corsa effettiva x:</span><span class="fase-result">${x_guess.toFixed(3)} mm</span></div>
+                <div style="font-weight:700;color:#2e7d32;font-size:12px;">${i18n.t('iter_conv_ok').replace('{n}', iterHistory.length)}</div>
+                <div class="fase-row" style="margin-top:6px;"><span class="fase-label">${i18n.t('iter_stroke_eff')}<span><span class="fase-result">${x_guess.toFixed(3)} mm</span></div>
                 <div class="fase-row"><span class="fase-label">R1:</span><span class="fase-result">${R1_final.toFixed(3)} mm</span></div>
-                <div class="fase-row"><span class="fase-label">F(x) @ posizione chiusa:</span><span class="fase-result">${F_final.toFixed(2)} N${advancedModeEnabled ? ` <span style="color:#e65100;font-size:10px;">(kT=${kT.toFixed(4)})</span>` : ''}</span></div>
-                <div class="fase-row"><span class="fase-label">F(x) formula:</span><span class="fase-formula">${F_molla} x [${k_prog} - ${(k_prog-1).toFixed(2)} x ${x_guess.toFixed(2)}/${corsa}] = ${F_final.toFixed(2)} N</span></div>
-                <div class="fase-row"><span class="fase-label">Corsa utilizzata:</span><span class="fase-result">${(corsa - x_guess).toFixed(2)} mm / ${corsa} mm (${((corsa - x_guess)/corsa*100).toFixed(1)}%)</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('iter_fx_closed')}</span><span class="fase-result">${F_final.toFixed(2)} N${advancedModeEnabled ? ` <span style="color:#e65100;font-size:10px;">(kT=${kT.toFixed(4)})</span>` : ''}</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('iter_fx_formula')}</span><span class="fase-formula">${F_molla} × [${k_prog} − ${(k_prog-1).toFixed(2)} × ${x_guess.toFixed(2)}/${corsa}] = ${F_final.toFixed(2)} N</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_stroke_used')}</span><span class="fase-result">${(corsa - x_guess).toFixed(2)} mm / ${corsa} mm (${((corsa - x_guess)/corsa*100).toFixed(1)}%)</span></div>
               </div>`;
             const placeholder = resultsDiv.querySelector('#iter-result-placeholder');
             if (placeholder) placeholder.innerHTML = fase2Extra;
@@ -5231,29 +5329,29 @@ async function calculateSpring() {
             resultsDiv.innerHTML += `
             <div class="fase-box" style="border:2px solid #2e7d32;">
               <div class="fase-header" style="background:#2e7d32;color:#fff;">
-                🔓 FASE 3 — Verifica completamente aperta (θ = ${alfaDeg}°)
+                ${i18n.t('fase3_title').replace('{deg}', alfaDeg)}
               </div>
               <div class="fase-body">
                 <p style="font-size:11px;color:#555;margin:0 0 10px 0;">
-                  A sportello aperto la molla deve mantenere la posizione e permettere la chiusura manuale.<br>
-                  <strong>Condizione:</strong> F_nom × R2 × n = M_peso(θ=α) + M_maniglia_chiusura
+                  ${i18n.t('fase3_desc')}<br>
+                  <strong>${i18n.t('res_phase1_cond')}</strong> F_nom × R2 × n = M_peso(θ=α) + M_maniglia_chiusura
                 </p>
 
-                <div class="fase-row"><span class="fase-label">Xg ruotato (θ = ${alfaDeg}°):</span>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_xg_rotated').replace('{deg}', alfaDeg)}</span>
                   <span class="fase-formula">${Xg}·cos${alfaDeg}° − ${Yg}·sin${alfaDeg}° = <strong>${Xg_aperto.toFixed(2)} mm</strong></span></div>
-                <div class="fase-row"><span class="fase-label">M_peso (aperto):</span>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mpeso')}</span>
                   <span class="fase-formula">${massa} × ${g} × ${Xg_aperto.toFixed(2)}</span>
                   <span class="fase-result">= ${M_peso_aperto.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">M_maniglia (chiusura):</span>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mman')}</span>
                   <span class="fase-formula">Fc × g × d = ${Fc} × ${g} × ${dist_maniglia.toFixed(2)}</span>
                   <span class="fase-result">= ${M_maniglia_chiusura.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">R2 ricavato:</span>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_r2')}</span>
                   <span class="fase-formula">(M_peso + M_man) / (F_nom × n) − 2μr_p = (${M_peso_aperto.toFixed(1)} + ${M_maniglia_chiusura.toFixed(1)}) / (${F_molla_T.toFixed(1)} × ${n_molle})${advancedModeEnabled ? ` − ${(2*mu*r_p).toFixed(2)}` : ''}</span>
                   <span class="fase-result">= ${R2.toFixed(2)} mm</span></div>
-                ${advancedModeEnabled ? `<div class="fase-row"><span class="fase-label">Correzione temperatura:</span><span class="fase-formula">kT = ${kT.toFixed(4)} (T=${temperatureEsercizio}°C) → F_nom_T = ${F_molla_T.toFixed(2)} N</span></div>` : ''}
+                ${advancedModeEnabled ? `<div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_temp_corr')}</span><span class="fase-formula">kT = ${kT.toFixed(4)} (T=${temperatureEsercizio}°C) → F_nom_T = ${F_molla_T.toFixed(2)} N</span></div>` : ''}
 
                 <hr class="section-sep">
-                <p style="font-size:11px;font-weight:700;color:#2e7d32;margin:6px 0 4px 0;">Verifica equilibrio a sportello aperto:</p>
+                <p style="font-size:11px;font-weight:700;color:#2e7d32;margin:6px 0 4px 0;">${i18n.t('res_verify_open')}</p>
                 <div class="eq-box ${c2ok ? 'eq-ok' : 'eq-err'}">
                   M_molla = F_nom_T × R2 × n${advancedModeEnabled ? ` + 2μ·F_nom_T·n·r_p` : ''} = ${F_molla_T.toFixed(2)} × ${R2.toFixed(2)} × ${n_molle}${advancedModeEnabled ? ` + ${M_attrito_aperto.toFixed(2)}` : ''} = <strong>${M_molla_aperto.toFixed(2)} N·mm</strong><br>
                   M_peso + M_man = ${M_peso_aperto.toFixed(2)} + ${M_maniglia_chiusura.toFixed(2)} = <strong>${(M_peso_aperto + M_maniglia_chiusura).toFixed(2)} N·mm</strong><br>
@@ -5267,10 +5365,10 @@ async function calculateSpring() {
             <!-- Verifica equilibrio a sportello chiuso (ritorna dalla Fase 2) -->
             <div class="fase-box" style="border:2px solid #7b1fa2;">
               <div class="fase-header" style="background:#7b1fa2;color:#fff;">
-                🔁 Verifica equilibrio inizio apertura (θ = 0°) — con R1 e F(x) conversi
+                ${i18n.t('fase_recap_title')}
               </div>
               <div class="fase-body">
-                <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:0 0 6px 0;">Verifica equilibrio a sportello chiuso:</p>
+                <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:0 0 6px 0;">${i18n.t('res_verify_closed')}</p>
                 <div class="eq-box ${c1ok ? 'eq-ok' : 'eq-err'}">
                   M_molla = F(x) × R1 × n${advancedModeEnabled ? ` − 2μ·F(x)·n·r_p` : ''} = ${F_final.toFixed(2)} × ${R1_final.toFixed(2)} × ${n_molle}${advancedModeEnabled ? ` − ${M_attrito_chiuso.toFixed(2)}` : ''} = <strong>${M_molla_chiuso.toFixed(2)} N·mm</strong><br>
                   M_peso − M_man = ${M_peso_chiuso.toFixed(2)} − ${M_maniglia_apertura.toFixed(2)} = <strong>${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</strong><br>
@@ -5280,7 +5378,7 @@ async function calculateSpring() {
                 </div>
 
                 <hr class="section-sep">
-                <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:6px 0 4px 0;">Verifica geometrica:</p>
+                <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:6px 0 4px 0;">${i18n.t('res_verify_geom')}</p>
                 <div class="eq-box ${geom_ok1 ? 'eq-ok' : 'eq-err'}">
                   |A−B₁| (chiuso) calcolato: <strong>${distAB1_calc.toFixed(3)} mm</strong><br>
                   L₀ + x = ${L0} + ${x_guess.toFixed(3)} = <strong>${(L0 + x_guess).toFixed(3)} mm</strong><br>
@@ -5299,20 +5397,20 @@ async function calculateSpring() {
             <!-- Riepilogo finale -->
             <div class="fase-box" style="border:2px solid #4caf50;margin-bottom:4px;">
               <div class="fase-header" style="background:#4caf50;color:#fff;">
-                ✅ Riepilogo — Sistema risolto
+                ${i18n.t('fasesummary_title')}
               </div>
               <div class="fase-body" style="background:#f1f8e9;">
                 <div class="fase-row"><span class="fase-label">R1:</span><span class="fase-result">${R1_final.toFixed(2)} mm</span></div>
                 <div class="fase-row"><span class="fase-label">R2:</span><span class="fase-result">${R2.toFixed(2)} mm</span></div>
-                <div class="fase-row"><span class="fase-label">L (molla estesa):</span><span class="fase-result">${L_final.toFixed(2)} mm</span></div>
-                <div class="fase-row"><span class="fase-label">Stelo esposto (chiuso):</span><span class="fase-result">${x_guess.toFixed(2)} mm</span></div>
-                <div class="fase-row"><span class="fase-label">Corsa utilizzata:</span><span class="fase-result">${(corsa - x_guess).toFixed(2)} mm / ${corsa} mm (${((corsa - x_guess)/corsa*100).toFixed(1)}%)</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_l_extended')}</span><span class="fase-result">${L_final.toFixed(2)} mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_rod_closed')}</span><span class="fase-result">${x_guess.toFixed(2)} mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_stroke_used')}</span><span class="fase-result">${(corsa - x_guess).toFixed(2)} mm / ${corsa} mm (${((corsa - x_guess)/corsa*100).toFixed(1)}%)</span></div>
                 <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">F @ chiuso (compressa):</span><span class="fase-result">${F_final.toFixed(1)} N</span></div>
-                <div class="fase-row"><span class="fase-label">F @ aperto (estesa):</span><span class="fase-result">${F_molla_T.toFixed(1)} N</span></div>
-                <div class="fase-row"><span class="fase-label">F massima (k_prog × F_nom):</span><span class="fase-result">${F_compressa.toFixed(1)} N</span></div>
-                <div class="fase-row"><span class="fase-label">Iterazioni convergenza:</span><span class="fase-result">${iterHistory.length}</span></div>
-                <div class="fase-row"><span class="fase-label">Soluzioni geometriche:</span><span class="fase-result">${finalSolutions.length}</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_f_closed')}</span><span class="fase-result">${F_final.toFixed(1)} N</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_f_open')}</span><span class="fase-result">${F_molla_T.toFixed(1)} N</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_f_max')}</span><span class="fase-result">${F_compressa.toFixed(1)} N</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_iterations')}</span><span class="fase-result">${iterHistory.length}</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_solutions')}</span><span class="fase-result">${finalSolutions.length}</span></div>
               </div>
             </div>`;
             
@@ -6117,19 +6215,19 @@ function toggleTheme() {
             const summaryDiv = document.getElementById('results-summary');
             summaryDiv.innerHTML = `
                 <div class="result-card">
-                    <div class="result-card-title">✅ Convergenza Raggiunta</div>
+                    <div class="result-card-title">${i18n.t('rp_conv_ok')}</div>
                     <div class="result-row">
-                        <span class="result-label">Iterazioni:</span>
+                        <span class="result-label">${i18n.t('rp_iterations')}<span>
                         <span class="result-value success">${results.iterations || 'N/A'}</span>
                     </div>
                     <div class="result-row">
-                        <span class="result-label">Stato:</span>
-                        <span class="result-value success">✓ Converged</span>
+                        <span class="result-label">${i18n.t('rp_status')}<span>
+                        <span class="result-value success">${i18n.t('rp_status_ok')}</span>
                     </div>
                 </div>
                 
                 <div class="result-card">
-                    <div class="result-card-title">📐 Parametri Geometrici</div>
+                    <div class="result-card-title">${i18n.t('rp_geom_title')}</div>
                     <div class="result-row">
                         <span class="result-label">R1:</span>
                         <span class="result-value">${results.R1?.toFixed(2) || 'N/A'} mm</span>
@@ -6139,27 +6237,27 @@ function toggleTheme() {
                         <span class="result-value">${results.R2?.toFixed(2) || 'N/A'} mm</span>
                     </div>
                     <div class="result-row">
-                        <span class="result-label">Stelo esposto (chiuso):</span>
+                        <span class="result-label">${i18n.t('res_rod_closed')}</span>
                         <span class="result-value">${results.x?.toFixed(2) || 'N/A'} mm</span>
                     </div>
                     <div class="result-row">
-                        <span class="result-label">Corsa utilizzata:</span>
+                        <span class="result-label">${i18n.t('res_stroke_used')}</span>
                         <span class="result-value">${results.corsaUtilizzata?.toFixed(2) || 'N/A'} mm</span>
                     </div>
                 </div>
                 
                 <div class="result-card">
-                    <div class="result-card-title">🔧 Forze Molla</div>
+                    <div class="result-card-title">${i18n.t('rp_forces_title')}</div>
                     <div class="result-row">
-                        <span class="result-label">N° molle:</span>
+                        <span class="result-label">${i18n.t('rp_nmolle')}<span>
                         <span class="result-value">${results.n_molle || 1}</span>
                     </div>
                     <div class="result-row">
-                        <span class="result-label">F @ chiuso:</span>
+                        <span class="result-label">${i18n.t('rp_f_closed')}<span>
                         <span class="result-value">${results.F_chiuso?.toFixed(1) || 'N/A'} N</span>
                     </div>
                     <div class="result-row">
-                        <span class="result-label">F @ aperto:</span>
+                        <span class="result-label">${i18n.t('rp_f_open')}<span>
                         <span class="result-value">${results.F_aperto?.toFixed(1) || 'N/A'} N</span>
                     </div>
                 </div>
@@ -6203,7 +6301,7 @@ function saveProject() {
     a.click();
     URL.revokeObjectURL(url);
     
-    alert('✅ Progetto salvato!');
+    alert(i18n.t('alert_saved'));
 }
 
 function loadProject() {
@@ -6241,7 +6339,7 @@ function loadProject() {
                 // Ricalcola
                 calculateSpring();
                 
-                alert('✅ Progetto caricato!');
+                alert(i18n.t('alert_loaded'));
             } catch (err) {
                 alert('❌ Errore nel caricamento del file: ' + err.message);
             }
@@ -6253,11 +6351,11 @@ function loadProject() {
 
 async function exportPDF() {
     if (currentSolutions.length === 0) {
-        alert('❌ Nessuna soluzione da esportare! Calcola prima il sistema.');
+        alert(i18n.t('alert_no_solution_export'));
         return;
     }
 
-    alert('⏳ Generazione PDF in corso... (potrebbe richiedere alcuni secondi)');
+    alert(i18n.t('alert_pdf_generating'));
 
     try {
         const { jsPDF } = window.jspdf;
@@ -6301,11 +6399,11 @@ async function exportPDF() {
         pdf.setFont(undefined, 'normal');
         pdf.setTextColor(0, 0, 0);
         const params = [
-            [`Massa sportello`, `${document.getElementById('massa').value} kg`],
+            [i18n.t('pdf_mass'), `${document.getElementById('massa').value} kg`],
             [`Baricentro G`, `(${document.getElementById('Xg').value}, ${document.getElementById('Yg').value}) mm`],
             [`Maniglia M`, `(${document.getElementById('Xm').value}, ${document.getElementById('Ym').value}) mm`],
-            [`Angolo apertura`, `${document.getElementById('alfa').value}°`],
-            [`Forza apertura / chiusura`, `${document.getElementById('Fa').value} kg / ${document.getElementById('Fc').value} kg`]
+            [i18n.t('pdf_angle'), `${document.getElementById('alfa').value}°`],
+            [i18n.t('pdf_forces'), `${document.getElementById('Fa').value} kg / ${document.getElementById('Fc').value} kg`]
         ];
         params.forEach(([label, val]) => {
             pdf.setFont(undefined, 'bold');
@@ -6320,7 +6418,7 @@ async function exportPDF() {
         pdf.setFontSize(11);
         pdf.setFont(undefined, 'bold');
         pdf.setTextColor(40, 60, 160);
-        pdf.text('Parametri Molla', MARGIN, yPos);
+        pdf.text(i18n.t('pdf_spring_params'), MARGIN, yPos);
         yPos += 2;
         hLine(yPos); yPos += 5;
 
@@ -6328,7 +6426,7 @@ async function exportPDF() {
         pdf.setFont(undefined, 'normal');
         pdf.setTextColor(0, 0, 0);
         const mollaParams = [
-            [`Forza F₁`, `${document.getElementById('F_molla').value} N`],
+            [i18n.t('pdf_force_f1'), `${document.getElementById('F_molla').value} N`],
             [`Progressione k`, `${document.getElementById('k_prog').value}`],
             [`Lunghezza L₀`, `${document.getElementById('L0').value} mm`],
             [`Corsa`, `${document.getElementById('corsa').value} mm`],
@@ -6356,12 +6454,12 @@ async function exportPDF() {
         pdf.setTextColor(0, 0, 0);
         currentSolutions.slice(0, 3).forEach((sol, idx) => {
             pdf.setFont(undefined, 'bold');
-            pdf.text(`Soluzione ${idx + 1}`, MARGIN + 3, yPos);
+            pdf.text(i18n.t('pdf_sol').replace('{n}', idx + 1), MARGIN + 3, yPos);
             pdf.setFont(undefined, 'normal');
             yPos += 5;
             pdf.text(`Punto A: (${sol.A.x.toFixed(1)}, ${sol.A.y.toFixed(1)}) mm`, MARGIN + 8, yPos); yPos += 4.5;
-            pdf.text(`Punto B chiuso: (${sol.B1.x.toFixed(1)}, ${sol.B1.y.toFixed(1)}) mm`, MARGIN + 8, yPos); yPos += 4.5;
-            pdf.text(`Punto B aperto: (${sol.B2.x.toFixed(1)}, ${sol.B2.y.toFixed(1)}) mm`, MARGIN + 8, yPos); yPos += 6;
+            pdf.text(`${i18n.t('pdf_b_closed')} (${sol.B1.x.toFixed(1)}, ${sol.B1.y.toFixed(1)}) mm`, MARGIN + 8, yPos); yPos += 4.5;
+            pdf.text(`${i18n.t('pdf_b_open')} (${sol.B2.x.toFixed(1)}, ${sol.B2.y.toFixed(1)}) mm`, MARGIN + 8, yPos); yPos += 6;
         });
 
         // ── VISTA 3D (realistica, con o senza DXF) ──
@@ -6476,7 +6574,7 @@ async function exportPDF() {
         }
 
         pdf.save(`gasspring_report_${new Date().toISOString().split('T')[0]}.pdf`);
-        alert('✅ PDF generato con successo!');
+        alert(i18n.t('alert_pdf_ok'));
     } catch (err) {
         alert('❌ Errore nella generazione PDF: ' + err.message);
         console.error(err);
@@ -6747,8 +6845,8 @@ const dxfIntegra = (function() {
 
     const hint=document.getElementById('dxf-pick-hint');
     if(pickMode==='pivot')       hint.textContent='👆 Clicca sul FULCRO';
-    else if(pickMode==='maniglia') hint.textContent='👆 Clicca sulla MANIGLIA';
-    else if(pickMode==='baricentro') hint.textContent='👆 Clicca sul BARICENTRO';
+    else if(pickMode==='maniglia') hint.textContent=i18n.t('dxf_click_handle');
+    else if(pickMode==='baricentro') hint.textContent=i18n.t('dxf_click_cog');
     else hint.textContent='';
 
     const ok=document.getElementById('dxf-btn-ok');
