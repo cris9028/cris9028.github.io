@@ -6126,11 +6126,9 @@ function toggleTheme() {
                     }
                     return; // Esci senza toccare l'altezza
                 } else {
-                    // Per le altre viste, usa l'altezza del container
-                    const canvasPanel = c.parentElement;
-                    const panelRect = canvasPanel.getBoundingClientRect();
-                    // Aumentato spazio per controlli: animazione (60px) + zoom (30px) + margini
-                    h = Math.floor(panelRect.height - 150); // Lascia più spazio per controlli
+                    // Usa l'altezza CSS effettiva del canvas (determinata da flex)
+                    // così buffer e display coincidono e i cerchi non risultano ovali
+                    h = Math.floor(rect.height);
                 }
                 
                 if (c.width !== w || c.height !== h) {
