@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>GasSpring Pro – Calcolatore Molla a Gas | Dimensionamento e Selezione Professionale</title>
+  <meta name="description" content="GasSpring Pro: software professionale per dimensionare e selezionare molle a gas. Calcolo automatico di R1, R2, geometria, forze e ricerca catalogo. Prova la demo gratuita.">
+  <meta name="keywords" content="molla a gas, calcolo molla a gas, dimensionare molla a gas, selezionare molla a gas, calcolatore molla a gas, pistone a gas, molla a gas ante, molla a gas sportello, molla a gas cofano, software molla a gas, molla a gas industriale, selezione molla a gas, forza molla a gas, corsa molla a gas, gas spring calculator, gas strut calculator, gas spring sizing, calcolo pistoni a gas, molle a gas mobili, molle a gas pannelli, molla a gas cofano macchina utensile">
+  <meta name="author" content="GasSpring Pro">
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical" href="https://cris9028.github.io/gasspring-pro.html">
+  <link rel="alternate" hreflang="it" href="https://cris9028.github.io/gasspring-pro.html">
+  <link rel="alternate" hreflang="en" href="https://cris9028.github.io/en.html">
+  <link rel="alternate" hreflang="x-default" href="https://cris9028.github.io/en.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cris9028.github.io/gasspring-pro.html">
+  <meta property="og:title" content="GasSpring Pro – Calcolatore Molla a Gas Professionale">
+  <meta property="og:description" content="Strumento professionale per dimensionare e selezionare molle a gas. Calcola R1, R2, geometria, forze e individua i modelli dal catalogo in automatico.">
+  <meta property="og:locale" content="it_IT">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta property="og:site_name" content="GasSpring Pro">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="GasSpring Pro – Calcolatore Molla a Gas">
+  <meta name="twitter:description" content="Strumento professionale per dimensionare molle a gas. Prova la demo gratuita.">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "GasSpring Pro",
+    "applicationCategory": "EngineeringApplication",
+    "operatingSystem": "Web Browser",
+    "description": "Software professionale per la selezione e il dimensionamento di molle a gas. Calcola automaticamente forze, geometria e individua i modelli ottimali dal catalogo.",
+    "featureList": [
+      "Calcolo automatico dei bracci R1 e R2",
+      "Solver geometrico con metodo di Brent",
+      "Verifica equilibrio in apertura e chiusura",
+      "Ricerca massiva su catalogo molle a gas",
+      "Modalita avanzata: temperatura, attrito, raggio perno",
+      "Grafici forze, momenti e sforzo operatore"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "description": "Demo gratuita disponibile. Licenza professionale su richiesta.",
+      "url": "https://cris9028.github.io/gasspring-pro.html"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "GasSpring Pro",
+      "email": "betacristudios@gmail.com"
+    },
+    "url": "https://cris9028.github.io/gasspring-pro.html",
+    "inLanguage": ["it", "en"]
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Come si dimensiona una molla a gas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Per dimensionare una molla a gas occorre conoscere la massa dell'anta, la posizione del baricentro, l'angolo di apertura e la geometria di vincolo. Il solver calcola i bracci R1 (telaio) e R2 (anta) e la forza nominale necessaria per l'equilibrio in apertura e chiusura."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Cosa sono R1 e R2 nella molla a gas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "R1 e R2 sono i bracci di momento della molla a gas rispetto al perno di rotazione dell'anta. R1 e il raggio del punto di attacco sul telaio, R2 e il raggio del punto di attacco sull'anta. Il loro rapporto determina la forza necessaria per l'equilibrio."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quante molle a gas servono per un'anta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Il numero di molle a gas dipende dalla forza necessaria e dalla forza nominale dei modelli disponibili a catalogo. In genere si usano 2 molle simmetriche per ante pesanti o larghe, oppure 1 molla centrale per ante leggere. GasSpring Pro gestisce configurazioni da 1 a N molle in parallelo."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual e la differenza tra forza nominale e forza di chiusura di una molla a gas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La forza nominale e la forza della molla a gas nella posizione di riferimento (molla estesa). La forza di chiusura e la forza alla posizione compressa (molla accorciata della corsa). Il rapporto dipende dalla progressione k: F_chiusa = F_nom x k."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+      --border: #30363d; --blue: #007acc; --blue-light: #58a6ff;
+      --text: #e6edf3; --text2: #8b949e; --green: #3fb950; --radius: 8px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: var(--blue-light); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(13,17,23,0.95); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; color: var(--blue-light); }
+    .nav-brand .icon { width: 32px; height: 32px; background: var(--blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .nav-links { display: flex; gap: 24px; align-items: center; font-size: 14px; }
+    .nav-links a { color: var(--text2); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .lang-switch { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; font-size: 12px; color: var(--text2); cursor: pointer; }
+    .lang-switch:hover { color: var(--text); border-color: var(--blue); text-decoration: none; }
+
+    .hero { text-align: center; padding: 80px 24px 60px; max-width: 800px; margin: 0 auto; }
+    .hero-badge { display: inline-block; background: rgba(0,122,204,0.15); border: 1px solid rgba(0,122,204,0.4); color: var(--blue-light); border-radius: 20px; padding: 4px 14px; font-size: 12px; margin-bottom: 24px; letter-spacing: 0.5px; }
+    .hero h1 { font-size: clamp(28px,5vw,48px); font-weight: 700; line-height: 1.2; margin-bottom: 20px; background: linear-gradient(135deg,#e6edf3 0%,#58a6ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { font-size: 18px; color: var(--text2); max-width: 600px; margin: 0 auto 32px; }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: var(--blue); color: white; border: none; border-radius: var(--radius); padding: 12px 28px; font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background 0.2s, transform 0.1s; }
+    .btn-primary:hover { background: #0069b3; text-decoration: none; transform: translateY(-1px); }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 28px; font-size: 15px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.2s; }
+    .btn-secondary:hover { border-color: var(--blue-light); text-decoration: none; }
+
+    .section { max-width: 1000px; margin: 0 auto; padding: 60px 24px; }
+    .section-title { text-align: center; font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    .section-sub { text-align: center; color: var(--text2); margin-bottom: 48px; font-size: 16px; }
+
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 20px; }
+    .feature-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; transition: border-color 0.2s, transform 0.2s; }
+    .feature-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+    .feature-icon { font-size: 28px; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .feature-card p { color: var(--text2); font-size: 14px; line-height: 1.5; }
+
+    .steps { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 32px; counter-reset: steps; }
+    .step { position: relative; padding-left: 48px; }
+    .step::before { counter-increment: steps; content: counter(steps); position: absolute; left: 0; top: 0; width: 32px; height: 32px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; }
+    .step h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .step p { color: var(--text2); font-size: 13px; }
+
+    .usecases { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .usecase-tag { background: var(--bg3); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 13px; color: var(--text2); }
+
+    .theory-section { max-width: 800px; margin: 0 auto; padding: 60px 24px; }
+    .theory-section h2 { font-size: 24px; font-weight: 700; margin-bottom: 16px; color: var(--blue-light); }
+    .theory-section h3 { font-size: 18px; font-weight: 600; margin: 32px 0 10px; }
+    .theory-section p { color: var(--text2); font-size: 15px; line-height: 1.8; margin-bottom: 12px; }
+    .theory-section ul { color: var(--text2); font-size: 14px; line-height: 1.8; padding-left: 20px; margin-bottom: 16px; }
+    .formula-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin: 16px 0; font-family: 'Courier New', monospace; font-size: 14px; color: var(--green); }
+
+    .faq-section { max-width: 800px; margin: 0 auto; padding: 60px 24px; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; }
+    .faq-item h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+    .faq-item p { color: var(--text2); font-size: 14px; line-height: 1.7; }
+
+    .cta-section { background: linear-gradient(135deg,#0d1117 0%,#161b22 50%,#0d1117 100%); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); text-align: center; padding: 60px 24px; }
+    .cta-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+    .cta-section p { color: var(--text2); margin-bottom: 28px; font-size: 16px; }
+
+    .contact-section { max-width: 600px; margin: 0 auto; padding: 60px 24px; text-align: center; }
+    .contact-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; margin-top: 24px; }
+    .contact-box h3 { font-size: 20px; margin-bottom: 12px; }
+    .contact-box p { color: var(--text2); font-size: 14px; margin-bottom: 20px; line-height: 1.6; }
+    .contact-email { display: inline-flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 20px; font-size: 15px; color: var(--blue-light); font-weight: 500; transition: border-color 0.2s; }
+    .contact-email:hover { border-color: var(--blue-light); text-decoration: none; }
+    .contact-topics { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; }
+    .contact-topic { background: rgba(63,185,80,0.1); border: 1px solid rgba(63,185,80,0.3); color: var(--green); border-radius: 4px; padding: 4px 10px; font-size: 12px; }
+
+    footer { border-top: 1px solid var(--border); padding: 24px; text-align: center; color: var(--text2); font-size: 13px; }
+    footer a { color: var(--text2); }
+    footer a:hover { color: var(--text); }
+    .divider { border: none; border-top: 1px solid var(--border); }
+    @media (max-width: 600px) { .nav-links { display: none; } .hero { padding: 48px 16px 40px; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-brand">
+      <div class="icon">&#9881;</div>
+      GasSpring Pro
+    </div>
+    <div class="nav-links">
+      <a href="#funzionalita">Funzionalita</a>
+      <a href="#come-funziona">Come Funziona</a>
+      <a href="#teoria">Teoria</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contatti">Contatti</a>
+      <a href="en.html" class="lang-switch">EN</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-badge">Software Ingegneristico Professionale</div>
+    <h1>Calcolatore e Selettore di Molle a Gas</h1>
+    <p>
+      GasSpring Pro calcola automaticamente la geometria di montaggio ottimale,
+      i bracci R1 e R2, le forze di apertura e chiusura, e individua i modelli
+      compatibili dal catalogo — in pochi secondi.
+    </p>
+    <div class="hero-actions">
+      <a href="app.html" class="btn-primary">
+        &#9654; Prova la Demo Gratuita
+      </a>
+      <a href="#contatti" class="btn-secondary">
+        &#9993; Richiedi una Licenza
+      </a>
+    </div>
+  </header>
+
+  <section class="section" id="funzionalita">
+    <h2 class="section-title">Funzionalita Principali</h2>
+    <p class="section-sub">
+      Tutto il necessario per il dimensionamento professionale di molle a gas e pistoni a gas.
+    </p>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128200;</div>
+        <h3>Solver Geometrico Completo</h3>
+        <p>
+          Risolutore numerico con metodo di Brent per il calcolo preciso dei punti
+          di attacco A, B1, B2 e dei bracci R1 e R2 della molla a gas.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#9878;</div>
+        <h3>Verifica Equilibrio</h3>
+        <p>
+          Controllo automatico dell'equilibrio in posizione aperta e chiusa,
+          con indicatore di errore percentuale e convergenza per ogni configurazione.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128218;</div>
+        <h3>Ricerca Catalogo</h3>
+        <p>
+          Ricerca massiva su centinaia di modelli di molle a gas a catalogo.
+          Filtra per marca, serie e forza per trovare il pistone a gas ideale per il tuo progetto.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128293;</div>
+        <h3>Modalita Avanzata</h3>
+        <p>
+          Correzione temperatura, coefficiente d'attrito e raggio perno per
+          simulazioni ad alta precisione in condizioni operative reali.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128202;</div>
+        <h3>Grafici Interattivi</h3>
+        <p>
+          Grafici di forza, momento e sforzo operatore sull'intera corsa della molla a gas.
+          Visualizzazione animata realistica del meccanismo in movimento.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">&#128736;</div>
+        <h3>Multi-molla e Multi-start</h3>
+        <p>
+          Supporto a configurazioni con due o piu molle a gas in parallelo.
+          Algoritmo multi-start per garantire la convergenza anche nei casi limite.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="come-funziona">
+    <h2 class="section-title">Come Funziona</h2>
+    <p class="section-sub">Tre passi per dimensionare la molla a gas perfetta per la tua anta o pannello.</p>
+    <div class="steps">
+      <div class="step">
+        <h3>Inserisci i Parametri</h3>
+        <p>Massa dell'anta, posizione del baricentro, angolo di apertura, forza nominale e corsa desiderata della molla a gas.</p>
+      </div>
+      <div class="step">
+        <h3>Calcola</h3>
+        <p>Il motore di calcolo determina automaticamente i bracci ottimali R1 e R2 e la geometria di montaggio con precisione submillimetrica.</p>
+      </div>
+      <div class="step">
+        <h3>Verifica e Seleziona</h3>
+        <p>Controlla l'equilibrio sui grafici, visualizza la cinematica animata e cerca nel catalogo un modello di molla a gas compatibile.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section">
+    <h2 class="section-title">Applicazioni Tipiche</h2>
+    <p class="section-sub">
+      GasSpring Pro viene utilizzato per il dimensionamento di molle a gas in numerosi settori industriali.
+    </p>
+    <div class="usecases">
+      <span class="usecase-tag">Ante macchine utensili</span>
+      <span class="usecase-tag">Cofani e portelloni automotive</span>
+      <span class="usecase-tag">Mobili e arredamento</span>
+      <span class="usecase-tag">Quadri elettrici industriali</span>
+      <span class="usecase-tag">Botole e coperchi</span>
+      <span class="usecase-tag">Sedili e schienali</span>
+      <span class="usecase-tag">Apparecchiature medicali</span>
+      <span class="usecase-tag">Sistemi di accesso</span>
+      <span class="usecase-tag">Selezione molla a gas</span>
+      <span class="usecase-tag">Dimensionamento pistone a gas</span>
+      <span class="usecase-tag">Calcolo molla a gas ante</span>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section class="theory-section" id="teoria">
+    <h2>Come si dimensiona una molla a gas</h2>
+    <p>
+      Il dimensionamento di una molla a gas richiede la risoluzione di un sistema di equazioni
+      che lega la geometria del meccanismo, la massa dell'anta e le forze desiderate in apertura e chiusura.
+      Di seguito i concetti fondamentali.
+    </p>
+
+    <h3>Equilibrio dei momenti</h3>
+    <p>
+      Una molla a gas bilancia il momento del peso dell'anta rispetto al perno di rotazione.
+      Nella posizione chiusa (angolo theta = 0), la condizione di equilibrio e:
+    </p>
+    <div class="formula-box">
+      F(x) * R1 * n = M_peso - M_operatore
+    </div>
+    <p>
+      dove F(x) e la forza della molla alla corsa x, R1 e il braccio di momento sul telaio,
+      n e il numero di molle e M_operatore e il momento della forza applicata dall'operatore sull'anta.
+    </p>
+
+    <h3>I bracci R1 e R2</h3>
+    <p>
+      R1 e la distanza tra il punto di attacco della molla a gas sul telaio e il perno di rotazione dell'anta.
+      R2 e la distanza tra il punto di attacco sull'anta e lo stesso perno. Entrambi variano con l'angolo
+      di apertura: il solver calcola la geometria ottimale che soddisfa l'equilibrio in entrambe le posizioni estreme.
+    </p>
+
+    <h3>Forza linearizzata della molla a gas</h3>
+    <p>
+      La forza di una molla a gas non e costante: varia con la corsa secondo una legge linearizzata
+      controllata dalla progressione k:
+    </p>
+    <div class="formula-box">
+      F(x) = F_nom * [k - (k - 1) * x / corsa_totale]
+    </div>
+    <p>
+      Con k = 1 la forza e costante (molla ideale). Valori tipici di k per molle a gas industriali
+      sono compresi tra 1.2 e 1.5, il che significa che la forza e maggiore a molla compressa
+      e minore a molla estesa.
+    </p>
+
+    <h3>Correzione termica</h3>
+    <p>
+      La forza di una molla a gas varia con la temperatura secondo la legge dei gas perfetti.
+      GasSpring Pro applica una correzione proporzionale alla temperatura assoluta riferita a 20 C:
+    </p>
+    <div class="formula-box">
+      F_corr = F_nom * (273 + T) / (273 + 20)
+    </div>
+    <p>
+      Questo e particolarmente rilevante per applicazioni industriali dove la molla opera in ambienti
+      caldi (forni, macchine utensili) o freddi (celle frigorifere, applicazioni outdoor).
+    </p>
+
+    <h3>Verifica geometrica</h3>
+    <p>
+      La corsa effettiva della molla a gas deve essere compatibile con la corsa geometrica imposta
+      dalla cinematica del meccanismo. Il solver verifica che la corsa utilizzata non superi la
+      corsa nominale del modello selezionato, con margine di sicurezza.
+    </p>
+  </section>
+
+  <hr class="divider">
+
+  <section class="faq-section" id="faq">
+    <h2 class="section-title" style="text-align:left; margin-bottom: 32px;">Domande Frequenti</h2>
+
+    <div class="faq-item">
+      <h3>Come si dimensiona una molla a gas?</h3>
+      <p>
+        Per dimensionare una molla a gas occorre conoscere la massa dell'anta, la posizione del baricentro,
+        l'angolo di apertura e la geometria di vincolo. Il solver calcola i bracci R1 (telaio) e R2 (anta)
+        e la forza nominale necessaria per garantire l'equilibrio sia in apertura che in chiusura.
+        GasSpring Pro automatizza l'intero processo con un calcolo iterativo convergente.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Cosa sono R1 e R2 nella molla a gas?</h3>
+      <p>
+        R1 e R2 sono i bracci di momento della molla a gas rispetto al perno di rotazione dell'anta.
+        R1 e il raggio del punto di attacco sul telaio, R2 e il raggio del punto di attacco sull'anta.
+        Il loro rapporto, insieme alla forza della molla, determina il momento equilibrante generato
+        dal pistone a gas durante il moto di apertura e chiusura.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Quante molle a gas servono per un'anta?</h3>
+      <p>
+        Il numero di molle a gas dipende dalla forza necessaria e dalla forza nominale dei modelli
+        disponibili a catalogo. In genere si usano 2 molle simmetriche per ante pesanti o larghe,
+        oppure 1 molla centrale per ante leggere. GasSpring Pro gestisce configurazioni da 1 a N
+        molle in parallelo con il parametro N molle.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Qual e la differenza tra forza nominale e forza di chiusura?</h3>
+      <p>
+        La forza nominale e la forza della molla a gas nella posizione di riferimento (molla estesa,
+        corsa = 0). La forza di chiusura e la forza alla posizione compressa (corsa massima).
+        Il rapporto dipende dalla progressione k: F_chiusa = F_nom x k. Molle con k = 1.3 hanno
+        una forza a molla chiusa del 30% superiore rispetto alla forza nominale.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Posso usare GasSpring Pro per molle a gas di qualsiasi marca?</h3>
+      <p>
+        Si. Il calcolatore lavora con i parametri fisici della molla a gas (forza nominale, corsa,
+        lunghezza totale, progressione k) indipendentemente dalla marca. La ricerca catalogo
+        supporta modelli di piu brand. E possibile anche inserire manualmente i parametri di
+        qualsiasi molla a gas disponibile sul mercato.
+      </p>
+    </div>
+
+    <div class="faq-item">
+      <h3>Il calcolatore funziona anche su mobile?</h3>
+      <p>
+        GasSpring Pro e un'applicazione web che funziona direttamente nel browser, senza installazione.
+        E ottimizzata per desktop per via della complessita dell'interfaccia grafica, ma e accessibile
+        anche da tablet e smartphone per la consultazione dei risultati.
+      </p>
+    </div>
+  </section>
+
+  <div class="cta-section">
+    <h2>Prova GasSpring Pro Gratuitamente</h2>
+    <p>La demo completa funziona direttamente nel browser — nessuna installazione richiesta.</p>
+    <a href="app.html" class="btn-primary" style="font-size: 16px; padding: 14px 36px;">
+      &#9654; Apri il Calcolatore
+    </a>
+  </div>
+
+  <section class="contact-section" id="contatti">
+    <h2 class="section-title">Contatti</h2>
+    <p class="section-sub">
+      Interessato a una licenza professionale o a un'integrazione personalizzata?
+    </p>
+    <div class="contact-box">
+      <h3>Scrivici</h3>
+      <p>
+        Per richieste di licenza, utilizzo commerciale, integrazione software
+        o informazioni tecniche sul calcolatore di molle a gas, contattaci via email.
+      </p>
+      <a href="mailto:betacristudios@gmail.com" class="contact-email">
+        &#9993; betacristudios@gmail.com
+      </a>
+      <div class="contact-topics">
+        <span class="contact-topic">Licenza software</span>
+        <span class="contact-topic">Uso commerciale</span>
+        <span class="contact-topic">Integrazione API</span>
+        <span class="contact-topic">Supporto tecnico</span>
+        <span class="contact-topic">Formazione</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      &copy; 2025 GasSpring Pro &mdash;
+      Software professionale per dimensionamento molle a gas &bull;
+      <a href="en.html">English version</a> &bull;
+      <a href="mailto:betacristudios@gmail.com">betacristudios@gmail.com</a>
+    </p>
+    <p style="margin-top: 6px; font-size: 11px; color: #484f58;">
+      Calcolo molla a gas &bull; Dimensionamento pistone a gas &bull; Selezione molla a gas &bull; Calcolatore molla a gas &bull; Gas spring calculator
+    </p>
+  </footer>
+
+</body>
+</html>
