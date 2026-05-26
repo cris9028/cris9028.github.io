@@ -4705,9 +4705,7 @@ async function calculateSpring() {
             const L0 = parseFloat(document.getElementById('L0').value);
             const corsa = parseFloat(document.getElementById('corsa').value);
             const n_molle = parseInt(document.getElementById('n_molle').value) || 1;
-            
-            const g = 9.81; // m/s²
-            
+
             const resultsDiv = document.getElementById('details-content'); // Ora punta al modal
             // ─────────────────────────────────────────────────────────────────
             // CSS inline per le 3 fasi
@@ -4950,10 +4948,10 @@ async function calculateSpring() {
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_xg_rotated').replace('{deg}', alfaDeg)}</span>
                   <span class="fase-formula">${Xg}·cos${alfaDeg}° − ${Yg}·sin${alfaDeg}° = <strong>${Xg_aperto.toFixed(2)} mm</strong></span></div>
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mpeso')}</span>
-                  <span class="fase-formula">${massa} × ${g} × ${Xg_aperto.toFixed(2)}</span>
+                  <span class="fase-formula">${massa} × 9.81 × ${Xg_aperto.toFixed(2)}</span>
                   <span class="fase-result">= ${M_peso_aperto.toFixed(2)} N·mm</span></div>
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mman')}</span>
-                  <span class="fase-formula">Fc × g × d = ${Fc} × ${g} × ${dist_maniglia.toFixed(2)}</span>
+                  <span class="fase-formula">Fc × g × d = ${Fc} × 9.81 × ${dist_maniglia.toFixed(2)}</span>
                   <span class="fase-result">= ${M_maniglia_chiusura.toFixed(2)} N·mm</span></div>
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_r2')}</span>
                   <span class="fase-formula">(M_peso + M_man) / (F_nom × n) − 2μr_p = (${M_peso_aperto.toFixed(1)} + ${M_maniglia_chiusura.toFixed(1)}) / (${F_molla_T.toFixed(1)} × ${n_molle})${advancedModeEnabled ? ` − ${(2*mu*r_p).toFixed(2)}` : ''}</span>
