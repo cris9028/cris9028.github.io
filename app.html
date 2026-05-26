@@ -4,40 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n-title="page_title">GasSpring Pro - Professional Calculator v2.0</title>
-    <meta name="description" content="GasSpring Pro: calcolatore professionale per molle a gas. Calcola R1, R2, geometria, forze e ricerca catalogo. Professional gas spring calculator: R1, R2, geometry, forces and catalog search.">
-    <meta name="keywords" content="molla a gas, calcolo molla a gas, dimensionare molla a gas, pistone a gas, gas spring calculator, gas strut calculator, gas spring sizing, gas spring R1 R2, calcolatore molla a gas, selezione molla a gas">
-    <meta name="author" content="GasSpring Pro">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://cris9028.github.io/app.html">
-    <link rel="alternate" hreflang="it" href="https://cris9028.github.io/gasspring-pro.html">
-    <link rel="alternate" hreflang="en" href="https://cris9028.github.io/en.html">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://cris9028.github.io/app.html">
-    <meta property="og:title" content="GasSpring Pro – Gas Spring Calculator">
-    <meta property="og:description" content="Professional gas spring calculator. Calculate R1, R2, geometry, forces and find catalog models automatically.">
-    <meta property="og:site_name" content="GasSpring Pro">
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "GasSpring Pro",
-      "applicationCategory": "EngineeringApplication",
-      "operatingSystem": "Web Browser",
-      "description": "Professional gas spring calculator. Calculates R1, R2, lever arms, forces and mounting geometry for gas springs and gas struts.",
-      "url": "https://cris9028.github.io/app.html",
-      "author": {
-        "@type": "Organization",
-        "name": "GasSpring Pro",
-        "email": "betacristudios@gmail.com"
-      },
-      "offers": {
-        "@type": "Offer",
-        "description": "Free demo available.",
-        "url": "https://cris9028.github.io/app.html"
-      },
-      "inLanguage": ["it", "en"]
-    }
-    </script>
     <style>
         :root {
             --bg-primary: #1e1e1e;
@@ -1355,154 +1321,52 @@
         let selectionRadiusB = 15; // tolleranza PB (mm)
         let selectionSeriesFilter = new Set(); // chiavi serie selezionate per ricerca
         
-        function solve() {
-            // Leggi input
+        async function solve() {
             const R1 = parseFloat(document.getElementById('R1').value);
             const R2 = parseFloat(document.getElementById('R2').value);
-            const L = parseFloat(document.getElementById('L').value);
+            const L  = parseFloat(document.getElementById('L').value);
             const alfaDeg = parseFloat(document.getElementById('alfa').value);
-            const alfa = alfaDeg * Math.PI / 180; // Converti in radianti
-            
+            const alfa = alfaDeg * Math.PI / 180;
+
             const resultsDiv = document.getElementById('results');
             resultsDiv.innerHTML = `<h2>${i18n.t('results_title')}</h2>`;
-            
-            // Validazione input
+
             if (R1 <= 0 || R2 <= 0 || L <= 0) {
                 resultsDiv.innerHTML += `<p class="error">${i18n.t('err_params_invalid')}</p>`;
                 return;
             }
-            
-            // Array per memorizzare tutte le soluzioni
-            let solutions = [];
-            
-            // Considera tutte le rotazioni possibili
-            // α, -α, 360°-α, -(360°-α) 
-            const angles = [
-                {alfa: alfa, label: `${alfaDeg}°`},
-                {alfa: -alfa, label: `${-alfaDeg}°`},
-                {alfa: 2 * Math.PI - alfa, label: `${(360 - alfaDeg).toFixed(1)}°`},
-                {alfa: -(2 * Math.PI - alfa), label: `${-(360 - alfaDeg).toFixed(1)}°`}
-            ];
-            
-            // Genera tutte le combinazioni di segni
-            // s1: tangente sopra/sotto a R2
-            // s2: direzione lungo la tangente (stesso segno per x e y)
-            const signCombinations = [
-                {s1: 1, s2: 1},
-                {s1: 1, s2: -1},
-                {s1: -1, s2: 1},
-                {s1: -1, s2: -1}
-            ];
-            
-            // Per ogni angolo, trova le soluzioni
-            let debugInfo = [];
-            
-            for (let angleData of angles) {
-                const currentAlfa = angleData.alfa;
-                const angleLabel = angleData.label;
-                
-                // Per ogni combinazione di segni, trova m
-                for (let combo of signCombinations) {
-                    const mValues = findM(R1, R2, L, currentAlfa, combo.s1, combo.s2);
-                    
-                    debugInfo.push({
-                        angle: angleLabel,
-                        s1: combo.s1,
-                        s2: combo.s2,
-                        numSolutions: mValues.length
-                    });
-                    
-                    // Per ogni valore di m trovato
-                    for (let m of mValues) {
-                        if (m !== null && !isNaN(m)) {
-                            // Calcola punti A e B
-                            const sqrt1m2 = Math.sqrt(1 + m*m);
-                            
-                            const xA = R1;
-                            const yA = m * R1 + combo.s1 * R2 * sqrt1m2;
-                            
-                            // B2 = punto estremo del segmento L sulla tangente (prima della rotazione)
-                            // IMPORTANTE: stesso s2 per x e y per rimanere sulla tangente!
-                            const xB2 = R1 + combo.s2 * L / sqrt1m2;
-                            const yB2 = yA + combo.s2 * L * m / sqrt1m2;
-                            
-                            // Verifica la soluzione: B1 = B2 ruotato di currentAlfa
-                            const xB1 = xB2 * Math.cos(currentAlfa) - yB2 * Math.sin(currentAlfa);
-                            const yB1 = xB2 * Math.sin(currentAlfa) + yB2 * Math.cos(currentAlfa);
-                            const error = Math.abs(xB1 - R1);
-                            
-                            // VINCOLO: distanza A-B2 deve essere maggiore di A-B1
-                            const distAB2 = Math.sqrt((xB2 - xA) ** 2 + (yB2 - yA) ** 2);
-                            const distAB1 = Math.sqrt((xB1 - xA) ** 2 + (yB1 - yA) ** 2);
-                            
-                            // VINCOLO: la rotazione deve essere ANTIORARIA (non oraria)
-                            // Vettori da A: AB1 = (xB1-xA, yB1-yA), AB2 = (xB2-xA, yB2-yA)
-                            // Prodotto vettoriale: AB1 × AB2
-                            // Se > 0 → da AB1 a AB2 è antioraria, se < 0 → oraria
-                            const vec_AB1_x = xB1 - xA;
-                            const vec_AB1_y = yB1 - yA;
-                            const vec_AB2_x = xB2 - xA;
-                            const vec_AB2_y = yB2 - yA;
-                            const crossProduct = vec_AB1_x * vec_AB2_y - vec_AB1_y * vec_AB2_x;
-                            const isCounterClockwise = crossProduct > 0;
-                            
-                            // Filtra soluzioni che non rispettano i vincoli
-                            if (distAB2 > distAB1 && isCounterClockwise) {
-                                solutions.push({
-                                    m: m,
-                                    A: {x: xA, y: yA},
-                                    B1: {x: xB1, y: yB1},
-                                    B2: {x: xB2, y: yB2},
-                                    signs: combo,
-                                    angle: angleLabel,
-                                    angleRad: currentAlfa,
-                                    error: error,
-                                    distAB2: distAB2,
-                                    distAB1: distAB1
-                                });
-                            }
-                        }
-                    }
-                }
+
+            resultsDiv.innerHTML += `<p style="color:#888;">Calcolo in corso sul server…</p>`;
+
+            let apiResult;
+            try {
+                const resp = await fetch(WORKER_URL + '/solve-geometry', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY },
+                    body: JSON.stringify({ R1, R2, L, alfaDeg })
+                });
+                apiResult = await resp.json();
+            } catch (e) {
+                resultsDiv.innerHTML += `<p class="error">Errore connessione Worker: ${e.message}</p>`;
+                return;
             }
-            
-            // Filtra soluzioni duplicate
-            solutions = filterDuplicates(solutions, 1e-6);
-            
-            // Salva soluzioni e parametri globalmente
+
+            if (apiResult.error) {
+                resultsDiv.innerHTML += `<p class="error">${apiResult.error}</p>`;
+                return;
+            }
+
+            const solutions = apiResult.solutions || [];
             currentSolutions = solutions;
             currentParams = {R1, R2, L, alfa};
-            
-            // Aggiorna selettore soluzioni
             updateSolutionSelector();
-            
-            // Disegna
             updateVisualization();
-            
-            // Mostra risultati
+
+            resultsDiv.innerHTML = `<h2>${i18n.t('results_title')}</h2>`;
             if (solutions.length === 0) {
                 resultsDiv.innerHTML += `<p class="error">${i18n.t('canvas_no_solution')}</p>`;
-                
-                // Mostra debug info
-                resultsDiv.innerHTML += '<div style="margin-top: 20px; padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 5px;">';
-                resultsDiv.innerHTML += '<h3 style="margin-top: 0; color: #856404;">Debug Info:</h3>';
-                debugInfo.forEach(info => {
-                    resultsDiv.innerHTML += `<p style="font-size: 11px; margin: 5px 0;">Angolo: ${info.angle}, s1=${info.s1}, s2=${info.s2} → <strong>${info.numSolutions} soluzioni m trovate</strong></p>`;
-                });
-                resultsDiv.innerHTML += '</div>';
             } else {
                 resultsDiv.innerHTML += `<p><strong>Trovate ${solutions.length} soluzione/i</strong></p>`;
-                
-                // Mostra debug info anche quando ci sono soluzioni
-                resultsDiv.innerHTML += '<details style="margin: 10px 0; padding: 10px; background-color: #e3f2fd; border-radius: 5px;">';
-                resultsDiv.innerHTML += '<summary style="cursor: pointer; font-weight: bold; color: #1565c0;">Debug Info (clicca per espandere)</summary>';
-                resultsDiv.innerHTML += '<div style="margin-top: 10px;">';
-                debugInfo.forEach(info => {
-                    resultsDiv.innerHTML += `<p style="font-size: 11px; margin: 5px 0;">Angolo: ${info.angle}, s1=${info.s1}, s2=${info.s2} → <strong>${info.numSolutions} radici m</strong></p>`;
-                });
-                resultsDiv.innerHTML += '</div></details>';
-                
-                
                 solutions.forEach((sol, index) => {
                     const solDiv = document.createElement('div');
                     solDiv.className = 'solution';
@@ -1510,9 +1374,6 @@
                     solDiv.onclick = () => selectSolution(index);
                     solDiv.innerHTML = `
                         <h3>Sol. ${index + 1}</h3>
-                        <p><strong>${i18n.t('sol_angle')}</strong> ${sol.angle} (antioraria)</p>
-                        <p><strong>m:</strong> ${sol.m.toFixed(4)}</p>
-                        <p><strong>${i18n.t('sol_signs')}</strong> (${sol.signs.s1 > 0 ? '+' : '-'}, ${sol.signs.s2 > 0 ? '+' : '-'})</p>
                         <p><strong>A:</strong> <span class="point">(${sol.A.x.toFixed(1)}, ${sol.A.y.toFixed(1)})</span></p>
                         <p><strong>B2:</strong> <span class="point">(${sol.B2.x.toFixed(1)}, ${sol.B2.y.toFixed(1)})</span></p>
                         <p><strong>B1:</strong> <span class="point">(${sol.B1.x.toFixed(1)}, ${sol.B1.y.toFixed(1)})</span></p>
@@ -2835,158 +2696,10 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
         
 
 // ================================================================
-// 🔷 MODULO 3: GEOMETRY (Calcoli Geometrici)  
+// 🔷 MODULO 2+3: MATH & GEOMETRY — logica nel Cloudflare Worker
 // ================================================================
 
-function findM(R1, R2, L, alfa, s1, s2) {
-            // ── Parametrizzazione in θ: m = tan(θ), θ ∈ (-π/2, π/2) ──
-            //
-            // L'equazione originale in m (moltiplicata per cos(θ) > 0) diventa:
-            //   g(θ) = (R1 + s2·L·cosθ)·cos(α+θ) − R1·cosθ − s1·R2·sinα = 0
-            //
-            // Derivazione: sostituire m=tanθ, √(1+m²)=1/cosθ, m/√(1+m²)=sinθ
-            // e raccogliere i termini → formula chiusa, no √ nell'equazione.
-            //
-            // Vantaggio: θ ∈ (-π/2, π/2) copre TUTTO il dominio reale di m
-            // con ~63 valutazioni (step 0.05 rad) invece di 240.000.
-            // Speedup: ~3800×. La matematica è esatta, non un'approssimazione.
 
-            const sinAlfa = Math.sin(alfa);
-
-            function g(theta) {
-                const ct  = Math.cos(theta);
-                const cat = Math.cos(alfa + theta);
-                return (R1 + s2 * L * ct) * cat - R1 * ct - s1 * R2 * sinAlfa;
-            }
-
-            const solutions = [];
-            const tMin  = -Math.PI / 2 + 0.001;  // evita singolarità cos(θ)=0
-            const tMax  =  Math.PI / 2 - 0.001;
-            const tStep = 0.001;  // ~3140 passi — precisione raddoppiata
-
-            let prevT = tMin;
-            let prevG = g(prevT);
-
-            for (let t = tMin + tStep; t <= tMax; t += tStep) {
-                const gVal = g(t);
-                if (prevG * gVal < 0) {
-                    // Cambio di segno → radice nell'intervallo [prevT, t]
-                    const tRoot = brentMethod(g, prevT, t, 1e-10, 100);
-                    if (tRoot !== null && !isNaN(tRoot)) {
-                        const m = Math.tan(tRoot);
-                        if (isFinite(m)) solutions.push(m);
-                    }
-                }
-                prevT = prevG * gVal === 0 && gVal === 0 ? t : t; // aggiorna sempre
-                prevT = t;
-                prevG = gVal;
-            }
-
-            // Rimuovi duplicati in m-space (radici molto vicine dopo conversione tan)
-            const unique = [];
-            for (const m of solutions) {
-                if (!unique.some(e => Math.abs(m - e) < 1e-4)) unique.push(m);
-            }
-            return unique;
-        }
-        
-        // Implementazione di Brent's Method
-        
-
-// ================================================================
-// 📐 MODULO 2: MATH (Funzioni Matematiche)
-// ================================================================
-
-function brentMethod(f, a, b, tol, maxIter) {
-            let fa = f(a);
-            let fb = f(b);
-            
-            if (fa * fb > 0) return null; // Nessun cambio di segno
-            
-            if (Math.abs(fa) < Math.abs(fb)) {
-                [a, b] = [b, a];
-                [fa, fb] = [fb, fa];
-            }
-            
-            let c = a;
-            let fc = fa;
-            let mflag = true;
-            let d = 0;
-            
-            for (let iter = 0; iter < maxIter; iter++) {
-                if (Math.abs(fb) < tol) return b;
-                if (Math.abs(b - a) < tol) return b;
-                
-                let s;
-                
-                if (fa !== fc && fb !== fc) {
-                    // Interpolazione quadratica inversa
-                    s = a * fb * fc / ((fa - fb) * (fa - fc)) +
-                        b * fa * fc / ((fb - fa) * (fb - fc)) +
-                        c * fa * fb / ((fc - fa) * (fc - fb));
-                } else {
-                    // Metodo della secante
-                    s = b - fb * (b - a) / (fb - fa);
-                }
-                
-                // Condizioni per accettare s o usare bisezione
-                const cond1 = s < (3 * a + b) / 4 || s > b;
-                const cond2 = mflag && Math.abs(s - b) >= Math.abs(b - c) / 2;
-                const cond3 = !mflag && Math.abs(s - b) >= Math.abs(c - d) / 2;
-                const cond4 = mflag && Math.abs(b - c) < tol;
-                const cond5 = !mflag && Math.abs(c - d) < tol;
-                
-                if (cond1 || cond2 || cond3 || cond4 || cond5) {
-                    s = (a + b) / 2;
-                    mflag = true;
-                } else {
-                    mflag = false;
-                }
-                
-                const fs = f(s);
-                d = c;
-                c = b;
-                fc = fb;
-                
-                if (fa * fs < 0) {
-                    b = s;
-                    fb = fs;
-                } else {
-                    a = s;
-                    fa = fs;
-                }
-                
-                if (Math.abs(fa) < Math.abs(fb)) {
-                    [a, b] = [b, a];
-                    [fa, fb] = [fb, fa];
-                }
-            }
-            
-            return b;
-        }
-        
-        function filterDuplicates(solutions, tolerance) {
-            const filtered = [];
-            
-            for (let sol of solutions) {
-                let isDuplicate = false;
-                
-                for (let existing of filtered) {
-                    if (Math.abs(sol.m - existing.m) < tolerance) {
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-                
-                if (!isDuplicate) {
-                    filtered.push(sol);
-                }
-            }
-            
-            return filtered;
-        }
-        
-        
 
 // ================================================================
 // ⚛️ MODULO 4: PHYSICS (Fisica delle Molle)
@@ -4753,49 +4466,9 @@ function updateSelectionModeUI() {
     }
 }
 
-// ── Solver rapido (niente UI) ──
-function quickSolve(massaP, XgP, YgP, XmP, YmP, FaP, FcP, alfaDegP, F_mollaP, k_progP, L0P, corsaP, n_molleP) {
-    const alfaP = alfaDegP * Math.PI / 180;
-    const g = 9.81;
-    const kT  = advancedModeEnabled ? (temperatureEsercizio + 273.15) / 293.15 : 1.0;
-    const mu  = advancedModeEnabled ? coefficienteAttrito : 0;
-    const r_p = advancedModeEnabled ? raggioPerno : 0;
+// ── quickSolve — logica nel Cloudflare Worker (endpoint /catalog-search) ──
 
-    const dist_man = Math.sqrt(XmP*XmP + YmP*YmP);
-    const M_peso_ch  = massaP * g * XgP;
-    const M_man_ap   = FaP * g * dist_man;
-    const Xg_ap      = XgP * Math.cos(alfaP) - YgP * Math.sin(alfaP);
-    const M_peso_ap  = massaP * g * Xg_ap;
-    const M_man_ch   = FcP * g * dist_man;
-    const F_T        = F_mollaP * kT;
-    const R2         = (M_peso_ap + M_man_ch) / (F_T * n_molleP) - 2*mu*r_p;
-    if (R2 <= 0) return null;
-
-    const startPts = [0, corsaP, corsaP*0.5];
-    for (const x0 of startPts) {
-        let xg = x0;
-        for (let it = 0; it < 20; it++) {
-            const F_x   = F_mollaP * (k_progP - (k_progP-1)*(xg/corsaP));
-            const F_xT  = F_x * kT;
-            const R1    = (M_peso_ch - M_man_ap) / (F_xT * n_molleP) + 2*mu*r_p;
-            if (R1 <= 0) break;
-            const L     = L0P + corsaP;
-            const sols  = solveGeometry(R1, R2, L, alfaP);
-            if (sols.length === 0) break;
-            const s0    = sols[0];
-            const dAB1  = Math.sqrt((s0.B1.x-s0.A.x)**2+(s0.B1.y-s0.A.y)**2);
-            const xn    = dAB1 - L0P;
-            if (xn < 0) break;
-            if (Math.abs(xn - xg) < 0.1) {
-                return { R1, R2, L, x: xn, F: F_xT, solutions: sols };
-            }
-            xg = xn;
-        }
-    }
-    return null;
-}
-
-// ── Ricerca massiva su tutto il catalogo — versione ASINCRONA con progress ──
+// ── Ricerca massiva su tutto il catalogo — batch via Worker ──
 async function runMassiveSearch() {
     if (!selectionPA || !selectionPB) return;
     if (selectionSeriesFilter.size === 0) {
@@ -4819,23 +4492,29 @@ async function runMassiveSearch() {
     const PA = selectionPA;
     const PB = selectionPB;
 
-    const results = [];
-    let totalChecked = 0;
-    let totalCases = 0;
-
-    // Pre-calcola il totale dei casi SOLO per le serie selezionate
-    for (const key of selectionSeriesFilter) {
-        const series = SPRING_CATALOG[key];
-        if (series) totalCases += countSeriesCases(series);
+    // Costruisci array items dal catalogo
+    const items = [];
+    for (const seriesKey of selectionSeriesFilter) {
+        const series = SPRING_CATALOG[seriesKey];
+        if (!series) continue;
+        for (const model of series.models) {
+            const L0     = model.L - model.corsa;
+            const fRange = model.forceRange || series.forceRange;
+            const fStep  = series.forceStep;
+            for (let F = fRange[0]; F <= fRange[1]; F += fStep) {
+                items.push({
+                    seriesKey, modelCode: model.code,
+                    desc: series.description, brand: series.brand,
+                    F_molla: F, L0, corsa: model.corsa, L_tot: model.L
+                });
+            }
+        }
     }
 
-    // Mostra UI progress nel modal
+    // Mostra UI loading
     document.getElementById('search-results-modal').classList.add('active');
     const content = document.getElementById('search-results-content');
-
-    // Lista serie selezionate nel banner
     const seriesList = [...selectionSeriesFilter].join(', ');
-
     content.innerHTML = `
         <div style="padding:24px;">
             <div style="color:#7ec8e3; font-size:13px; font-weight:600; margin-bottom:8px;">
@@ -4843,129 +4522,49 @@ async function runMassiveSearch() {
             </div>
             <div style="font-size:10px; color:#555; margin-bottom:12px; line-height:1.5;">
                 Serie: <span style="color:#888;">${seriesList}</span><br>
-                Totale casi stimati: <strong style="color:#aaa;">${totalCases}</strong>
+                Casi da analizzare: <strong style="color:#aaa;">${items.length}</strong>
             </div>
             <div style="background:#1a1a1a; border-radius:6px; overflow:hidden; height:10px; margin-bottom:8px;">
-                <div id="search-progress-bar"
-                     style="height:100%; width:0%; background:linear-gradient(90deg,#007acc,#4ec9b0);
-                            transition:width 0.15s ease; border-radius:6px;"></div>
+                <div style="height:100%; width:60%; background:linear-gradient(90deg,#007acc,#4ec9b0);
+                            animation:pulse 1.2s ease-in-out infinite; border-radius:6px;"></div>
             </div>
-            <div id="search-progress-text"
-                 style="font-size:11px; color:#888; font-family:monospace;">
-                0 / ${totalCases} combinazioni analizzate…
-            </div>
-            <div id="search-found-text"
-                 style="font-size:11px; color:#00FF88; margin-top:4px; min-height:14px;"></div>
-            <div id="search-series-text"
-                 style="font-size:10px; color:#555; margin-top:6px; min-height:12px;"></div>
-            <button onclick="window._searchAbort=true; closeSearchResultsModal();"
-                style="margin-top:16px; padding:5px 14px; font-size:11px;
-                       background:transparent; border:1px solid #555; color:#888;
-                       border-radius:4px; cursor:pointer;">
-                ✕ Annulla
-            </button>
+            <div style="font-size:11px; color:#888; font-family:monospace;">Calcolo in corso sul server…</div>
         </div>`;
 
-    window._searchAbort = false;
-    const progressBar  = document.getElementById('search-progress-bar');
-    const progressText = document.getElementById('search-progress-text');
-    const foundText    = document.getElementById('search-found-text');
-    const seriesText   = document.getElementById('search-series-text');
-
-    const YIELD_EVERY = 8;
-    let caseSinceYield = 0;
-
-    function yieldFrame() {
-        return new Promise(resolve => setTimeout(resolve, 0));
+    let apiData;
+    try {
+        const resp = await fetch(WORKER_URL + '/catalog-search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY },
+            body: JSON.stringify({
+                params: {
+                    massa, Xg, Yg, Xm, Ym, Fa, Fc, alfaDeg, k_prog, n_molle,
+                    advanced_mode: advancedModeEnabled,
+                    temperature: advancedModeEnabled ? temperatureEsercizio : 20,
+                    mu: advancedModeEnabled ? coefficienteAttrito : 0,
+                    r_p: advancedModeEnabled ? raggioPerno : 0
+                },
+                PA, PB, rA, rB, items
+            })
+        });
+        apiData = await resp.json();
+    } catch (e) {
+        content.innerHTML = `<div style="padding:20px;color:#FF5722;">Errore connessione Worker: ${e.message}</div>`;
+        return;
     }
 
-    // ── Loop SOLO sulle serie selezionate ──
-    for (const seriesKey of selectionSeriesFilter) {
-        if (window._searchAbort) break;
-        const series = SPRING_CATALOG[seriesKey];
-        if (!series) continue;
-
-        for (const model of series.models) {
-            if (window._searchAbort) break;
-
-            const L0     = model.L - model.corsa;
-            const fRange = model.forceRange || series.forceRange;
-            const fStep  = series.forceStep;
-
-            for (let F = fRange[0]; F <= fRange[1]; F += fStep) {
-                if (window._searchAbort) break;
-
-                totalChecked++;
-                caseSinceYield++;
-
-                if (caseSinceYield >= YIELD_EVERY) {
-                    caseSinceYield = 0;
-                    const pct = totalCases > 0 ? (totalChecked / totalCases * 100).toFixed(0) : 100;
-                    if (progressBar)  progressBar.style.width  = pct + '%';
-                    if (progressText) progressText.textContent =
-                        `${totalChecked} / ${totalCases} combinazioni analizzate… (${pct}%)`;
-                    if (foundText)    foundText.textContent =
-                        results.length ? i18n.t('search_progress').replace('{n}', results.length) : '';
-                    if (seriesText)   seriesText.textContent =
-                        `Serie corrente: ${seriesKey} — ${model.code} — ${F}N`;
-                    await yieldFrame();
-                    if (window._searchAbort) break;
-                }
-
-                const solved = quickSolve(massa, Xg, Yg, Xm, Ym, Fa, Fc, alfaDeg,
-                                          F, k_prog, L0, model.corsa, n_molle);
-                if (!solved) continue;
-
-                for (const sol of solved.solutions) {
-                    const angle_A  = Math.atan2(sol.A.y, sol.A.x);
-                    const angle_PA = Math.atan2(PA.y, PA.x);
-                    const theta    = angle_PA - angle_A;
-
-                    const cT = Math.cos(theta), sT = Math.sin(theta);
-                    const rot = p => ({ x: p.x*cT - p.y*sT, y: p.x*sT + p.y*cT });
-
-                    const A_rot  = rot(sol.A);
-                    const B1_rot = rot(sol.B1);
-                    const B2_rot = rot(sol.B2);
-
-                    const dA  = Math.sqrt((A_rot.x-PA.x)**2+(A_rot.y-PA.y)**2);
-                    const dB1 = Math.sqrt((B1_rot.x-PB.x)**2+(B1_rot.y-PB.y)**2);
-                    const dB2 = Math.sqrt((B2_rot.x-PB.x)**2+(B2_rot.y-PB.y)**2);
-
-                    if (dA > rA) continue;
-
-                    const matchB1 = dB1 <= rB;
-                    const matchB2 = dB2 <= rB;
-                    if (!matchB1 && !matchB2) continue;
-
-                    const bestB = (matchB1 && (!matchB2 || dB1 <= dB2))
-                        ? { type: i18n.t('search_config_b1'), d: dB1 }
-                        : { type: i18n.t('search_config_b2'), d: dB2 };
-
-                    results.push({
-                        seriesKey,
-                        modelCode : model.code,
-                        desc      : series.description,
-                        brand     : series.brand,
-                        F_molla   : F,
-                        L0, corsa : model.corsa,
-                        L_tot     : model.L,
-                        theta_deg : theta * 180 / Math.PI,
-                        err_A     : dA,
-                        err_B     : bestB.d,
-                        B_type    : bestB.type,
-                        A_rot, B1_rot, B2_rot,
-                        sol, solved
-                    });
-                }
-            }
-        }
+    if (apiData.error) {
+        content.innerHTML = `<div style="padding:20px;color:#FF5722;">${apiData.error}</div>`;
+        return;
     }
 
-    if (window._searchAbort) return;
+    // Traduci B_type con le chiavi i18n
+    const results = (apiData.results || []).map(r => ({
+        ...r,
+        B_type: r.B_type === 'B1 (chiuso)' ? i18n.t('search_config_b1') : i18n.t('search_config_b2')
+    }));
 
-    results.sort((a, b) => (a.err_A + a.err_B) - (b.err_A + b.err_B));
-    showSearchResults(results, totalChecked, PA, PB, rA, rB);
+    showSearchResults(results, apiData.totalChecked, PA, PB, rA, rB);
 }
 
 function showSearchResults(results, totalChecked, PA, PB, rA, rB) {
@@ -5137,13 +4736,9 @@ async function calculateSpring() {
             .badge-err { background:#f44336; color:#fff; border-radius:3px; padding:1px 5px; font-size:10px; }
             </style>`;
 
-            // Validazione
+            // Validazione input (solo controlli di formato, nessun calcolo fisico)
             if (massa <= 0 || F_molla <= 0 || k_prog <= 1 || L0 <= 0 || corsa <= 0) {
                 resultsDiv.innerHTML += `<p style="color:red;font-weight:bold;">${i18n.t('err_params_invalid')}</p>`;
-                return;
-            }
-            if (massa <= 0) {
-                alert(i18n.t('alert_mass_positive'));
                 return;
             }
             if (Fa < 0) {
@@ -5155,63 +4750,9 @@ async function calculateSpring() {
                 return;
             }
 
-            // Alert se a fine apertura la gravità è a favore della rotazione
-            const Xg_aperto = Xg * Math.cos(alfa) - Yg * Math.sin(alfa);
-            if (Xg_aperto < 0) {
-                alert(i18n.t('warn_gravity_title').replace('{deg}', alfaDeg) + '\n' + i18n.t('warn_gravity_body'));
-            }
-            
-            const dist_maniglia = Math.sqrt(Xm * Xm + Ym * Ym);
-            const M_peso_chiuso = massa * g * Xg;
-            const M_maniglia_apertura = Fa * g * dist_maniglia;
-            
-            // STEP 1: Calcola R2 dalla Condizione 2 (sportello aperto - usa forza nominale)
-            // Xg_aperto già calcolato sopra
-            const M_peso_aperto = massa * g * Xg_aperto;
-            const M_maniglia_chiusura = Fc * g * dist_maniglia;
-            
-            // Fattore temperatura (kT = 1 se advanced mode disattivo)
-            const kT = advancedModeEnabled
-                ? (temperatureEsercizio + 273.15) / 293.15
-                : 1.0;
-            
-            // Raggio perno e mu (0 se advanced mode disattivo)
-            const mu = advancedModeEnabled ? coefficienteAttrito : 0;
+            // Per display avanzato (non calcolo fisico)
+            const mu  = advancedModeEnabled ? coefficienteAttrito : 0;
             const r_p = advancedModeEnabled ? raggioPerno : 0;
-            
-            // Forza nominale corretta per temperatura
-            const F_molla_T = F_molla * kT;
-            
-            // STEP 1 - Posizione aperta: l'attrito AIUTA la molla → riduce R2
-            // Equilibrio: F_molla_T * n_molle * R2 + 2*μ*F_molla_T*n_molle*r_p = M_peso_aperto + M_maniglia
-            // → R2 = (M_peso_aperto + M_maniglia_chiusura) / (F_molla_T * n_molle) - 2*μ*r_p
-            // ═══════════════════════════════════════════════════════════════
-            // FASE 1 — VERIFICA INIZIO APERTURA (θ = 0°)
-            // ═══════════════════════════════════════════════════════════════
-            resultsDiv.innerHTML += `
-            <div class="fase-box" style="border:2px solid #1565c0;">
-              <div class="fase-header" style="background:#1565c0;color:#fff;">
-                ${i18n.t('fase1_title')}
-              </div>
-              <div class="fase-body">
-                <p style="font-size:11px;color:#555;margin:0 0 10px 0;">
-                  ${i18n.t('fase1_desc')}<br>
-                  <strong>${i18n.t('res_phase1_cond')}</strong> F(x) × R1 × n = M_peso − M_maniglia_apertura
-                </p>
-                <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mass')}</span><span class="fase-formula">m = ${massa} kg</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_xg')}</span><span class="fase-formula">Xg = ${Xg} mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_dist_handle')}</span><span class="fase-formula">d = √(${Xm}² + ${Ym}²) = <strong>${dist_maniglia.toFixed(2)} mm</strong></span></div>
-                <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mpeso')}</span><span class="fase-formula">m × g × Xg = ${massa} × ${g} × ${Xg}</span><span class="fase-result">= ${M_peso_chiuso.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mman')}</span><span class="fase-formula">Fa × g × d = ${Fa} × ${g} × ${dist_maniglia.toFixed(2)}</span><span class="fase-result">= ${M_maniglia_apertura.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mreq')}</span><span class="fase-formula">${i18n.t('res_phase1_mpeso_formula')}</span><span class="fase-result">= ${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</span></div>
-                <hr class="section-sep">
-                <p style="font-size:10.5px;color:#666;margin:4px 0 0 0;">
-                  ℹ️ R1 e F(x) vengono determinati per convergenza nella Fase 2. La verifica di equilibrio è riportata al termine.
-                </p>
-              </div>
-            </div>`;
 
             // ═══ SEZIONE CALCOLO — via Cloudflare Worker (engine protetto) ═══
             resultsDiv.innerHTML += `
@@ -5251,15 +4792,13 @@ async function calculateSpring() {
             if (loadingEl) loadingEl.remove();
 
             if (apiResult.error || !apiResult.converged) {
-                const errMsg = apiResult.error || 'Convergenza non raggiunta — verificare F_molla, corsa, L0, massa';
-                const R1_err = (M_peso_chiuso + M_maniglia_apertura) / (F_molla * n_molle);
                 resultsDiv.innerHTML += `<div style="padding:12px;background:#ffebee;border-radius:5px;margin:8px 0;border-left:4px solid #f44336;">
                   <strong style="color:#c62828;">${i18n.t('res_conv_fail')}</strong>
                   <p style="font-size:11px;margin:4px 0 0 0;">${i18n.t('err_no_geom')}<br>
                   ${i18n.t('err_check_params')}</p>
                 </div>`;
                 currentSolutions = [];
-                currentParams = {R1: R1_err, R2: R2, L: L0 + corsa, alfa: alfa};
+                currentParams = {R1: 0, R2: 0, L: L0 + corsa, alfa};
                 updateSolutionSelector();
                 updateVisualization();
                 updateResultsError(i18n.t('err_no_solution_title'), i18n.t('err_no_solution_body'));
@@ -5267,14 +4806,14 @@ async function calculateSpring() {
             }
 
             // ── Valori calcolati dal Worker ──
-            const R2             = apiResult.R2;
-            const R1_final       = apiResult.R1;
-            const L_final        = apiResult.L;
-            const x_guess        = apiResult.x;
-            const F_final        = apiResult.F_chiuso;
-            const F_compressa    = apiResult.F_compressa;
-            const iterHistory    = apiResult.iter_history;
-            const finalSolutions = apiResult.soluzioni;
+            const R2               = apiResult.R2;
+            const R1_final         = apiResult.R1;
+            const L_final          = apiResult.L;
+            const x_guess          = apiResult.x;
+            const F_final          = apiResult.F_chiuso;
+            const F_compressa      = apiResult.F_compressa;
+            const iterHistory      = apiResult.iter_history;
+            const finalSolutions   = apiResult.soluzioni;
             const eq_chiuso_delta  = apiResult.eq_chiuso_delta;
             const eq_chiuso_pct    = apiResult.eq_chiuso_pct;
             const eq_aperto_delta  = apiResult.eq_aperto_delta;
@@ -5283,17 +4822,54 @@ async function calculateSpring() {
             const M_attrito_aperto = apiResult.M_attrito_aperto;
             const M_molla_chiuso   = apiResult.M_molla_chiuso;
             const M_molla_aperto   = apiResult.M_molla_aperto;
-            const geom_err1 = apiResult.geom_err1;
-            const geom_err2 = apiResult.geom_err2;
-            const geom_ok1  = apiResult.geom_ok1;
-            const geom_ok2  = apiResult.geom_ok2;
+            const geom_err1        = apiResult.geom_err1;
+            const geom_err2        = apiResult.geom_err2;
+            const geom_ok1         = apiResult.geom_ok1;
+            const geom_ok2         = apiResult.geom_ok2;
+            const distAB1_calc     = apiResult.distAB1;
+            const distAB2_calc     = apiResult.distAB2;
+            // Valori fisici (calcolati dal Worker, usati solo per display)
+            const dist_maniglia       = apiResult.dist_maniglia;
+            const M_peso_chiuso       = apiResult.M_peso_chiuso;
+            const M_maniglia_apertura = apiResult.M_man_apertura;
+            const M_peso_aperto       = apiResult.M_peso_aperto;
+            const M_maniglia_chiusura = apiResult.M_man_chiusura;
+            const Xg_aperto           = apiResult.Xg_aperto;
+            const kT                  = apiResult.kT;
+            const F_molla_T           = apiResult.F_aperto;
 
-            let distAB1_calc = 0, distAB2_calc = 0;
-            if (finalSolutions.length > 0) {
-                const sol = finalSolutions[0];
-                distAB1_calc = Math.sqrt((sol.B1.x - sol.A.x)**2 + (sol.B1.y - sol.A.y)**2);
-                distAB2_calc = Math.sqrt((sol.B2.x - sol.A.x)**2 + (sol.B2.y - sol.A.y)**2);
+            // Avviso gravità (basato su risultato Worker)
+            if (apiResult.warn_gravity) {
+                alert(i18n.t('warn_gravity_title').replace('{deg}', alfaDeg) + '\n' + i18n.t('warn_gravity_body'));
             }
+
+            // ═══════════════════════════════════════════════════════════════
+            // FASE 1 — VERIFICA INIZIO APERTURA (θ = 0°)
+            // ═══════════════════════════════════════════════════════════════
+            resultsDiv.innerHTML += `
+            <div class="fase-box" style="border:2px solid #1565c0;">
+              <div class="fase-header" style="background:#1565c0;color:#fff;">
+                ${i18n.t('fase1_title')}
+              </div>
+              <div class="fase-body">
+                <p style="font-size:11px;color:#555;margin:0 0 10px 0;">
+                  ${i18n.t('fase1_desc')}<br>
+                  <strong>${i18n.t('res_phase1_cond')}</strong> F(x) × R1 × n = M_peso − M_maniglia_apertura
+                </p>
+                <hr class="section-sep">
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mass')}</span><span class="fase-formula">m = ${massa} kg</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_xg')}</span><span class="fase-formula">Xg = ${Xg} mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_dist_handle')}</span><span class="fase-formula">d = √(${Xm}² + ${Ym}²) = <strong>${dist_maniglia.toFixed(2)} mm</strong></span></div>
+                <hr class="section-sep">
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mpeso')}</span><span class="fase-formula">m × g × Xg = ${massa} × 9.81 × ${Xg}</span><span class="fase-result">= ${M_peso_chiuso.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mman')}</span><span class="fase-formula">Fa × g × d = ${Fa} × 9.81 × ${dist_maniglia.toFixed(2)}</span><span class="fase-result">= ${M_maniglia_apertura.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mreq')}</span><span class="fase-formula">${i18n.t('res_phase1_mpeso_formula')}</span><span class="fase-result">= ${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</span></div>
+                <hr class="section-sep">
+                <p style="font-size:10.5px;color:#666;margin:4px 0 0 0;">
+                  ℹ️ R1 e F(x) vengono determinati per convergenza nella Fase 2. La verifica di equilibrio è riportata al termine.
+                </p>
+              </div>
+            </div>`;
 
             // ── FASE 2 — riepilogo convergenza ──
             resultsDiv.innerHTML += `
@@ -5469,128 +5045,7 @@ async function calculateSpring() {
             });
         }
         
-        // Funzione helper per eseguire il solver geometrico programmaticamente
-        function solveGeometry(R1, R2, L, alfa) {
-            let solutions = [];
-            
-            const angles = [
-                {alfa: alfa},
-                {alfa: -alfa},
-                {alfa: 2 * Math.PI - alfa},
-                {alfa: -(2 * Math.PI - alfa)}
-            ];
-            
-            const signCombinations = [
-                {s1: 1, s2: 1},
-                {s1: 1, s2: -1},
-                {s1: -1, s2: 1},
-                {s1: -1, s2: -1}
-            ];
-            
-            for (let angleData of angles) {
-                const currentAlfa = angleData.alfa;
-                
-                for (let combo of signCombinations) {
-                    const mValues = findM(R1, R2, L, currentAlfa, combo.s1, combo.s2);
-                    
-                    for (let m of mValues) {
-                        if (m !== null && !isNaN(m)) {
-                            const sqrt1m2 = Math.sqrt(1 + m*m);
-                            
-                            const xA = R1;
-                            const yA = m * R1 + combo.s1 * R2 * sqrt1m2;
-                            
-                            const xB2 = R1 + combo.s2 * L / sqrt1m2;
-                            const yB2 = yA + combo.s2 * L * m / sqrt1m2;
-                            
-                            const xB1 = xB2 * Math.cos(currentAlfa) - yB2 * Math.sin(currentAlfa);
-                            const yB1 = xB2 * Math.sin(currentAlfa) + yB2 * Math.cos(currentAlfa);
-                            const error = Math.abs(xB1 - R1);
-                            
-                            const distAB2 = Math.sqrt((xB2 - xA) ** 2 + (yB2 - yA) ** 2);
-                            const distAB1 = Math.sqrt((xB1 - xA) ** 2 + (yB1 - yA) ** 2);
-                            
-                            const vec_AB1_x = xB1 - xA;
-                            const vec_AB1_y = yB1 - yA;
-                            const vec_AB2_x = xB2 - xA;
-                            const vec_AB2_y = yB2 - yA;
-                            const crossProduct = vec_AB1_x * vec_AB2_y - vec_AB1_y * vec_AB2_x;
-                            const isCounterClockwise = crossProduct > 0;
-                            
-                            // Cross product dei vettori OB1 e OB2 (dalla cerniera O)
-                            // Verifica che la rotazione da B1 a B2 attorno a O sia ANTIORARIA
-                            const vec_OB1_x = xB1 - 0;  // O è in (0,0)
-                            const vec_OB1_y = yB1 - 0;
-                            const vec_OB2_x = xB2 - 0;
-                            const vec_OB2_y = yB2 - 0;
-                            const crossProduct_O = vec_OB1_x * vec_OB2_y - vec_OB1_y * vec_OB2_x;
-                            const isCounterClockwiseFromO = crossProduct_O > 0;
-                            
-                            // ========== FILTRO MOMENTO MOLLA ==========
-                            // Verifica che il momento della forza (A→B) sul punto B rispetto a O sia ANTIORARIO
-                            // Questo esclude soluzioni dove la molla aiuterebbe a CHIUDERE invece che ad APRIRE
-                            //
-                            // Braccio di leva CON SEGNO: R = (Ax × By - Ay × Bx) / |AB|
-                            // Se R > 0 → momento antiorario (molla aiuta ad aprire) ✅
-                            // Se R < 0 → momento orario (molla aiuta a chiudere) ❌
-                            
-                            // Usando B1 (posizione chiusa) per il test
-                            const R_signed_B1 = (xA * yB1 - yA * xB1) / distAB1;
-                            const hasCorrectMomentDirection_B1 = R_signed_B1 > 0;
-                            
-                            // Usando B2 (posizione aperta) per il test
-                            const R_signed_B2 = (xA * yB2 - yA * xB2) / distAB2;
-                            const hasCorrectMomentDirection_B2 = R_signed_B2 > 0;
-                            
-                            // Entrambe le posizioni devono produrre momento antiorario
-                            const hasCorrectMomentDirection = hasCorrectMomentDirection_B1 && hasCorrectMomentDirection_B2;
-                            
-                            if (distAB2 > distAB1 && isCounterClockwiseFromO && hasCorrectMomentDirection && error < 1e-6) {
-                                solutions.push({
-                                    m: m,
-                                    R1: R1,
-                                    A: {x: xA, y: yA},
-                                    B1: {x: xB1, y: yB1},
-                                    B2: {x: xB2, y: yB2},
-                                    distAB1: distAB1,
-                                    distAB2: distAB2,
-                                    angleRad: currentAlfa
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // ========== RIMOZIONE DUPLICATI ==========
-            // Filtra soluzioni duplicate (stesso A, B1, B2 entro tolleranza)
-            function areSolutionsDuplicate(sol1, sol2, tolerance = 0.1) {
-                return (
-                    Math.abs(sol1.A.x - sol2.A.x) < tolerance &&
-                    Math.abs(sol1.A.y - sol2.A.y) < tolerance &&
-                    Math.abs(sol1.B1.x - sol2.B1.x) < tolerance &&
-                    Math.abs(sol1.B1.y - sol2.B1.y) < tolerance &&
-                    Math.abs(sol1.B2.x - sol2.B2.x) < tolerance &&
-                    Math.abs(sol1.B2.y - sol2.B2.y) < tolerance
-                );
-            }
-            
-            function removeDuplicates(solutions) {
-                const unique = [];
-                for (let sol of solutions) {
-                    const isDuplicate = unique.some(u => areSolutionsDuplicate(sol, u));
-                    if (!isDuplicate) {
-                        unique.push(sol);
-                    }
-                }
-                return unique;
-            }
-            
-            // Rimuovi duplicati prima di restituire
-            solutions = removeDuplicates(solutions);
-            
-            return solutions;
-        }
+        // solveGeometry — logica nel Cloudflare Worker (endpoint /solve-geometry)
 
         // THEME TOGGLE
         
