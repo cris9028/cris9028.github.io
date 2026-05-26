@@ -4725,22 +4725,13 @@ async function calculateSpring() {
                 ${i18n.t('fase1_title')}
               </div>
               <div class="fase-body">
-                <p style="font-size:11px;color:#555;margin:0 0 10px 0;">
-                  ${i18n.t('fase1_desc')}<br>
-                  <strong>${i18n.t('res_phase1_cond')}</strong> F(x) × R1 × n = M_peso − M_maniglia_apertura
-                </p>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mass')}</span><span class="fase-result">${massa} kg</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_xg')}</span><span class="fase-result">${Xg} mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_dist_handle')}</span><span class="fase-result">${dist_maniglia.toFixed(2)} mm</span></div>
                 <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mass')}</span><span class="fase-formula">m = ${massa} kg</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_xg')}</span><span class="fase-formula">Xg = ${Xg} mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_dist_handle')}</span><span class="fase-formula">d = √(${Xm}² + ${Ym}²) = <strong>${dist_maniglia.toFixed(2)} mm</strong></span></div>
-                <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mpeso')}</span><span class="fase-formula">m × g × Xg = ${massa} × 9.81 × ${Xg}</span><span class="fase-result">= ${M_peso_chiuso.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mman')}</span><span class="fase-formula">Fa × g × d = ${Fa} × 9.81 × ${dist_maniglia.toFixed(2)}</span><span class="fase-result">= ${M_maniglia_apertura.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mreq')}</span><span class="fase-formula">${i18n.t('res_phase1_mpeso_formula')}</span><span class="fase-result">= ${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</span></div>
-                <hr class="section-sep">
-                <p style="font-size:10.5px;color:#666;margin:4px 0 0 0;">
-                  ℹ️ R1 e F(x) vengono determinati per convergenza nella Fase 2. La verifica di equilibrio è riportata al termine.
-                </p>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mpeso')}</span><span class="fase-result">${M_peso_chiuso.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mman')}</span><span class="fase-result">${M_maniglia_apertura.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mreq')}</span><span class="fase-result">${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</span></div>
               </div>
             </div>`;
 
@@ -4751,16 +4742,7 @@ async function calculateSpring() {
                 FASE 2 — Calcoli per la convergenza
               </div>
               <div class="fase-body">
-                <p style="font-size:11px;color:#555;margin:0 0 10px 0;">
-                  R1 e la corsa effettiva x dipendono l'una dall'altra tramite la forza linearizzata F(x).<br>
-                  <strong>Metodo:</strong> iterazione punto fisso con multi-start (x0 = 0, corsa, corsa/2).
-                </p>
-                <div class="fase-row"><span class="fase-label">L0 (lunghezza estesa):</span><span class="fase-formula">${L0} mm</span></div>
-                <div class="fase-row"><span class="fase-label">Corsa totale:</span><span class="fase-formula">${corsa} mm</span></div>
-                <div class="fase-row"><span class="fase-label">F nominale:</span><span class="fase-formula">${F_molla} N x k_prog ${k_prog}</span></div>
-                <div class="fase-row"><span class="fase-label">R2 (da Fase 3):</span><span class="fase-result">${R2.toFixed(2)} mm</span></div>
-                <div class="fase-row"><span class="fase-label">Formula F(x):</span><span class="fase-formula" style="color:#e65100;">F(x) = F_nom x [k - (k-1) x x / corsa]</span></div>
-                <div class="fase-row"><span class="fase-label">Formula R1(x):</span><span class="fase-formula" style="color:#e65100;">R1(x) = (M_peso - M_maniglia) / [F(x) x n] + 2ur_p</span></div>
+                <div class="fase-row"><span class="fase-label">R2:</span><span class="fase-result">${R2.toFixed(2)} mm</span></div>
                 <hr class="section-sep">
                 <div id="iter-result-placeholder"></div>
               </div>
@@ -4782,21 +4764,11 @@ async function calculateSpring() {
                 </tr>`;
             });
             const fase2Extra = `
-              <details style="margin-top:4px;">
-                <summary style="cursor:pointer;font-size:11px;color:#e65100;font-weight:700;">
-                  ${i18n.t('iter_details')}
-                </summary>
-                <table class="iter-table" style="margin-top:8px;">
-                  <tr><th>${i18n.t('iter_col_iter')}</th><th>${i18n.t('iter_col_xguess')}</th><th>F(x) (N)</th><th>R1 (mm)</th><th>|AB₁| (mm)</th><th>${i18n.t('iter_col_xnew')}</th><th>${i18n.t('iter_col_error')}</th><th></th></tr>
-                  ${iterTableRows}
-                </table>
-              </details>
               <div style="background:#e8f5e9;border-left:4px solid #4caf50;padding:10px 14px;border-radius:0 6px 6px 0;margin:10px 0;">
                 <div style="font-weight:700;color:#2e7d32;font-size:12px;">${i18n.t('iter_conv_ok').replace('{n}', iterHistory.length)}</div>
-                <div class="fase-row" style="margin-top:6px;"><span class="fase-label">${i18n.t('iter_stroke_eff')}<span><span class="fase-result">${x_guess.toFixed(3)} mm</span></div>
+                <div class="fase-row" style="margin-top:6px;"><span class="fase-label">${i18n.t('iter_stroke_eff')}</span><span class="fase-result">${x_guess.toFixed(3)} mm</span></div>
                 <div class="fase-row"><span class="fase-label">R1:</span><span class="fase-result">${R1_final.toFixed(3)} mm</span></div>
                 <div class="fase-row"><span class="fase-label">${i18n.t('iter_fx_closed')}</span><span class="fase-result">${F_final.toFixed(2)} N${advancedModeEnabled ? ` <span style="color:#e65100;font-size:10px;">(kT=${kT.toFixed(4)})</span>` : ''}</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('iter_fx_formula')}</span><span class="fase-formula">${F_molla} × [${k_prog} − ${(k_prog-1).toFixed(2)} × ${x_guess.toFixed(2)}/${corsa}] = ${F_final.toFixed(2)} N</span></div>
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_stroke_used')}</span><span class="fase-result">${(corsa - x_guess).toFixed(2)} mm / ${corsa} mm (${((corsa - x_guess)/corsa*100).toFixed(1)}%)</span></div>
               </div>`;
             const placeholder = resultsDiv.querySelector('#iter-result-placeholder');
@@ -4815,37 +4787,20 @@ async function calculateSpring() {
                 ${i18n.t('fase3_title').replace('{deg}', alfaDeg)}
               </div>
               <div class="fase-body">
-                <p style="font-size:11px;color:#555;margin:0 0 10px 0;">
-                  ${i18n.t('fase3_desc')}<br>
-                  <strong>${i18n.t('res_phase1_cond')}</strong> F_nom × R2 × n = M_peso(θ=α) + M_maniglia_chiusura
-                </p>
-
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_xg_rotated').replace('{deg}', alfaDeg)}</span>
-                  <span class="fase-formula">${Xg}·cos${alfaDeg}° − ${Yg}·sin${alfaDeg}° = <strong>${Xg_aperto.toFixed(2)} mm</strong></span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mpeso')}</span>
-                  <span class="fase-formula">${massa} × 9.81 × ${Xg_aperto.toFixed(2)}</span>
-                  <span class="fase-result">= ${M_peso_aperto.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mman')}</span>
-                  <span class="fase-formula">Fc × g × d = ${Fc} × 9.81 × ${dist_maniglia.toFixed(2)}</span>
-                  <span class="fase-result">= ${M_maniglia_chiusura.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_r2')}</span>
-                  <span class="fase-formula">(M_peso + M_man) / (F_nom × n) − 2μr_p = (${M_peso_aperto.toFixed(1)} + ${M_maniglia_chiusura.toFixed(1)}) / (${F_molla_T.toFixed(1)} × ${n_molle})${advancedModeEnabled ? ` − ${(2*mu*r_p).toFixed(2)}` : ''}</span>
-                  <span class="fase-result">= ${R2.toFixed(2)} mm</span></div>
-                ${advancedModeEnabled ? `<div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_temp_corr')}</span><span class="fase-formula">kT = ${kT.toFixed(4)} (T=${temperatureEsercizio}°C) → F_nom_T = ${F_molla_T.toFixed(2)} N</span></div>` : ''}
-
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_xg_rotated').replace('{deg}', alfaDeg)}</span><span class="fase-result">${Xg_aperto.toFixed(2)} mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mpeso')}</span><span class="fase-result">${M_peso_aperto.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mman')}</span><span class="fase-result">${M_maniglia_chiusura.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_r2')}</span><span class="fase-result">${R2.toFixed(2)} mm</span></div>
+                ${advancedModeEnabled ? `<div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_temp_corr')}</span><span class="fase-result">kT = ${kT.toFixed(4)} → F_nom_T = ${F_molla_T.toFixed(2)} N</span></div>` : ''}
                 <hr class="section-sep">
-                <p style="font-size:11px;font-weight:700;color:#2e7d32;margin:6px 0 4px 0;">${i18n.t('res_verify_open')}</p>
                 <div class="eq-box ${c2ok ? 'eq-ok' : 'eq-err'}">
-                  M_molla = F_nom_T × R2 × n${advancedModeEnabled ? ` + 2μ·F_nom_T·n·r_p` : ''} = ${F_molla_T.toFixed(2)} × ${R2.toFixed(2)} × ${n_molle}${advancedModeEnabled ? ` + ${M_attrito_aperto.toFixed(2)}` : ''} = <strong>${M_molla_aperto.toFixed(2)} N·mm</strong><br>
-                  M_peso + M_man = ${M_peso_aperto.toFixed(2)} + ${M_maniglia_chiusura.toFixed(2)} = <strong>${(M_peso_aperto + M_maniglia_chiusura).toFixed(2)} N·mm</strong><br>
-                  Δ = ${eq_aperto_delta.toFixed(2)} N·mm
                   <span class="fase-check ${c2ok ? 'check-ok' : 'check-err'}">${c2ok ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
                   <span style="font-size:10px;"> errore: ${eq_aperto_pct.toFixed(3)}%</span>
                 </div>
               </div>
             </div>
 
-            <!-- Verifica equilibrio a sportello chiuso (ritorna dalla Fase 2) -->
+            <!-- Verifica equilibrio a sportello chiuso -->
             <div class="fase-box" style="border:2px solid #7b1fa2;">
               <div class="fase-header" style="background:#7b1fa2;color:#fff;">
                 ${i18n.t('fase_recap_title')}
@@ -4853,26 +4808,18 @@ async function calculateSpring() {
               <div class="fase-body">
                 <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:0 0 6px 0;">${i18n.t('res_verify_closed')}</p>
                 <div class="eq-box ${c1ok ? 'eq-ok' : 'eq-err'}">
-                  M_molla = F(x) × R1 × n${advancedModeEnabled ? ` − 2μ·F(x)·n·r_p` : ''} = ${F_final.toFixed(2)} × ${R1_final.toFixed(2)} × ${n_molle}${advancedModeEnabled ? ` − ${M_attrito_chiuso.toFixed(2)}` : ''} = <strong>${M_molla_chiuso.toFixed(2)} N·mm</strong><br>
-                  M_peso − M_man = ${M_peso_chiuso.toFixed(2)} − ${M_maniglia_apertura.toFixed(2)} = <strong>${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</strong><br>
-                  Δ = ${eq_chiuso_delta.toFixed(2)} N·mm
                   <span class="fase-check ${c1ok ? 'check-ok' : 'check-err'}">${c1ok ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
                   <span style="font-size:10px;"> errore: ${eq_chiuso_pct.toFixed(3)}%</span>
                 </div>
-
                 <hr class="section-sep">
                 <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:6px 0 4px 0;">${i18n.t('res_verify_geom')}</p>
                 <div class="eq-box ${geom_ok1 ? 'eq-ok' : 'eq-err'}">
-                  |A−B₁| (chiuso) calcolato: <strong>${distAB1_calc.toFixed(3)} mm</strong><br>
-                  L₀ + x = ${L0} + ${x_guess.toFixed(3)} = <strong>${(L0 + x_guess).toFixed(3)} mm</strong><br>
-                  Δ = ${geom_err1.toFixed(3)} mm
                   <span class="fase-check ${geom_ok1 ? 'check-ok' : 'check-err'}">${geom_ok1 ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
+                  <span style="font-size:10px;"> Δ = ${geom_err1.toFixed(3)} mm</span>
                 </div>
                 <div class="eq-box ${geom_ok2 ? 'eq-ok' : 'eq-err'}" style="margin-top:6px;">
-                  |A−B₂| (aperto) calcolato: <strong>${distAB2_calc.toFixed(3)} mm</strong><br>
-                  L (estesa) = <strong>${L_final.toFixed(3)} mm</strong><br>
-                  Δ = ${geom_err2.toFixed(3)} mm
                   <span class="fase-check ${geom_ok2 ? 'check-ok' : 'check-err'}">${geom_ok2 ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
+                  <span style="font-size:10px;"> Δ = ${geom_err2.toFixed(3)} mm</span>
                 </div>
               </div>
             </div>
