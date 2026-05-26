@@ -1264,7 +1264,8 @@
         
         // Variabili globali
         let currentSolutions = [];
-        let currentParams = {R1: 0, R2: 0, L: 0, alfa: 0};
+        let currentParams = {R1: 0, R2: 0, L: 0, alfa: 0, x: 0};
+        window._graphData = null; // dati grafici pre-calcolati dal Worker
 
         // ── Cloudflare Worker — engine protetto ──
         const WORKER_URL     = 'https://gasspring-pro-engine.betacristudios.workers.dev';
@@ -3061,40 +3062,39 @@ function drawGraphs() {
         return;
     }
     
-    // Leggi parametri comuni
-    const params = {
-        massa: parseFloat(document.getElementById('massa').value),
-        Xg_iniziale: parseFloat(document.getElementById('Xg').value),
-        Yg_iniziale: parseFloat(document.getElementById('Yg').value),
-        Xm_iniziale: parseFloat(document.getElementById('Xm').value),
-        Ym_iniziale: parseFloat(document.getElementById('Ym').value),
-        alfaDeg: parseFloat(document.getElementById('alfa').value),
-        alfa: parseFloat(document.getElementById('alfa').value) * Math.PI / 180,
-        F_molla: parseFloat(document.getElementById('F_molla').value),
-        k_prog: parseFloat(document.getElementById('k_prog').value),
-        L0: parseFloat(document.getElementById('L0').value),
-        corsa: parseFloat(document.getElementById('corsa').value),
-        n_molle: parseInt(document.getElementById('n_molle').value) || 1,
-        g: 9.81
-    };
-    
-    // Prendi prima soluzione per geometria molla
+    // Controlla che ci siano soluzioni
     if (currentSolutions.length === 0) {
         ctx.fillStyle = '#666';
         ctx.font = 'bold 18px Arial';
         ctx.textAlign = 'center';
         ctx.fillText(i18n.t('canvas_no_graphs_calc'), canvas.width / 2, canvas.height / 2);
         ctx.textAlign = 'left';
+        ctx.restore();
         return;
     }
-    
-    const sol = currentSolutions[0];
-    params.A = sol.A;
-    params.B1 = sol.B1;
-    
-    // Calcola distanze per corsa utilizzata
-    const L_chiusa_mm = Math.sqrt((sol.B1.x - sol.A.x)**2 + (sol.B1.y - sol.A.y)**2);
-    params.stelo_chiuso = L_chiusa_mm - params.L0;
+
+    // Controlla che i dati grafici dal Worker siano disponibili
+    if (!window._graphData) {
+        ctx.fillStyle = '#666';
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Dati grafici in attesa dal Worker...', canvas.width / 2, canvas.height / 2);
+        ctx.textAlign = 'left';
+        ctx.restore();
+        fetchGraphData();
+        return;
+    }
+
+    const gd = window._graphData;
+    const params = {
+        alfaDeg:         gd.alfaDeg,
+        corsa:           parseFloat(document.getElementById('corsa').value),
+        stelo_chiuso:    gd.stelo_chiuso,
+        moments_data:    gd.moments,
+        force_data:      gd.force,
+        effort_data:     gd.effort,
+        constraint_data: gd.constraint,
+    };
     
     // Determina layout - ogni grafico ha altezza fissa, scroll se necessario
     const numGraphs = (showMoments ? 1 : 0) + (showForce ? 1 : 0) + (showEffort ? 1 : 0) + (showConstraints ? 1 : 0);
@@ -3139,36 +3139,12 @@ function drawGraphs() {
 
 // Disegna grafico momenti
 function drawMomentsGraph(params, area) {
-    const {massa, Xg_iniziale, Yg_iniziale, alfaDeg, alfa, F_molla, k_prog, L0, corsa, n_molle, g, A, B1} = params;
-    
-    // Calcola dati per grafico: da θ=0° a θ=α con step 1°
-    const numPoints = Math.floor(alfaDeg) + 1;
-    const angles = [];
-    const M_peso_data = [];
-    const M_molla_data = [];
-    
-    for (let i = 0; i < numPoints; i++) {
-        const theta_deg = i;
-        const theta = theta_deg * Math.PI / 180;
-        
-        // Momento peso
-        const Xg_theta = Xg_iniziale * Math.cos(theta) - Yg_iniziale * Math.sin(theta);
-        const M_peso_theta = massa * g * Xg_theta;
-        
-        // Momento molla - Ruota B1 di theta attorno a O
-        const B_theta_x = B1.x * Math.cos(theta) - B1.y * Math.sin(theta);
-        const B_theta_y = B1.x * Math.sin(theta) + B1.y * Math.cos(theta);
-        
-        const distAB_theta = Math.sqrt((B_theta_x - A.x)**2 + (B_theta_y - A.y)**2);
-        const x_theta = distAB_theta - L0;
-        const F_theta = F_molla * (k_prog - (k_prog - 1) * (x_theta / corsa));
-        const R_theta = Math.abs(A.x * B_theta_y - A.y * B_theta_x) / distAB_theta;
-        const M_molla_theta = F_theta * R_theta * n_molle;
-        
-        angles.push(theta_deg);
-        M_peso_data.push(M_peso_theta);
-        M_molla_data.push(M_molla_theta);
-    }
+    const {alfaDeg, moments_data} = params;
+
+    // Dati pre-calcolati dal Worker
+    const angles      = moments_data.map(d => d.theta);
+    const M_peso_data  = moments_data.map(d => d.M_peso);
+    const M_molla_data = moments_data.map(d => d.M_molla);
     
     const maxM = Math.max(...M_peso_data, ...M_molla_data);
     const minM = 0;
@@ -3313,19 +3289,11 @@ function drawMomentsGraph(params, area) {
 
 // Disegna grafico forza linearizzata
 function drawForceGraph(params, area) {
-    const {F_molla, k_prog, corsa, stelo_chiuso} = params;
-    
-    // Calcola dati per grafico: da x=0 a x=corsa con step piccolo
-    const numPoints = 100;
-    const x_data = [];
-    const F_data = [];
-    
-    for (let i = 0; i <= numPoints; i++) {
-        const x = (corsa * i / numPoints);
-        const F = F_molla * (k_prog - (k_prog - 1) * (x / corsa));
-        x_data.push(x);
-        F_data.push(F);
-    }
+    const {corsa, stelo_chiuso, force_data} = params;
+
+    // Dati pre-calcolati dal Worker
+    const x_data = force_data.map(d => d.x);
+    const F_data = force_data.map(d => d.F);
     
     const maxF = Math.max(...F_data);
     const minF = Math.min(...F_data);
@@ -3512,54 +3480,11 @@ function drawForceGraph(params, area) {
 // 📊 GRAFICO 3: SFORZO MANIGLIA (kg)
 // ================================================================
 function drawEffortGraph(params, area) {
-    const {massa, Xg_iniziale, Yg_iniziale, Xm_iniziale, Ym_iniziale, alfaDeg, alfa, F_molla, k_prog, L0, corsa, n_molle, g, A, B1} = params;
-    
-    // Distanza maniglia dal fulcro
-    const dist_maniglia = Math.sqrt(Xm_iniziale * Xm_iniziale + Ym_iniziale * Ym_iniziale);
-    
-    // Calcola dati per grafico: da θ=0° a θ=α con step 1°
-    const numPoints = Math.floor(alfaDeg) + 1;
-    const angles = [];
-    const effort_data = [];  // Sforzo per aprire (kg)
-    
-    for (let i = 0; i < numPoints; i++) {
-        const theta_deg = i;
-        const theta = theta_deg * Math.PI / 180;
-        
-        // Momento peso: M = m × g × Xg (braccio orizzontale)
-        const Xg_theta = Xg_iniziale * Math.cos(theta) - Yg_iniziale * Math.sin(theta);
-        const M_peso_theta = massa * g * Xg_theta;
-        
-        // Momento molla - Ruota B1 di theta attorno a O
-        const B_theta_x = B1.x * Math.cos(theta) - B1.y * Math.sin(theta);
-        const B_theta_y = B1.x * Math.sin(theta) + B1.y * Math.cos(theta);
-        
-        // Calcola lunghezza molla e forza
-        const distAB_theta = Math.sqrt((B_theta_x - A.x)**2 + (B_theta_y - A.y)**2);
-        const x_theta = distAB_theta - L0;
-        const F_theta = F_molla * (k_prog - (k_prog - 1) * (x_theta / corsa));
-        
-        // Braccio di leva molla
-        const R_theta = Math.abs(A.x * B_theta_y - A.y * B_theta_x) / distAB_theta;
-        const M_molla_theta = F_theta * R_theta * n_molle;
-        
-        // SFORZO ALLA MANIGLIA PER APRIRE
-        // Momento netto = M_molla - M_peso
-        // Sforzo [N] = Momento_netto / dist_maniglia
-        // Sforzo [kg] = Sforzo_N / g
-        
-        const M_netto = M_molla_theta - M_peso_theta;
-        const sforzo_N = M_netto / dist_maniglia;
-        const sforzo_kg = sforzo_N / g;
-        
-        // Se sforzo > 0: molla "spinge" verso apertura (facile aprire)
-        // Se sforzo < 0: peso "tira" verso chiusura (difficile aprire, serve forza)
-        
-        const effort_open = -sforzo_kg;   // Sforzo per APRIRE (positivo se serve forza)
-        
-        angles.push(theta_deg);
-        effort_data.push(effort_open);
-    }
+    const {alfaDeg, effort_data: raw_effort} = params;
+
+    // Dati pre-calcolati dal Worker
+    const angles      = raw_effort.map(d => d.theta);
+    const effort_data = raw_effort.map(d => d.effort);
     
     // Trova massimi e minimi
     const maxEffort = Math.max(...effort_data);
@@ -3715,62 +3640,12 @@ function drawEffortGraph(params, area) {
 // 🔩 GRAFICO 4: CARICHI VINCOLARI
 // ================================================================
 function drawConstraintGraph(params, area) {
-    const {massa, Xg_iniziale, Yg_iniziale, Xm_iniziale, Ym_iniziale, alfaDeg, alfa, F_molla, k_prog, L0, corsa, n_molle, g, A, B1} = params;
+    const {alfaDeg, constraint_data} = params;
 
-    const numPoints = Math.floor(alfaDeg) + 1;
-    const angles = [];
-    const FA_data = [];   // |F_A| = |F_B| carico cerniera molla
-    const RO_data = [];   // |R_O| carico cerniera principale
-
-    // Distanza maniglia (per sforzo costante in modulo)
-    const dist_maniglia = Math.sqrt(Xm_iniziale * Xm_iniziale + Ym_iniziale * Ym_iniziale);
-
-    for (let i = 0; i < numPoints; i++) {
-        const theta = i * Math.PI / 180;
-        const cos_t = Math.cos(theta);
-        const sin_t = Math.sin(theta);
-
-        // -- B ruotato a theta --
-        const B_x = B1.x * cos_t - B1.y * sin_t;
-        const B_y = B1.x * sin_t + B1.y * cos_t;
-
-        // -- Forza molla linearizzata a theta --
-        const distAB = Math.sqrt((B_x - A.x)**2 + (B_y - A.y)**2);
-        const x_ext = distAB - L0;
-        const F_theta = F_molla * (k_prog - (k_prog - 1) * (x_ext / corsa));
-
-        // Vettore unitario B→A (direzione forza su portello in A)
-        const uBA_x = (A.x - B_x) / distAB;
-        const uBA_y = (A.y - B_y) / distAB;
-
-        // Forza in A (componenti) × n_molle
-        const FA_x = F_theta * n_molle * uBA_x;
-        const FA_y = F_theta * n_molle * uBA_y;
-        const FA_mag = Math.abs(F_theta * n_molle);  // |F_A| = |F_B|
-
-        // -- Sforzo alla maniglia (costante in modulo, perpendicolare al portello) --
-        // Ricaviamo il momento netto e lo dividiamo per dist_maniglia
-        const Xg_t = Xg_iniziale * cos_t - Yg_iniziale * sin_t;
-        const M_peso_t = massa * g * Xg_t;
-        const R_leva = Math.abs(A.x * B_y - A.y * B_x) / distAB;
-        const M_molla_t = F_theta * R_leva * n_molle;
-        const M_netto = M_molla_t - M_peso_t;
-        const F_man_mag = Math.abs(M_netto / dist_maniglia);
-
-        // Direzione perpendicolare al portello (verso apertura)
-        const Fman_x = -F_man_mag * sin_t;
-        const Fman_y =  F_man_mag * cos_t;
-
-        // -- Equilibrio → reazione in O --
-        // ΣF = 0: R_O + F_A + F_man - m*g*ĵ = 0
-        const RO_x = -(FA_x + Fman_x);
-        const RO_y = -(FA_y - massa * g + Fman_y);
-        const RO_mag = Math.sqrt(RO_x**2 + RO_y**2);
-
-        angles.push(i);
-        FA_data.push(FA_mag);
-        RO_data.push(RO_mag);
-    }
+    // Dati pre-calcolati dal Worker
+    const angles  = constraint_data.map(d => d.theta);
+    const FA_data = constraint_data.map(d => d.FA);
+    const RO_data = constraint_data.map(d => d.RO);
 
     // Scala
     const maxF = Math.max(...FA_data, ...RO_data, 1);
@@ -5024,10 +4899,11 @@ async function calculateSpring() {
             
             // Visualizza tutte le soluzioni
             currentSolutions = finalSolutions;
-            currentParams = {R1: R1_final, R2, L: L_final, alfa, alfaDeg};
+            currentParams = {R1: R1_final, R2, L: L_final, alfa, alfaDeg, x: x_guess};
+            window._graphData = null; // reset: nuovi dati in arrivo
             updateSolutionSelector();
             updateVisualization();
-            
+
             // Aggiorna pannello risultati (destro)
             updateResultsSummary({
                 iterations: iterHistory.length,
@@ -5041,9 +4917,45 @@ async function calculateSpring() {
                 F_aperto: F_molla_T,
                 n_molle: n_molle
             });
+
+            // Richiedi dati grafici al Worker (non blocca il rendering principale)
+            fetchGraphData();
         }
         
         // solveGeometry — logica nel Cloudflare Worker (endpoint /solve-geometry)
+
+        // Fetch dati grafici dal Worker — chiamata dopo calculateSpring()
+        async function fetchGraphData() {
+            if (currentSolutions.length === 0) return;
+            const sol = currentSolutions[0];
+            try {
+                const resp = await fetch(WORKER_URL + '/graph-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY },
+                    body: JSON.stringify({
+                        massa:    parseFloat(document.getElementById('massa').value),
+                        Xg:       parseFloat(document.getElementById('Xg').value),
+                        Yg:       parseFloat(document.getElementById('Yg').value),
+                        Xm:       parseFloat(document.getElementById('Xm').value),
+                        Ym:       parseFloat(document.getElementById('Ym').value),
+                        alfaDeg:  parseFloat(document.getElementById('alfa').value),
+                        F_molla:  parseFloat(document.getElementById('F_molla').value),
+                        k_prog:   parseFloat(document.getElementById('k_prog').value),
+                        L0:       parseFloat(document.getElementById('L0').value),
+                        corsa:    parseFloat(document.getElementById('corsa').value),
+                        n_molle:  parseInt(document.getElementById('n_molle').value) || 1,
+                        A:  sol.A,
+                        B1: sol.B1,
+                        stelo_chiuso: currentParams.x
+                    })
+                });
+                const data = await resp.json();
+                if (!data.error) {
+                    window._graphData = data;
+                    if (activeTab === 'graphs') drawGraphs();
+                }
+            } catch (_) { /* silent: i grafici mostreranno messaggio di attesa */ }
+        }
 
         // THEME TOGGLE
         
