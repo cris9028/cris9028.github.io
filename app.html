@@ -623,6 +623,34 @@
             display: block;
             margin-bottom: 3px;
         }
+
+        /* ── Auth overlay ── */
+        #auth-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(15,15,20,0.97);
+            display: flex; align-items: center; justify-content: center;
+        }
+        #auth-overlay.hidden { display: none !important; }
+        #auth-box {
+            background: #252526; border: 1px solid #3e3e42; border-radius: 10px;
+            padding: 36px 40px; width: 340px; text-align: center;
+        }
+        #auth-box h2 { color: #007acc; font-size: 18px; margin-bottom: 6px; }
+        #auth-box p  { color: #858585; font-size: 13px; margin-bottom: 24px; }
+        #auth-password {
+            width: 100%; padding: 10px 14px; border-radius: 6px;
+            border: 1px solid #3e3e42; background: #1e1e1e; color: #cccccc;
+            font-size: 14px; margin-bottom: 12px; box-sizing: border-box;
+        }
+        #auth-password:focus { outline: none; border-color: #007acc; }
+        #auth-submit {
+            width: 100%; padding: 10px; border-radius: 6px; border: none;
+            background: #007acc; color: #fff; font-size: 14px;
+            cursor: pointer; transition: background .2s;
+        }
+        #auth-submit:hover { background: #005f9e; }
+        #auth-submit:disabled { background: #3e3e42; cursor: default; }
+        #auth-error { color: #f44747; font-size: 12px; margin-top: 10px; min-height: 16px; }
     </style>
     
     <!-- Librerie per PDF export -->
@@ -1280,7 +1308,7 @@
 
         // ── Cloudflare Worker — engine protetto ──
         const WORKER_URL = 'https://gasspring-pro-engine.betacristudios.workers.dev';
-        let sessionPassword = sessionStorage.getItem('gsp_access') || null;
+        let sessionPassword = null;
         let activeTab = 'realistic'; // Tab di default (geometric è nascosta)
         
         // Variabili per zoom e pan
@@ -4506,37 +4534,6 @@ function showSearchResults(results, totalChecked, PA, PB, rA, rB) {
         #search-res-table th { background:#1a1a2e; color:#7ec8e3; padding:8px 10px; font-size:11px;
                                border-bottom:2px solid #2a2a4a; text-align:left; white-space:nowrap; }
         #search-res-table tr:hover { background:rgba(126,200,227,0.04); }
-
-        /* ── Auth overlay ── */
-        #auth-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            background: rgba(15,15,20,0.97);
-            display: flex; align-items: center; justify-content: center;
-        }
-        #auth-overlay.hidden { display: none; }
-        #auth-box {
-            background: #252526; border: 1px solid #3e3e42; border-radius: 10px;
-            padding: 36px 40px; width: 340px; text-align: center;
-        }
-        #auth-box h2 { color: #007acc; font-size: 18px; margin-bottom: 6px; }
-        #auth-box p  { color: #858585; font-size: 13px; margin-bottom: 24px; }
-        #auth-password {
-            width: 100%; padding: 10px 14px; border-radius: 6px;
-            border: 1px solid #3e3e42; background: #1e1e1e; color: #cccccc;
-            font-size: 14px; margin-bottom: 12px; box-sizing: border-box;
-        }
-        #auth-password:focus { outline: none; border-color: #007acc; }
-        #auth-submit {
-            width: 100%; padding: 10px; border-radius: 6px; border: none;
-            background: #007acc; color: #fff; font-size: 14px;
-            cursor: pointer; transition: background .2s;
-        }
-        #auth-submit:hover { background: #005f9e; }
-        #auth-submit:disabled { background: #3e3e42; cursor: default; }
-        #auth-error {
-            color: #f44747; font-size: 12px; margin-top: 10px;
-            min-height: 16px;
-        }
     </style>
     <div style="margin-bottom:12px; font-size:11px; color:#888;">
         Analizzati <strong style="color:#ccc;">${totalChecked}</strong> casi &nbsp;|&nbsp;
@@ -5488,15 +5485,10 @@ function toggleTheme() {
         // Load saved theme
         // ── Auth overlay logic ──
         (function initAuth() {
-            const overlay  = document.getElementById('auth-overlay');
-            const input    = document.getElementById('auth-password');
-            const btn      = document.getElementById('auth-submit');
-            const errEl    = document.getElementById('auth-error');
-
-            if (sessionPassword) {
-                overlay.classList.add('hidden');
-                return;
-            }
+            const overlay = document.getElementById('auth-overlay');
+            const input   = document.getElementById('auth-password');
+            const btn     = document.getElementById('auth-submit');
+            const errEl   = document.getElementById('auth-error');
 
             async function tryLogin() {
                 const pwd = input.value.trim();
@@ -5509,8 +5501,7 @@ function toggleTheme() {
                     });
                     if (res.ok) {
                         sessionPassword = pwd;
-                        sessionStorage.setItem('gsp_access', pwd);
-                        overlay.classList.add('hidden');
+                        overlay.style.display = 'none';
                     } else {
                         errEl.textContent = 'Password errata.';
                         input.value = '';
