@@ -746,7 +746,7 @@
 </head>
 <body>
     <!-- Auth overlay -->
-    <div id="auth-overlay">
+    <div id="auth-overlay" style="position:fixed;inset:0;z-index:9999;background:rgba(15,15,20,0.97);display:flex;align-items:center;justify-content:center;">
         <div id="auth-box">
             <h2>GasSpring Pro</h2>
             <p>Inserisci la password per accedere</p>
@@ -5483,42 +5483,42 @@ function toggleTheme() {
         }
 
         // Load saved theme
-        // ── Auth overlay logic ──
-        (function initAuth() {
-            const overlay = document.getElementById('auth-overlay');
-            const input   = document.getElementById('auth-password');
-            const btn     = document.getElementById('auth-submit');
-            const errEl   = document.getElementById('auth-error');
+        window.addEventListener('DOMContentLoaded', () => {
+            // ── Auth overlay logic ──
+            const authOverlay = document.getElementById('auth-overlay');
+            const authInput   = document.getElementById('auth-password');
+            const authBtn     = document.getElementById('auth-submit');
+            const authErr     = document.getElementById('auth-error');
 
             async function tryLogin() {
-                const pwd = input.value.trim();
+                const pwd = authInput.value.trim();
                 if (!pwd) return;
-                btn.disabled = true;
-                errEl.textContent = '';
+                authBtn.disabled = true;
+                authErr.textContent = '';
                 try {
                     const res = await fetch(WORKER_URL + '/auth', {
                         headers: { 'X-API-Key': pwd }
                     });
                     if (res.ok) {
                         sessionPassword = pwd;
-                        overlay.style.display = 'none';
+                        authOverlay.style.display = 'none';
                     } else {
-                        errEl.textContent = 'Password errata.';
-                        input.value = '';
-                        input.focus();
+                        authErr.textContent = 'Password errata.';
+                        authInput.value = '';
+                        authInput.focus();
                     }
-                } catch {
-                    errEl.textContent = 'Errore di connessione. Riprova.';
+                } catch (e) {
+                    authErr.textContent = 'Errore di connessione: ' + e.message;
                 } finally {
-                    btn.disabled = false;
+                    authBtn.disabled = false;
                 }
             }
 
-            btn.addEventListener('click', tryLogin);
-            input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
-        })();
+            authBtn.addEventListener('click', tryLogin);
+            authInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+            authInput.focus();
 
-        window.addEventListener('DOMContentLoaded', () => {
+
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
                 document.body.classList.add('light-theme');
