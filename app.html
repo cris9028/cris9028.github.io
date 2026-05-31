@@ -2787,6 +2787,107 @@ async function loadCatalogFromCSV() {
         console.error('Errore caricamento catalogo:', e);
     }
 }
+// ================================================================
+// SOLVER LOCALE (per ricerca massiva — no Worker needed)
+// ================================================================
+
+function brentMethod(f, a, b, tol, maxIter) {
+  let fa = f(a), fb = f(b);
+  if (fa * fb > 0) return null;
+  if (Math.abs(fa) < Math.abs(fb)) { [a,b]=[b,a]; [fa,fb]=[fb,fa]; }
+  let c = a, fc = fa, mflag = true, d = 0;
+  for (let i = 0; i < maxIter; i++) {
+    if (Math.abs(fb) < tol || Math.abs(b-a) < tol) return b;
+    let s;
+    if (fa!==fc && fb!==fc) {
+      s = a*fb*fc/((fa-fb)*(fa-fc)) + b*fa*fc/((fb-fa)*(fb-fc)) + c*fa*fb/((fc-fa)*(fc-fb));
+    } else { s = b - fb*(b-a)/(fb-fa); }
+    const c1=s<(3*a+b)/4||s>b, c2=mflag&&Math.abs(s-b)>=Math.abs(b-c)/2,
+          c3=!mflag&&Math.abs(s-b)>=Math.abs(c-d)/2, c4=mflag&&Math.abs(b-c)<tol, c5=!mflag&&Math.abs(c-d)<tol;
+    if (c1||c2||c3||c4||c5) { s=(a+b)/2; mflag=true; } else { mflag=false; }
+    const fs2=f(s); d=c; c=b; fc=fb;
+    if (fa*fs2<0) { b=s; fb=fs2; } else { a=s; fa=fs2; }
+    if (Math.abs(fa)<Math.abs(fb)) { [a,b]=[b,a]; [fa,fb]=[fb,fa]; }
+  }
+  return b;
+}
+
+function findM(R1, R2, L, alfa, s1, s2) {
+  const sinAlfa = Math.sin(alfa);
+  function g(theta) {
+    return (R1 + s2*L*Math.cos(theta))*Math.cos(alfa+theta) - R1*Math.cos(theta) - s1*R2*sinAlfa;
+  }
+  const sols=[], tMin=-Math.PI/2+0.001, tMax=Math.PI/2-0.001, tStep=0.001;
+  let prevT=tMin, prevG=g(prevT);
+  for (let t=tMin+tStep; t<=tMax; t+=tStep) {
+    const gv=g(t);
+    if (prevG*gv<0) { const r=brentMethod(g,prevT,t,1e-10,100); if(r!==null&&!isNaN(r)){const m=Math.tan(r);if(isFinite(m))sols.push(m);} }
+    prevT=t; prevG=gv;
+  }
+  const unique=[];
+  for(const m of sols) if(!unique.some(e=>Math.abs(m-e)<1e-4)) unique.push(m);
+  return unique;
+}
+
+function solveGeometry(R1, R2, L, alfa) {
+  const solutions=[];
+  for (const ca of [alfa,-alfa,2*Math.PI-alfa,-(2*Math.PI-alfa)]) {
+    for (const {s1,s2} of [{s1:1,s2:1},{s1:1,s2:-1},{s1:-1,s2:1},{s1:-1,s2:-1}]) {
+      for (const m of findM(R1,R2,L,ca,s1,s2)) {
+        if(m===null||isNaN(m)) continue;
+        const sq=Math.sqrt(1+m*m);
+        const xA=R1, yA=m*R1+s1*R2*sq;
+        const xB2=R1+s2*L/sq, yB2=yA+s2*L*m/sq;
+        const xB1=xB2*Math.cos(ca)-yB2*Math.sin(ca), yB1=xB2*Math.sin(ca)+yB2*Math.cos(ca);
+        const err=Math.abs(xB1-R1);
+        const dAB2=Math.sqrt((xB2-xA)**2+(yB2-yA)**2), dAB1=Math.sqrt((xB1-xA)**2+(yB1-yA)**2);
+        const ccw=(xB1*yB2-yB1*xB2)>0;
+        const Rsb1=(xA*yB1-yA*xB1)/dAB1, Rsb2=(xA*yB2-yA*xB2)/dAB2;
+        if(dAB2>dAB1&&ccw&&Rsb1>0&&Rsb2>0&&err<1e-6) {
+          solutions.push({m,R1,A:{x:xA,y:yA},B1:{x:xB1,y:yB1},B2:{x:xB2,y:yB2},distAB1:dAB1,distAB2:dAB2,angleRad:ca});
+        }
+      }
+    }
+  }
+  const unique=[];
+  for(const s of solutions) if(!unique.some(u=>Math.abs(s.A.x-u.A.x)<0.1&&Math.abs(s.A.y-u.A.y)<0.1&&Math.abs(s.B1.x-u.B1.x)<0.1&&Math.abs(s.B1.y-u.B1.y)<0.1)) unique.push(s);
+  return unique;
+}
+
+function quickSolve(data) {
+  const {massa,Xg,Yg,Xm,Ym,Fa,Fc,alfaDeg,F_molla,k_prog,L0,corsa,n_molle=1,
+         advanced_mode=false,temperature=20,mu:muIn=0,r_p:rpIn=0} = data;
+  const g=9.81, alfa=alfaDeg*Math.PI/180;
+  const kT=advanced_mode?(temperature+273.15)/293.15:1.0;
+  const mu=advanced_mode?muIn:0, r_p=advanced_mode?rpIn:0;
+  const dist_man=Math.sqrt(Xm*Xm+Ym*Ym);
+  const M_peso_ch=massa*g*Xg, M_man_ap=Fa*g*dist_man;
+  const Xg_ap=Xg*Math.cos(alfa)-Yg*Math.sin(alfa);
+  const M_peso_ap=massa*g*Xg_ap, M_man_ch=Fc*g*dist_man;
+  const F_T=F_molla*kT;
+  const R2=(M_peso_ap+M_man_ch)/(F_T*n_molle)-2*mu*r_p;
+  if(R2<=0) return null;
+  for(const x0 of [0,corsa,corsa*0.5]) {
+    let xg=x0;
+    for(let it=0;it<20;it++) {
+      const F_x=F_molla*(k_prog-(k_prog-1)*(xg/corsa));
+      const F_xT=F_x*kT;
+      const R1=(M_peso_ch-M_man_ap)/(F_xT*n_molle)+2*mu*r_p;
+      if(R1<=0) break;
+      const L=L0+corsa;
+      const sols=solveGeometry(R1,R2,L,alfa);
+      if(sols.length===0) break;
+      const s0=sols[0];
+      const dAB1=Math.sqrt((s0.B1.x-s0.A.x)**2+(s0.B1.y-s0.A.y)**2);
+      const xn=dAB1-L0;
+      if(xn<0) break;
+      if(Math.abs(xn-xg)<0.1) return {R1,R2,L,x:xn,F:F_xT,solutions:sols};
+      xg=xn;
+    }
+  }
+  return null;
+}
+
 // Advanced Mode parameters
 let advancedModeEnabled = false;
 let temperatureEsercizio = 20;  // °C
@@ -4111,15 +4212,12 @@ function updateSelectionModeUI() {
     }
 }
 
-// ── quickSolve — logica nel Cloudflare Worker (endpoint /catalog-search) ──
+// ── Funzioni Selection Mode ──
 
 // ── Ricerca massiva su tutto il catalogo — batch via Worker ──
 async function runMassiveSearch() {
     if (!selectionPA || !selectionPB) return;
-    if (selectionSeriesFilter.size === 0) {
-        alert(i18n.t('alert_select_series'));
-        return;
-    }
+    if (selectionSeriesFilter.size === 0) { alert(i18n.t('alert_select_series')); return; }
 
     const massa   = parseFloat(document.getElementById('massa').value);
     const Xg      = parseFloat(document.getElementById('Xg').value);
@@ -4132,12 +4230,18 @@ async function runMassiveSearch() {
     const k_prog  = parseFloat(document.getElementById('k_prog').value) || 1.3;
     const n_molle = parseInt(document.getElementById('n_molle').value) || 1;
 
-    const rA = selectionRadiusA;
-    const rB = selectionRadiusB;
-    const PA = selectionPA;
-    const PB = selectionPB;
+    const rA = selectionRadiusA, rB = selectionRadiusB;
+    const PA = selectionPA, PB = selectionPB;
 
-    // Costruisci array items dal catalogo
+    const params = {
+        massa, Xg, Yg, Xm, Ym, Fa, Fc, alfaDeg, k_prog, n_molle,
+        advanced_mode: advancedModeEnabled,
+        temperature: advancedModeEnabled ? temperatureEsercizio : 20,
+        mu: advancedModeEnabled ? coefficienteAttrito : 0,
+        r_p: advancedModeEnabled ? raggioPerno : 0
+    };
+
+    // Costruisci items
     const items = [];
     for (const seriesKey of selectionSeriesFilter) {
         const series = SPRING_CATALOG[seriesKey];
@@ -4147,70 +4251,77 @@ async function runMassiveSearch() {
             const fRange = model.forceRange || series.forceRange;
             const fStep  = series.forceStep;
             for (let F = fRange[0]; F <= fRange[1]; F += fStep) {
-                items.push({
-                    seriesKey, modelCode: model.code,
-                    desc: series.description, brand: series.brand,
-                    F_molla: F, L0, corsa: model.corsa, L_tot: model.L
-                });
+                items.push({ seriesKey, modelCode: model.code, desc: series.description, brand: series.brand, F_molla: F, L0, corsa: model.corsa, L_tot: model.L });
             }
         }
     }
 
-    // Mostra UI loading
+    // UI loading con progress bar reale
     document.getElementById('search-results-modal').classList.add('active');
     const content = document.getElementById('search-results-content');
-    const seriesList = [...selectionSeriesFilter].join(', ');
+    const progressBar = document.createElement('div');
     content.innerHTML = `
-        <div style="padding:24px;">
-            <div style="color:#7ec8e3; font-size:13px; font-weight:600; margin-bottom:8px;">
-                ⏳ Ricerca massiva in corso…
+        <div style="padding:24px;" id="search-progress-wrap">
+            <div style="color:#7ec8e3;font-size:13px;font-weight:600;margin-bottom:8px;">Ricerca massiva in corso…</div>
+            <div style="font-size:10px;color:#555;margin-bottom:12px;">
+                Casi: <strong style="color:#aaa;">${items.length}</strong> &nbsp;|&nbsp; Calcolati localmente
             </div>
-            <div style="font-size:10px; color:#555; margin-bottom:12px; line-height:1.5;">
-                Serie: <span style="color:#888;">${seriesList}</span><br>
-                Casi da analizzare: <strong style="color:#aaa;">${items.length}</strong>
+            <div style="background:#1a1a1a;border-radius:6px;overflow:hidden;height:10px;margin-bottom:6px;">
+                <div id="search-pbar" style="height:100%;width:0%;background:linear-gradient(90deg,#007acc,#4ec9b0);border-radius:6px;transition:width 0.1s;"></div>
             </div>
-            <div style="background:#1a1a1a; border-radius:6px; overflow:hidden; height:10px; margin-bottom:8px;">
-                <div style="height:100%; width:60%; background:linear-gradient(90deg,#007acc,#4ec9b0);
-                            animation:pulse 1.2s ease-in-out infinite; border-radius:6px;"></div>
-            </div>
-            <div style="font-size:11px; color:#888; font-family:monospace;">Calcolo in corso sul server…</div>
+            <div id="search-pct" style="font-size:11px;color:#888;font-family:monospace;">0%</div>
         </div>`;
 
-    let apiData;
-    try {
-        const resp = await fetch(WORKER_URL + '/catalog-search', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-API-Key': sessionPassword },
-            body: JSON.stringify({
-                params: {
-                    massa, Xg, Yg, Xm, Ym, Fa, Fc, alfaDeg, k_prog, n_molle,
-                    advanced_mode: advancedModeEnabled,
-                    temperature: advancedModeEnabled ? temperatureEsercizio : 20,
-                    mu: advancedModeEnabled ? coefficienteAttrito : 0,
-                    r_p: advancedModeEnabled ? raggioPerno : 0
-                },
-                PA, PB, rA, rB, items
-            })
-        });
-        apiData = await resp.json();
-    } catch (e) {
-        content.innerHTML = `<div style="padding:20px;color:#FF5722;">Errore connessione Worker: ${e.message}</div>`;
-        return;
+    // Elaborazione locale in batch (yield tra batch per non bloccare UI)
+    const BATCH = 300;
+    const results = [];
+    const anglePA = Math.atan2(PA.y, PA.x);
+
+    for (let i = 0; i < items.length; i += BATCH) {
+        const batch = items.slice(i, i + BATCH);
+
+        for (const item of batch) {
+            const solved = quickSolve({ ...params, F_molla: item.F_molla, L0: item.L0, corsa: item.corsa });
+            if (!solved) continue;
+            for (const sol of solved.solutions) {
+                const theta = anglePA - Math.atan2(sol.A.y, sol.A.x);
+                const cT = Math.cos(theta), sT = Math.sin(theta);
+                const rot = p => ({ x: p.x*cT - p.y*sT, y: p.x*sT + p.y*cT });
+                const A_rot = rot(sol.A), B1_rot = rot(sol.B1), B2_rot = rot(sol.B2);
+                const dA  = Math.sqrt((A_rot.x-PA.x)**2 + (A_rot.y-PA.y)**2);
+                if (dA > rA) continue;
+                const dB1 = Math.sqrt((B1_rot.x-PB.x)**2 + (B1_rot.y-PB.y)**2);
+                const dB2 = Math.sqrt((B2_rot.x-PB.x)**2 + (B2_rot.y-PB.y)**2);
+                const matchB1 = dB1 <= rB, matchB2 = dB2 <= rB;
+                if (!matchB1 && !matchB2) continue;
+                const bestB = (matchB1 && (!matchB2 || dB1 <= dB2))
+                    ? { type: i18n.t('search_config_b1'), d: dB1 }
+                    : { type: i18n.t('search_config_b2'), d: dB2 };
+                results.push({
+                    seriesKey: item.seriesKey, modelCode: item.modelCode,
+                    desc: item.desc, brand: item.brand,
+                    F_molla: item.F_molla, L0: item.L0, corsa: item.corsa, L_tot: item.L_tot,
+                    theta_deg: theta * 180 / Math.PI,
+                    err_A: dA, err_B: bestB.d, B_type: bestB.type,
+                    A_rot, B1_rot, B2_rot,
+                    R1: solved.R1, R2: solved.R2, L: solved.L, x: solved.x, F: solved.F
+                });
+            }
+        }
+
+        // Aggiorna progress bar e cedi al browser
+        const pct = Math.min(100, Math.round((i + BATCH) / items.length * 100));
+        const pbar = document.getElementById('search-pbar');
+        const ppct = document.getElementById('search-pct');
+        if (pbar) pbar.style.width = pct + '%';
+        if (ppct) ppct.textContent = pct + '%';
+        await new Promise(r => setTimeout(r, 0));
     }
 
-    if (apiData.error) {
-        content.innerHTML = `<div style="padding:20px;color:#FF5722;">${apiData.error}</div>`;
-        return;
-    }
-
-    // Traduci B_type con le chiavi i18n
-    const results = (apiData.results || []).map(r => ({
-        ...r,
-        B_type: r.B_type === 'B1 (chiuso)' ? i18n.t('search_config_b1') : i18n.t('search_config_b2')
-    }));
-
-    showSearchResults(results, apiData.totalChecked, PA, PB, rA, rB);
+    results.sort((a, b) => (a.err_A + a.err_B) - (b.err_A + b.err_B));
+    showSearchResults(results, items.length, PA, PB, rA, rB);
 }
+
 
 function showSearchResults(results, totalChecked, PA, PB, rA, rB) {
     const modal = document.getElementById('search-results-modal');
