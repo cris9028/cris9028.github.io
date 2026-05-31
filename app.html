@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -44,7 +44,7 @@
         
         .input-panel::-webkit-scrollbar-thumb:hover,
         .results-panel::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.2); /* Più visibile su hover */
+            background: rgba(255, 255, 255, 0.2); /* PiÃ¹ visibile su hover */
         }
         
         .input-panel {
@@ -438,7 +438,7 @@
             min-height: 0;
         }
         
-        /* Modalità grafici: abilita scroll verticale */
+        /* ModalitÃ  grafici: abilita scroll verticale */
         .canvas-panel.graphs-mode {
             overflow-y: auto;
             overflow-x: hidden;
@@ -544,7 +544,7 @@
             
         }
         
-        /* Canvas in modalità grafici: altezza naturale, no flex */
+        /* Canvas in modalitÃ  grafici: altezza naturale, no flex */
         .canvas-panel.graphs-mode #canvas {
             flex: none;
         }
@@ -623,41 +623,14 @@
             display: block;
             margin-bottom: 3px;
         }
-
-        /* ── Auth overlay ── */
-        #auth-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            background: rgba(15,15,20,0.97);
-            display: flex; align-items: center; justify-content: center;
-        }
-        #auth-overlay.hidden { display: none !important; }
-        #auth-box {
-            background: #252526; border: 1px solid #3e3e42; border-radius: 10px;
-            padding: 36px 40px; width: 340px; text-align: center;
-        }
-        #auth-box h2 { color: #007acc; font-size: 18px; margin-bottom: 6px; }
-        #auth-box p  { color: #858585; font-size: 13px; margin-bottom: 24px; }
-        #auth-password {
-            width: 100%; padding: 10px 14px; border-radius: 6px;
-            border: 1px solid #3e3e42; background: #1e1e1e; color: #cccccc;
-            font-size: 14px; margin-bottom: 12px; box-sizing: border-box;
-        }
-        #auth-password:focus { outline: none; border-color: #007acc; }
-        #auth-submit {
-            width: 100%; padding: 10px; border-radius: 6px; border: none;
-            background: #007acc; color: #fff; font-size: 14px;
-            cursor: pointer; transition: background .2s;
-        }
-        #auth-submit:hover { background: #005f9e; }
-        #auth-submit:disabled { background: #3e3e42; cursor: default; }
-        #auth-error { color: #f44747; font-size: 12px; margin-top: 10px; min-height: 16px; }
     </style>
     
     <!-- Librerie per PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-    <!-- ── i18n engine ─────────────────────────────────────────────────────── -->
+    <!-- â”€â”€ i18n engine â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <script>
     window.i18n = {
         _strings: {},
@@ -745,17 +718,6 @@
     </script>
 </head>
 <body>
-    <!-- Auth overlay -->
-    <div id="auth-overlay" style="position:fixed;inset:0;z-index:9999;background:rgba(15,15,20,0.97);display:flex;align-items:center;justify-content:center;">
-        <div id="auth-box">
-            <h2>GasSpring Pro</h2>
-            <p>Inserisci la password per accedere</p>
-            <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password" />
-            <button id="auth-submit">Accedi</button>
-            <div id="auth-error"></div>
-        </div>
-    </div>
-
     <!-- Header Professionale -->
     <div id="pro-header">
         <div class="logo-section">
@@ -767,14 +729,14 @@
             <span class="menu-label" data-i18n="menu_file">File</span>
             <div class="menu-dropdown">
                 <div class="menu-option" onclick="saveProject()">
-                    💾 <span data-i18n="menu_save_text">Salva Progetto</span>
+                    ðŸ’¾ <span data-i18n="menu_save_text">Salva Progetto</span>
                 </div>
                 <div class="menu-option" onclick="loadProject()">
-                    📂 <span data-i18n="menu_load_text">Carica Progetto</span>
+                    ðŸ“‚ <span data-i18n="menu_load_text">Carica Progetto</span>
                 </div>
                 <div class="menu-divider"></div>
                 <div class="menu-option" onclick="exportPDF()">
-                    📄 <span data-i18n="menu_export_pdf_text">Esporta PDF</span>
+                    ðŸ“„ <span data-i18n="menu_export_pdf_text">Esporta PDF</span>
                 </div>
             </div>
         </div>
@@ -787,7 +749,7 @@
                   text-decoration:none; cursor:pointer; transition:background 0.2s;"
            onmouseover="this.style.background='rgba(255,0,0,0.28)'"
            onmouseout="this.style.background='rgba(255,0,0,0.15)'">
-            <span data-i18n="btn_tutorial">▶ Tutorial</span>
+            <span data-i18n="btn_tutorial">â–¶ Tutorial</span>
         </a>
 
         <!-- Selettore lingua -->
@@ -796,8 +758,8 @@
                        border-radius:5px; color:#7ec8e3; font-size:12px; cursor:pointer;
                        font-family:inherit;"
                 onchange="i18n.load(this.value)">
-            <option value="it">🇮🇹 IT</option>
-            <option value="en">🇬🇧 EN</option>
+            <option value="it">ðŸ‡®ðŸ‡¹ IT</option>
+            <option value="en">ðŸ‡¬ðŸ‡§ EN</option>
         </select>
     </div>
 
@@ -807,14 +769,14 @@
             
             <!-- PARAMETRI FISICI -->
             <div class="input-section">
-                <div class="input-section-title"><span data-i18n="section_physical">⚙️ Parametri Fisici</span></div>
+                <div class="input-section-title"><span data-i18n="section_physical">âš™ï¸ Parametri Fisici</span></div>
                 <div class="input-grid">
                     <div class="input-group-compact">
                         <label for="massa" data-i18n="label_mass">Massa (kg)</label>
                         <input type="number" id="massa" value="10" step="0.1" min="0.01">
                     </div>
                     <div class="input-group-compact">
-                        <label for="alfa" data-i18n="label_angle">Angolo α (°)</label>
+                        <label for="alfa" data-i18n="label_angle">Angolo Î± (Â°)</label>
                         <input type="number" id="alfa" value="60" step="0.1">
                     </div>
                     <div class="input-group-compact">
@@ -846,7 +808,7 @@
             
             <!-- PARAMETRI MOLLA -->
             <div class="input-section">
-                <div class="input-section-title"><span data-i18n="section_spring">🔧 Parametri Molla</span></div>
+                <div class="input-section-title"><span data-i18n="section_spring">ðŸ”§ Parametri Molla</span></div>
                 
                 <!-- Parametri diretti (senza tab) -->
                 <div class="input-grid">
@@ -859,7 +821,7 @@
                         <input type="number" id="k_prog" value="1.3" step="0.01">
                     </div>
                     <div class="input-group-compact">
-                        <label for="L0" data-i18n="label_l0">L₀ (mm)</label>
+                        <label for="L0" data-i18n="label_l0">Lâ‚€ (mm)</label>
                         <input type="number" id="L0" value="150" step="0.1">
                     </div>
                     <div class="input-group-compact">
@@ -868,10 +830,10 @@
                     </div>
                 </div>
                 
-                <!-- N° MOLLE (comune a manuale e catalogo) -->
+                <!-- NÂ° MOLLE (comune a manuale e catalogo) -->
                 <div style="margin-top: 5px; padding: 4px 0;">
                     <div class="input-group-compact">
-                        <label for="n_molle" data-i18n="label_nmolle">N° molle a gas</label>
+                        <label for="n_molle" data-i18n="label_nmolle">NÂ° molle a gas</label>
                         <input type="number" id="n_molle" value="2" min="1" max="6" step="1" style="width: 60px;">
                     </div>
                 </div>
@@ -880,19 +842,19 @@
                 <div style="margin-top: 8px; padding: 6px 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 4px;">
                     <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--text-primary);">
                         <input type="checkbox" id="advanced-mode" onchange="toggleAdvancedMode()" style="cursor: pointer;">
-                        <span data-i18n="section_advanced">⚙️ Advanced Mode</span>
+                        <span data-i18n="section_advanced">âš™ï¸ Advanced Mode</span>
                     </label>
                     
                     <!-- Parametri avanzati (nascosti di default) -->
                     <div id="advanced-params" style="display: none; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--border-color);">
                         <div class="input-grid">
                             <div class="input-group-compact">
-                                <label for="temp-esercizio" data-i18n="label_temp">Temperatura (°C)</label>
+                                <label for="temp-esercizio" data-i18n="label_temp">Temperatura (Â°C)</label>
                                 <input type="number" id="temp-esercizio" value="20" step="1" style="font-size: 11px;" 
                                        onchange="temperatureEsercizio = parseFloat(this.value)">
                             </div>
                             <div class="input-group-compact">
-                                <label for="coeff-attrito" data-i18n="label_mu">Coeff. attrito μ</label>
+                                <label for="coeff-attrito" data-i18n="label_mu">Coeff. attrito Î¼</label>
                                 <input type="number" id="coeff-attrito" value="0.05" step="0.01" min="0" max="1" style="font-size: 11px;"
                                        onchange="coefficienteAttrito = parseFloat(this.value)">
                             </div>
@@ -903,7 +865,7 @@
                             </div>
                         </div>
                         <div style="margin-top: 4px; font-size: 9px; color: var(--text-secondary); font-style: italic;">
-                            <span data-i18n="advanced_note">🌡️ T rif. 20°C | attrito: M = 2·μ·F·r_perno (per occhiello)</span>
+                            <span data-i18n="advanced_note">ðŸŒ¡ï¸ T rif. 20Â°C | attrito: M = 2Â·Î¼Â·FÂ·r_perno (per occhiello)</span>
                         </div>
 
                     </div>
@@ -913,7 +875,7 @@
                 <div style="margin-top: 8px; padding: 6px 8px; background: #0d1525; border: 1px solid #1a3a5a; border-radius: 4px;">
                     <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; font-weight: 600; color: #7ec8e3;">
                         <input type="checkbox" id="selection-mode-toggle" onchange="toggleSelectionMode()" style="cursor: pointer;">
-                        <span>🎯 Selection Mode</span>
+                        <span>ðŸŽ¯ Selection Mode</span>
                     </label>
                     <div id="selection-mode-params" style="display:none; margin-top:8px; padding-top:6px; border-top:1px solid #1a3a5a;">
                         <!-- Status picking -->
@@ -924,13 +886,13 @@
                                 style="flex:1; padding:4px 6px; font-size:10px; border-radius:4px;
                                        background:#0a1a0a; border:1px solid #2a5a2a; color:#4dbb4d;
                                        cursor:pointer; transition:all .15s; font-family:inherit;">
-                                <span data-i18n="btn_pick_a">📍 Scegli A (struttura)</span>
+                                <span data-i18n="btn_pick_a">ðŸ“ Scegli A (struttura)</span>
                             </button>
                             <button id="sel-btn-pb" onclick="startPickPoint('PB')"
                                 style="flex:1; padding:4px 6px; font-size:10px; border-radius:4px;
                                        background:#1a0a00; border:1px solid #5a3000; color:#cc7700;
                                        cursor:pointer; transition:all .15s; font-family:inherit;">
-                                <span data-i18n="btn_pick_b">📍 Scegli B (sportello)</span>
+                                <span data-i18n="btn_pick_b">ðŸ“ Scegli B (sportello)</span>
                             </button>
                         </div>
                         <!-- Coordinate PA -->
@@ -958,7 +920,7 @@
                         <!-- FILTRO SERIE -->
                         <div style="margin-bottom:6px;">
                             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:4px;">
-                                <span style="font-size:9px; color:#7ec8e3; font-weight:600;"><span data-i18n="sel_series_label">📦 Serie da cercare</span></span>
+                                <span style="font-size:9px; color:#7ec8e3; font-weight:600;"><span data-i18n="sel_series_label">ðŸ“¦ Serie da cercare</span></span>
                                 <div style="display:flex; gap:3px;">
                                     <button onclick="selFilterAll(true)"
                                         style="padding:1px 5px; font-size:9px; border-radius:3px;
@@ -970,12 +932,12 @@
                                                cursor:pointer; font-family:inherit;"><span data-i18n="sel_btn_none">Nessuna</span></button>
                                 </div>
                             </div>
-                            <!-- Lista serie — popolata dinamicamente da populateSeriesFilter() -->
+                            <!-- Lista serie â€” popolata dinamicamente da populateSeriesFilter() -->
                             <div id="sel-series-list"
                                  style="max-height:160px; overflow-y:auto; background:#0a0a10;
                                         border:1px solid #1a1a2a; border-radius:4px; padding:4px;">
                                 <div style="font-size:9px; color:#444; padding:4px;">
-                                    <span data-i18n="sel_series_hint">Abilita la modalità per caricare le serie…</span>
+                                    <span data-i18n="sel_series_hint">Abilita la modalitÃ  per caricare le serieâ€¦</span>
                                 </div>
                             </div>
                             <!-- Contatore casi stimati -->
@@ -990,13 +952,13 @@
                                 style="flex:2; padding:5px 8px; font-size:10px; border-radius:4px;
                                        background:#181818; border:1px solid #282828; color:#333;
                                        cursor:not-allowed; font-family:inherit; font-weight:600; transition:all .15s;">
-                                <span data-i18n="btn_search">🔍 Ricerca Massiva</span>
+                                <span data-i18n="btn_search">ðŸ” Ricerca Massiva</span>
                             </button>
                             <button onclick="clearSelectionPoints()"
                                 style="flex:1; padding:5px 6px; font-size:10px; border-radius:4px;
                                        background:transparent; border:1px solid #444; color:#666;
                                        cursor:pointer; font-family:inherit;">
-                                <span data-i18n="btn_reset_sel">✕ Reset</span>
+                                <span data-i18n="btn_reset_sel">âœ• Reset</span>
                             </button>
                         </div>
                     </div>
@@ -1004,7 +966,7 @@
             </div>
             
             <button onclick="calculateSpring()" style="width: 100%; padding: 8px; background: var(--accent-blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; margin-bottom: 8px;">
-                <span data-i18n="btn_calculate">🚀 Calcola</span>
+                <span data-i18n="btn_calculate">ðŸš€ Calcola</span>
             </button>
             
             <!-- SELETTORE SOLUZIONI -->
@@ -1027,16 +989,16 @@
             <div style="display: flex; gap: 0; margin-top: 3px; margin-bottom: 4px; width: 100%; flex-shrink: 0;">
                 <!-- Vista Geometrica nascosta (mantenuta nel codice per debug) -->
                 <button id="tab-geometric" class="canvas-tab" onclick="switchTab('geometric')" style="display: none;">
-                    📐 Vista Geometrica
+                    ðŸ“ Vista Geometrica
                 </button>
                 <button id="tab-realistic" class="canvas-tab active" onclick="switchTab('realistic')">
-                    <span data-i18n="tab_3d">🔧 Vista 3D</span>
+                    <span data-i18n="tab_3d">ðŸ”§ Vista 3D</span>
                 </button>
                 <button id="tab-graphs" class="canvas-tab" onclick="switchTab('graphs')">
-                    <span data-i18n="tab_graphs">📊 Grafici</span>
+                    <span data-i18n="tab_graphs">ðŸ“Š Grafici</span>
                 </button>
                 <button id="tab-catalog" class="canvas-tab" onclick="switchTab('catalog')">
-                    <span data-i18n="tab_catalog">📦 Catalogo</span>
+                    <span data-i18n="tab_catalog">ðŸ“¦ Catalogo</span>
                 </button>
             </div>
             
@@ -1046,19 +1008,19 @@
                     <span style="color: var(--text-secondary); font-size: 11px; font-weight: 600;"><span data-i18n="graph_label_view">Visualizza:</span></span>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-moments" checked onchange="drawGraphs()">
-                        <span><span data-i18n="graph_moments">📈 Momenti (Peso & Molla)</span></span>
+                        <span><span data-i18n="graph_moments">ðŸ“ˆ Momenti (Peso & Molla)</span></span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-force" checked onchange="drawGraphs()">
-                        <span><span data-i18n="graph_force">⚡ Forza Linearizzata</span></span>
+                        <span><span data-i18n="graph_force">âš¡ Forza Linearizzata</span></span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-effort" checked onchange="drawGraphs()">
-                        <span><span data-i18n="graph_effort">💪 Sforzo Maniglia (kg)</span></span>
+                        <span><span data-i18n="graph_effort">ðŸ’ª Sforzo Maniglia (kg)</span></span>
                     </label>
                     <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 11px; color: var(--text-primary);">
                         <input type="checkbox" id="show-constraints" checked onchange="drawGraphs()">
-                        <span><span data-i18n="graph_loads">🔩 Carichi Vincolari (N)</span></span>
+                        <span><span data-i18n="graph_loads">ðŸ”© Carichi Vincolari (N)</span></span>
                     </label>
                 </div>
             </div>
@@ -1071,14 +1033,14 @@
                        border:1px solid #2a6a2a; border-radius:5px; cursor:pointer;
                        font-size:11px; font-family:inherit; white-space:nowrap;
                        backdrop-filter:blur(4px); box-shadow:0 2px 8px rgba(0,0,0,0.4);">
-                <span data-i18n="btn_dxf_load">📐 Integra DXF</span>
+                <span data-i18n="btn_dxf_load">ðŸ“ Integra DXF</span>
               </button>
               <button id="btn-rimuovi-dxf" onclick="dxfIntegra.clear()"
                 style="display:none; padding:5px 10px; background:rgba(58,26,26,0.92); color:#e07070;
                        border:1px solid #6a2a2a; border-radius:5px; cursor:pointer;
                        font-size:11px; font-family:inherit;
                        backdrop-filter:blur(4px); box-shadow:0 2px 8px rgba(0,0,0,0.4);">
-                <span data-i18n="btn_dxf_remove">✕ DXF</span>
+                <span data-i18n="btn_dxf_remove">âœ• DXF</span>
               </button>
             </div>
 
@@ -1091,24 +1053,24 @@
               <div id="dxf-side-panel" style="width:210px; flex-shrink:0; background:#1a1d2e;
                    border-right:1px solid #2a2a3a; padding:18px 16px;
                    display:flex; flex-direction:column; gap:14px; font-family:'Courier New',monospace;">
-                <div style="color:#7ec8e3; font-size:12px; font-weight:bold; letter-spacing:1px;"><span data-i18n="dxf_assign_title">📍 Assegna punti</span></div>
+                <div style="color:#7ec8e3; font-size:12px; font-weight:bold; letter-spacing:1px;"><span data-i18n="dxf_assign_title">ðŸ“ Assegna punti</span></div>
                 <div style="color:#555; font-size:9px; line-height:1.6;">
                   <span data-i18n="dxf_assign_hint">Clicca un pulsante, poi clicca sul punto nel disegno a destra.</span>
                 </div>
 
                 <div style="background:#0d0e1a; border:1px solid #2a2a3a; border-radius:6px; padding:10px 12px;">
-                  <div style="color:#7ec8e3; font-size:10px; font-weight:bold; margin-bottom:6px;"><span data-i18n="dxf_scale_title">📏 Scala disegno</span></div>
+                  <div style="color:#7ec8e3; font-size:10px; font-weight:bold; margin-bottom:6px;"><span data-i18n="dxf_scale_title">ðŸ“ Scala disegno</span></div>
                   <div style="color:#666; font-size:9px; margin-bottom:8px;"><span data-i18n="dxf_scale_hint">Scala applicata in Creo all'esportazione DXF.</span></div>
                   <select id="dxf-scale-select" onchange="onScaleChange()"
                     style="width:100%; background:#111; color:#7ec8e3; border:1px solid #7ec8e330;
                            border-radius:4px; padding:5px 8px; font-family:'Courier New';
                            font-size:11px; cursor:pointer;">
-                    <option value="1" selected><span data-i18n="dxf_scale_1_1">1:1  — scala reale</span></option>
-                    <option value="2"  ><span data-i18n="dxf_scale_1_2">1:2  — dimezzato</span></option>
-                    <option value="5"  ><span data-i18n="dxf_scale_1_5">1:5  — un quinto</span></option>
-                    <option value="10" ><span data-i18n="dxf_scale_1_10">1:10 — un decimo</span></option>
-                    <option value="0.5"><span data-i18n="dxf_scale_2_1">2:1  — ingrandito ×2</span></option>
-                    <option value="0.2"><span data-i18n="dxf_scale_5_1">5:1  — ingrandito ×5</span></option>
+                    <option value="1" selected><span data-i18n="dxf_scale_1_1">1:1  â€” scala reale</span></option>
+                    <option value="2"  ><span data-i18n="dxf_scale_1_2">1:2  â€” dimezzato</span></option>
+                    <option value="5"  ><span data-i18n="dxf_scale_1_5">1:5  â€” un quinto</span></option>
+                    <option value="10" ><span data-i18n="dxf_scale_1_10">1:10 â€” un decimo</span></option>
+                    <option value="0.5"><span data-i18n="dxf_scale_2_1">2:1  â€” ingrandito Ã—2</span></option>
+                    <option value="0.2"><span data-i18n="dxf_scale_5_1">5:1  â€” ingrandito Ã—5</span></option>
                   </select>
                 </div>
 
@@ -1116,7 +1078,7 @@
                   style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
                          cursor:pointer;border:1px solid #2a2a3a;background:#111;font-family:'Courier New';
                          font-size:11px;color:#999;text-align:left;width:100%;transition:all .15s;">
-                  <span style="font-size:18px">⚙</span>
+                  <span style="font-size:18px">âš™</span>
                   <div style="flex:1">
                     <span data-i18n="dxf_btn_pivot">Assegna fulcro</span>
                     <div id="dxf-st-pivot" style="font-size:9px;opacity:.75;margin-top:2px"><span data-i18n="dxf_not_assigned">non assegnato</span></div>
@@ -1127,7 +1089,7 @@
                   style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
                          cursor:pointer;border:1px solid #2a2a3a;background:#111;font-family:'Courier New';
                          font-size:11px;color:#999;text-align:left;width:100%;transition:all .15s;">
-                  <span style="font-size:18px">✋</span>
+                  <span style="font-size:18px">âœ‹</span>
                   <div style="flex:1">
                     <span data-i18n="dxf_btn_handle">Assegna maniglia</span>
                     <div id="dxf-st-maniglia" style="font-size:9px;opacity:.75;margin-top:2px">non assegnato</div>
@@ -1138,7 +1100,7 @@
                   style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
                          cursor:pointer;border:1px solid #2a2a3a;background:#111;font-family:'Courier New';
                          font-size:11px;color:#999;text-align:left;width:100%;transition:all .15s;">
-                  <span style="font-size:18px">⚖</span>
+                  <span style="font-size:18px">âš–</span>
                   <div style="flex:1">
                     <span data-i18n="dxf_btn_cog">Assegna baricentro</span>
                     <div id="dxf-st-bari" style="font-size:9px;opacity:.75;margin-top:2px">non assegnato</div>
@@ -1151,7 +1113,7 @@
                   style="padding:10px;border-radius:8px;background:#181818;color:#333;
                          border:1px solid #282828;font-family:'Courier New';font-size:11px;
                          cursor:not-allowed;letter-spacing:1px;transition:all .15s;">
-                  <span data-i18n="btn_ok">✓ OK</span>
+                  <span data-i18n="btn_ok">âœ“ OK</span>
                 </button>
                 <button onclick="dxfIntegra.cancelOverlay()"
                   style="padding:6px;border-radius:6px;background:transparent;color:#555;
@@ -1169,10 +1131,10 @@
             <div id="animation-controls" style="display: none; margin-top: 4px; padding: 6px 10px; background: var(--bg-secondary); border-radius: 6px; border: 1px solid var(--border-color); width: 100%; flex-shrink: 0;">
                 <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                     <button id="btn-play" onclick="toggleAnimation()" style="padding: 4px 10px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 11px; margin: 0;">
-                        <span data-i18n="anim_play">▶ Play</span>
+                        <span data-i18n="anim_play">â–¶ Play</span>
                     </button>
                     <button onclick="resetAnimation()" style="padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 4px; cursor: pointer; font-size: 11px; margin: 0;">
-                        <span data-i18n="anim_reset">⏮ Reset</span>
+                        <span data-i18n="anim_reset">â® Reset</span>
                     </button>
                     <span style="color: var(--text-secondary); font-size: 10px;">
                         Posizione: <span id="anim-percentage">0</span>%
@@ -1183,17 +1145,17 @@
                        oninput="setAnimationProgress(this.value / 100)">
                 <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--text-secondary); margin-top: 2px;">
                     <span><span data-i18n="anim_closed">Chiuso (B1)</span></span>
-                    <span style="color: #E91E63;"><span data-i18n="anim_drag_hint">🖱️ Trascina per ruotare la molla</span></span>
+                    <span style="color: #E91E63;"><span data-i18n="anim_drag_hint">ðŸ–±ï¸ Trascina per ruotare la molla</span></span>
                     <span><span data-i18n="anim_open">Aperto (B2)</span></span>
                 </div>
                 <div style="text-align:center; font-size:10px; color:var(--text-secondary); margin-top:2px;">
-                    <span id="anim-degrees">0.0°</span>
+                    <span id="anim-degrees">0.0Â°</span>
                 </div>
             </div>
             
             <div id="zoom-controls" style="margin-top: 3px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 10px; flex-shrink: 0;">
                 <button onclick="resetViewport()" style="padding: 4px 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 3px; cursor: pointer; font-size: 10px;">
-                    <span data-i18n="btn_reset_view">🎯 Reset</span>
+                    <span data-i18n="btn_reset_view">ðŸŽ¯ Reset</span>
                 </button>
                 <span style="color: var(--text-secondary);">
                     Zoom: <span id="zoom-level">100</span>% | Pan: (<span id="pan-x">0</span>, <span id="pan-y">0</span>)
@@ -1205,15 +1167,13 @@
                 <div style="width: 100%;">
                     <div id="brand-pills" style="display:flex; align-items:center; gap:5px; padding:6px 12px; border-bottom:1px solid var(--border-color);">
                         <span style="font-size:9px; color:var(--text-secondary); margin-right:4px;"><span data-i18n="catalog_brand_label">Marca:</span></span>
-                        <button class="brand-pill active" data-brand="Vapsint"  onclick="toggleBrand('Vapsint')"  style="padding:2px 10px; border-radius:12px; font-size:10px; font-family:'Courier New'; cursor:pointer; border:1px solid #FF9800; background:#FF9800; color:#fff; transition:all .15s;">Vapsint</button>
-                        <button class="brand-pill active" data-brand="Stabilus" onclick="toggleBrand('Stabilus')" style="padding:2px 10px; border-radius:12px; font-size:10px; font-family:'Courier New'; cursor:pointer; border:1px solid #4CAF50; background:#4CAF50; color:#fff; transition:all .15s;">Stabilus</button>
-                        <button class="brand-pill active" data-brand="Suspa"    onclick="toggleBrand('Suspa')"    style="padding:2px 10px; border-radius:12px; font-size:10px; font-family:'Courier New'; cursor:pointer; border:1px solid #2196F3; background:#2196F3; color:#fff; transition:all .15s;">Suspa</button>
+                        <button class="brand-pill active" data-brand="Vapsint"  style="padding:2px 10px; border-radius:12px; font-size:10px; font-family:'Courier New'; cursor:default; border:1px solid #FF9800; background:#FF9800; color:#fff;">Vapsint</button>
                     </div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 16px 16px 0 16px;">
                         <h2 style="color: var(--text-primary); font-size: 24px; margin: 0;">
-                            <span data-i18n="catalog_title">📦 Catalogo Molle a Gas</span>
+                            <span data-i18n="catalog_title">ðŸ“¦ Catalogo Molle a Gas</span>
                         </h2>
-                        <input type="text" id="catalog-search" placeholder="🔍 Cerca serie, dimensioni..." data-i18n-placeholder="catalog_search_placeholder" 
+                        <input type="text" id="catalog-search" placeholder="ðŸ” Cerca serie, dimensioni..." data-i18n-placeholder="catalog_search_placeholder" 
                                style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-secondary); color: var(--text-primary); font-size: 12px; width: 300px;"
                                onkeyup="filterCatalogTable()">
                     </div>
@@ -1227,17 +1187,17 @@
         
         <!-- PANNELLO DESTRO: RISULTATI -->
         <div class="results-panel">
-            <h2><span data-i18n="results_title">📊 Risultati Sistema</span></h2>
+            <h2><span data-i18n="results_title">ðŸ“Š Risultati Sistema</span></h2>
             <div id="results-summary">
                 <div class="result-card">
-                    <div class="result-card-title"><span data-i18n="results_waiting">ℹ️ In attesa di calcolo</span></div>
+                    <div class="result-card-title"><span data-i18n="results_waiting">â„¹ï¸ In attesa di calcolo</span></div>
                     <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
                         <span data-i18n="results_hint">Inserisci i parametri e clicca "Calcola Sistema Completo"</span>
                     </p>
                 </div>
             </div>
             <button class="btn-details" onclick="openDetailsModal()" style="display: none;">
-                <span data-i18n="btn_show_details">📋 Vedi Calcoli Dettagliati</span>
+                <span data-i18n="btn_show_details">ðŸ“‹ Vedi Calcoli Dettagliati</span>
             </button>
         </div>
     </div>
@@ -1246,7 +1206,7 @@
     <div id="details-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title"><span data-i18n="modal_details_title">📋 Calcoli Dettagliati</span></div>
+                <div class="modal-title"><span data-i18n="modal_details_title">ðŸ“‹ Calcoli Dettagliati</span></div>
                 <span class="modal-close" onclick="closeDetailsModal()">&times;</span>
             </div>
             <div class="modal-body" id="details-content">
@@ -1259,7 +1219,7 @@
     <div id="search-results-modal" class="modal" style="z-index:10001;">
         <div class="modal-content" style="max-width:960px;">
             <div class="modal-header">
-                <div class="modal-title"><span data-i18n="modal_search_title">🔍 Risultati Ricerca Massiva</span></div>
+                <div class="modal-title"><span data-i18n="modal_search_title">ðŸ” Risultati Ricerca Massiva</span></div>
                 <span class="modal-close" onclick="closeSearchResultsModal()">&times;</span>
             </div>
             <div class="modal-body" id="search-results-content">
@@ -1273,7 +1233,7 @@
    GASSPRING PRO - MODULAR ARCHITECTURE v2.0
    ================================================================
    
-   Codice organizzato in moduli logici per facilità di manutenzione
+   Codice organizzato in moduli logici per facilitÃ  di manutenzione
    
    STRUTTURA MODULI:
    
@@ -1290,7 +1250,7 @@
 
 
 // ================================================================
-// 📦 MODULO 1: STATE (Stato Globale)
+// ðŸ“¦ MODULO 1: STATE (Stato Globale)
 // ================================================================
 
 
@@ -1298,7 +1258,7 @@
         const ctx = canvas.getContext('2d');
         
         // ================================================================
-        // 📦 MODULO 1: STATE (Stato Globale)
+        // ðŸ“¦ MODULO 1: STATE (Stato Globale)
         // ================================================================
         
         // Variabili globali
@@ -1306,10 +1266,10 @@
         let currentParams = {R1: 0, R2: 0, L: 0, alfa: 0, x: 0};
         window._graphData = null; // dati grafici pre-calcolati dal Worker
 
-        // ── Cloudflare Worker — engine protetto ──
-        const WORKER_URL = 'https://gasspring-pro-engine.betacristudios.workers.dev';
-        let sessionPassword = null;
-        let activeTab = 'realistic'; // Tab di default (geometric è nascosta)
+        // â”€â”€ Cloudflare Worker â€” engine protetto â”€â”€
+        const WORKER_URL     = 'https://gasspring-pro-engine.betacristudios.workers.dev';
+        const WORKER_API_KEY = 'GSP-Betacris9028apikey';
+        let activeTab = 'realistic'; // Tab di default (geometric Ã¨ nascosta)
         
         // Variabili per zoom e pan
         let zoomLevel = 1.0;
@@ -1326,18 +1286,18 @@
         let animationProgress = 0;  // 0 = B1 (chiuso), 1 = B2 (aperto)
         let isAnimating = false;
         let animationId = null;
-        let animationSpeed = 0.01;  // Velocità animazione (0.01 = 1% per frame)
+        let animationSpeed = 0.01;  // VelocitÃ  animazione (0.01 = 1% per frame)
         let lastMouseX = 0;
         let lastMouseY = 0;
         
         // Rotazione rigida della MOLLA attorno a O (drag con mouse in vista realistica)
-        // Ruota A, B1, B2 rigidamente — sportello (G, M) resta fermo
+        // Ruota A, B1, B2 rigidamente â€” sportello (G, M) resta fermo
         let mollaRotations = [0, 0];  // Array rotazioni [grigia, rossa]
-        let selectedSpringIdx = -1;    // Quale molla è selezionata
+        let selectedSpringIdx = -1;    // Quale molla Ã¨ selezionata
         let canvasScale = 1;           // Scala canvas (salvata da drawRealisticView)
         let canvasCenterX = 0;         // Centro X mondo
         let canvasCenterY = 0;         // Centro Y mondo
-        let solutionIndexMap = [];     // Mappa: indice visualizzato → indice originale
+        let solutionIndexMap = [];     // Mappa: indice visualizzato â†’ indice originale
         let displayedSolutions = [];   // Soluzioni attualmente visualizzate
         
         // Posizioni elementi per tooltip
@@ -1352,11 +1312,11 @@
         let dragStartMollaRot = 0;
         let realisticViewOrigin = null; // cache posizione canvas di O
         
-        // ── SELECTION MODE ──
+        // â”€â”€ SELECTION MODE â”€â”€
         let selectionModeActive = false;
         let selectionPickStep = 0; // 0=idle, 1=picking PA, 2=picking PB, 3=both done
-        let selectionPA = null;   // {x,y} world mm — punto attacco struttura
-        let selectionPB = null;   // {x,y} world mm — punto attacco sportello
+        let selectionPA = null;   // {x,y} world mm â€” punto attacco struttura
+        let selectionPB = null;   // {x,y} world mm â€” punto attacco sportello
         let selectionRadiusA = 15; // tolleranza PA (mm)
         let selectionRadiusB = 15; // tolleranza PB (mm)
         let selectionSeriesFilter = new Set(); // chiavi serie selezionate per ricerca
@@ -1376,13 +1336,13 @@
                 return;
             }
 
-            resultsDiv.innerHTML += `<p style="color:#888;">Calcolo in corso sul server…</p>`;
+            resultsDiv.innerHTML += `<p style="color:#888;">Calcolo in corso sul serverâ€¦</p>`;
 
             let apiResult;
             try {
                 const resp = await fetch(WORKER_URL + '/solve-geometry', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-API-Key': sessionPassword },
+                    headers: { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY },
                     body: JSON.stringify({ R1, R2, L, alfaDeg })
                 });
                 apiResult = await resp.json();
@@ -1427,7 +1387,7 @@
         
 
 // ================================================================
-// 🖥️ MODULO 6: UI (Interfaccia Utente)
+// ðŸ–¥ï¸ MODULO 6: UI (Interfaccia Utente)
 // ================================================================
 
 function updateSolutionSelector() {
@@ -1472,7 +1432,7 @@ function updateSolutionSelector() {
                 const selectedIndex = parseInt(document.getElementById('solutionIndex').value);
                 const selectedSolution = currentSolutions[selectedIndex];
                 if (selectedSolution) {
-                    solutionIndexMap = [selectedIndex]; // Mappa: 0 → selectedIndex
+                    solutionIndexMap = [selectedIndex]; // Mappa: 0 â†’ selectedIndex
                     displayedSolutions = [selectedSolution]; // Mostra solo una
                     drawSolutions(currentParams.R1, currentParams.R2, currentParams.L, currentParams.alfa, [selectedSolution]);
                     // Evidenzia soluzione selezionata
@@ -1493,15 +1453,15 @@ function updateSolutionSelector() {
         
 
 // ================================================================
-// 🎨 MODULO 5: DRAWING (Rendering Grafico)
+// ðŸŽ¨ MODULO 5: DRAWING (Rendering Grafico)
 // ================================================================
 
 // ================================================================
-// 🔧 VISTA REALISTICA - PASSO 1: ELEMENTI BASE
+// ðŸ”§ VISTA REALISTICA - PASSO 1: ELEMENTI BASE
 // ================================================================
 
 function drawRealisticView(solutions) {
-    // ⚠️ CONTROLLO: Nessuna soluzione trovata
+    // âš ï¸ CONTROLLO: Nessuna soluzione trovata
     if (solutions.length === 0) {
         // Messaggio centrato nel canvas
         ctx.fillStyle = '#FF5722';
@@ -1569,7 +1529,7 @@ function drawRealisticView(solutions) {
     const Ym_open = Xm_initial * Math.sin(deltaAngle_sportello) + Ym_initial * Math.cos(deltaAngle_sportello);
     
     // Calcola bounds SOLO da sportello e punti fissi
-    // Le molle NON influenzano la visuale → nessuno scatto durante/dopo rotazione
+    // Le molle NON influenzano la visuale â†’ nessuno scatto durante/dopo rotazione
     const points = [
         {x: 0, y: 0},
         {x: Xg, y: Yg}, {x: Xm, y: Ym},
@@ -1657,7 +1617,7 @@ function drawRealisticView(solutions) {
     ctx.font = 'bold 14px Arial';
     ctx.fillText('Y', pO.x + 10, 20);
     
-    // Griglia infinita (linee tratteggiate leggere ogni 10mm) — omessa in export PDF
+    // Griglia infinita (linee tratteggiate leggere ogni 10mm) â€” omessa in export PDF
     if (!window.pdfExportMode) {
         ctx.strokeStyle = 'rgba(200, 200, 200, 0.3)';
         ctx.lineWidth = 0.5;
@@ -1779,7 +1739,7 @@ function drawRealisticView(solutions) {
         ctx.stroke();
     }
     
-    // Linea diagonale O → M (ruotata) - sempre visibile
+    // Linea diagonale O â†’ M (ruotata) - sempre visibile
     const pOcanvas = toCanvas(0, 0);
     const pM_current = toCanvas(Xm, Ym);
     ctx.beginPath();
@@ -1825,7 +1785,7 @@ function drawRealisticView(solutions) {
     ctx.arc(0, 0, gRadius, 0, 2 * Math.PI);
     ctx.fill();
     
-    // Ombra sottile per profondità
+    // Ombra sottile per profonditÃ 
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.lineWidth = 1;
     ctx.stroke();
@@ -1909,7 +1869,7 @@ function drawRealisticView(solutions) {
     ctx.arc(pM.x, pM.y, 3, 0, 2 * Math.PI);
     ctx.fill();
     
-    // ============ DISEGNA TUTTE LE MOLLE (se più soluzioni) ============
+    // ============ DISEGNA TUTTE LE MOLLE (se piÃ¹ soluzioni) ============
     // Palette di colori per molle multiple - CONTRASTO MARCATO
     const springColors = [
         { body: ['#555', '#777', '#444', '#777', '#555'], stem: ['#bbb', '#fff', '#ddd', '#fff', '#bbb'], border: '#444' }, // Grigio (default)
@@ -1921,7 +1881,7 @@ function drawRealisticView(solutions) {
         const colors = springColors[solIndex % springColors.length];
         
         // ---- ROTAZIONE RIGIDA MOLLA attorno a O (mollaRotations[originalIdx]) ----
-        // Mappa indice visualizzato → indice originale
+        // Mappa indice visualizzato â†’ indice originale
         const originalIdx = solutionIndexMap[solIndex] || solIndex;
         const thisRot = mollaRotations[originalIdx] || 0;
         const cosR = Math.cos(thisRot);
@@ -1937,7 +1897,7 @@ function drawRealisticView(solutions) {
         const angle_OB1 = Math.atan2(B1_rot.y, B1_rot.x);
         const angle_OB2 = Math.atan2(B2_rot.y, B2_rot.x);
         
-    // ============ MOLLA A GAS 3D (A_rot fisso → B animato su ARCO centrato in O) ============
+    // ============ MOLLA A GAS 3D (A_rot fisso â†’ B animato su ARCO centrato in O) ============
     // Punto A RUOTATO (attacco sulla struttura, ruotato da mollaRotation)
     const pA = toCanvas(A_rot.x, A_rot.y);
     
@@ -1947,7 +1907,7 @@ function drawRealisticView(solutions) {
     // Calcola distanze DA O (FULCRO - centro rotazione) dei punti RUOTATI
     const dist_OB1 = Math.sqrt(B1_rot.x**2 + B1_rot.y**2);
     const dist_OB2 = Math.sqrt(B2_rot.x**2 + B2_rot.y**2);
-    // angle_OB1 e angle_OB2 già calcolati sopra dai punti ruotati
+    // angle_OB1 e angle_OB2 giÃ  calcolati sopra dai punti ruotati
     
     // Interpola angolo e raggio (da O)
     let deltaAngle = angle_OB2 - angle_OB1;
@@ -1994,17 +1954,17 @@ function drawRealisticView(solutions) {
     const L_attuale_mm = L_chiusa_mm + (L_aperta_mm - L_chiusa_mm) * animationProgress;
     
     // ========== LOGICA CORPO-STELO REALISTICA CORRETTA ==========
-    // Usa L0 e corsa già letti sopra (linee 1784-1785)
+    // Usa L0 e corsa giÃ  letti sopra (linee 1784-1785)
     
     // Distanza asse occhiello - inizio corpo molla a gas
     const L_occhiello = 15; // mm (default)
     
-    // CORPO FISSO = L0 - 2×occhiello
-    // Esempio: L0=86mm → corpo=56mm
+    // CORPO FISSO = L0 - 2Ã—occhiello
+    // Esempio: L0=86mm â†’ corpo=56mm
     const L_corpo_fisso_mm = L0 - 2 * L_occhiello;
     
-    // STELO NELLA POSIZIONE CHIUSA (già parzialmente esposto)
-    // stelo_chiuso = quanto è già fuori nella posizione iniziale
+    // STELO NELLA POSIZIONE CHIUSA (giÃ  parzialmente esposto)
+    // stelo_chiuso = quanto Ã¨ giÃ  fuori nella posizione iniziale
     const stelo_chiuso_mm = L_chiusa_mm - L0;
     
     // STELO NELLA POSIZIONE APERTA (completamente esposto = corsa)
@@ -2016,9 +1976,9 @@ function drawRealisticView(solutions) {
     const L_stelo_esposto_mm = stelo_chiuso_mm + (stelo_aperto_mm - stelo_chiuso_mm) * animationProgress;
     
     // VERIFICA MATEMATICA:
-    // CHIUSO: L_chiusa = 2×15 + 56 + 3.63 = 89.63mm ✓
-    // APERTO: L_aperta = 2×15 + 56 + 30 = 116mm ✓
-    // CORSA UTILIZZATA = 30 - 3.63 = 26.37mm ✓
+    // CHIUSO: L_chiusa = 2Ã—15 + 56 + 3.63 = 89.63mm âœ“
+    // APERTO: L_aperta = 2Ã—15 + 56 + 30 = 116mm âœ“
+    // CORSA UTILIZZATA = 30 - 3.63 = 26.37mm âœ“
     
     // Converti in pixel canvas
     const scaleVal = distCanvas / L_attuale_mm;
@@ -2043,7 +2003,7 @@ function drawRealisticView(solutions) {
     // ====== OCCHIELLO A (Forcella piatta tipo Lift-O-Mat) - SUL PUNTO A ======
     const eyeW_mm = 10;     // altezza piastra (vista laterale)
     const eyeL_mm = 12;     // lunghezza piastra dal centro foro al raccordo col corpo
-    const eyeHoleR_mm = 2.5;  // raggio foro (Ø5mm reale, proporzionato)
+    const eyeHoleR_mm = 2.5;  // raggio foro (Ã˜5mm reale, proporzionato)
     
     const eyeW = eyeW_mm * scaleVal;
     const eyeLen = eyeL_mm * scaleVal;
@@ -2107,7 +2067,7 @@ function drawRealisticView(solutions) {
         ctx.arc(xForo, 0, eyeHoleR, 0, Math.PI * 2);
         ctx.fill();
         
-        // Bordo interno foro sottile scuro (profondità)
+        // Bordo interno foro sottile scuro (profonditÃ )
         ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
         ctx.lineWidth = 0.7;
         ctx.beginPath();
@@ -2236,7 +2196,7 @@ function drawRealisticView(solutions) {
             ctx.fillStyle = color;
             ctx.font = 'bold 11px Consolas';
             ctx.textAlign = 'left';
-            ctx.fillText(`⟳ Molla ${label}: ${(rot * 180 / Math.PI).toFixed(1)}°`, 10, canvas.height - 10);
+            ctx.fillText(`âŸ³ Molla ${label}: ${(rot * 180 / Math.PI).toFixed(1)}Â°`, 10, canvas.height - 10);
         }
     }
     
@@ -2280,7 +2240,7 @@ function drawRealisticView(solutions) {
             lines = [
                 `${i18n.t('tooltip_spring')}`,
                 `${i18n.t('tooltip_force')} ${hoveredElement.data.F_molla} N`,
-                `L₀: ${hoveredElement.data.L0} mm`,
+                `Lâ‚€: ${hoveredElement.data.L0} mm`,
                 `Corsa: ${hoveredElement.data.corsa} mm`
             ];
         }
@@ -2320,12 +2280,12 @@ function drawRealisticView(solutions) {
         }
     }
 
-    // ── DXF Overlay: disegna la sagoma DXF sopra la vista realistica ──
+    // â”€â”€ DXF Overlay: disegna la sagoma DXF sopra la vista realistica â”€â”€
     if (typeof dxfIntegra !== 'undefined' && dxfIntegra._active) {
         dxfIntegra.drawDXFOverlay(ctx, toCanvas, rotation_current);
     }
     
-    // ── SELECTION MODE OVERLAY ──
+    // â”€â”€ SELECTION MODE OVERLAY â”€â”€
     if (selectionModeActive) {
         const currentScaleForSel = scale * zoomLevel;
         // Disegna PA (verde)
@@ -2358,7 +2318,7 @@ function drawRealisticView(solutions) {
             ctx.fillText(`PB (${selectionPB.x.toFixed(1)}, ${selectionPB.y.toFixed(1)})`, pB_s.x+9, pB_s.y-8);
             ctx.restore();
         }
-        // Linea PA–PB
+        // Linea PAâ€“PB
         if (selectionPA && selectionPB) {
             const pA_s = toCanvas(selectionPA.x, selectionPA.y);
             const pB_s = toCanvas(selectionPB.x, selectionPB.y);
@@ -2374,7 +2334,7 @@ function drawRealisticView(solutions) {
         }
         // Banner di istruzione picking
         if (selectionPickStep === 1 || selectionPickStep === 2) {
-            const msg = selectionPickStep===1 ? '👆 Clicca sul canvas per scegliere il Punto A (attacco struttura)' 
+            const msg = selectionPickStep===1 ? 'ðŸ‘† Clicca sul canvas per scegliere il Punto A (attacco struttura)' 
                                               : i18n.t('canvas_pick_b');
             ctx.save();
             ctx.fillStyle = 'rgba(0,0,0,0.75)';
@@ -2387,14 +2347,14 @@ function drawRealisticView(solutions) {
 }
 
 // ================================================================
-// 📐 MODULO 5: DRAWING (Visualizzazione Canvas)
+// ðŸ“ MODULO 5: DRAWING (Visualizzazione Canvas)
 // ================================================================
 
 function drawSolutions(R1, R2, L, alfa, solutions) {
             // Pulisci canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // ⚠️ CONTROLLO: Nessuna soluzione trovata
+            // âš ï¸ CONTROLLO: Nessuna soluzione trovata
             if (solutions.length === 0) {
                 // Messaggio centrato nel canvas
                 ctx.fillStyle = '#FF5722';
@@ -2409,7 +2369,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
                 
                 ctx.font = '14px Arial';
                 ctx.fillStyle = '#999';
-                ctx.fillText('Prova a modificare R1, R2, L o α', canvas.width / 2, canvas.height / 2 + 40);
+                ctx.fillText('Prova a modificare R1, R2, L o Î±', canvas.width / 2, canvas.height / 2 + 40);
                 
                 // Reset text align
                 ctx.textAlign = 'left';
@@ -2431,7 +2391,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
             
             // Altrimenti vista geometrica normale
             
-            // Leggi coordinate baricentro dagli input (usate più volte)
+            // Leggi coordinate baricentro dagli input (usate piÃ¹ volte)
             const Xg = parseFloat(document.getElementById('Xg').value) || 0;
             const Yg = parseFloat(document.getElementById('Yg').value) || 0;
             
@@ -2610,7 +2570,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
                 
                 // Determina la direzione dell'arco in base all'angolo usato
                 const angleDiff = sol.angleRad;
-                const isClockwise = angleDiff > Math.PI; // Se > 180°, va in senso orario visivamente
+                const isClockwise = angleDiff > Math.PI; // Se > 180Â°, va in senso orario visivamente
                 
                 ctx.strokeStyle = 'rgba(255, 152, 0, 0.6)';
                 ctx.lineWidth = 2;
@@ -2643,7 +2603,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
                 let pLabel = toCanvas(labelX, labelY);
                 ctx.fillStyle = '#FF9800';
                 ctx.font = 'bold 14px Arial';
-                const angleLabel = R2 && alfa ? `${(alfa * 180 / Math.PI).toFixed(0)}°` : 'undefined';
+                const angleLabel = R2 && alfa ? `${(alfa * 180 / Math.PI).toFixed(0)}Â°` : 'undefined';
                 ctx.fillText(angleLabel, pLabel.x, pLabel.y);
             });
             
@@ -2657,7 +2617,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
             // ============================================
             // BARICENTRO (G)
             // ============================================
-            // Coordinate già lette all'inizio della funzione
+            // Coordinate giÃ  lette all'inizio della funzione
             
             // Posizione CHIUSA (G non ruotato)
             const Gclosed = toCanvas(Xg, Yg);
@@ -2667,7 +2627,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
             ctx.strokeStyle = '#FF5722';
             ctx.lineWidth = 2;
             
-            // Croce del baricentro (⊕)
+            // Croce del baricentro (âŠ•)
             const crossSize = 8;
             ctx.beginPath();
             ctx.moveTo(Gclosed.x - crossSize, Gclosed.y);
@@ -2686,10 +2646,10 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
             ctx.font = 'bold 14px Arial';
             ctx.fillText('G', Gclosed.x + 12, Gclosed.y - 8);
             
-            // Posizione APERTA (G ruotato di alfa) - già calcolata sopra
+            // Posizione APERTA (G ruotato di alfa) - giÃ  calcolata sopra
             const Gopen = toCanvas(Xg_open, Yg_open);
             
-            // Disegna baricentro aperto (più trasparente)
+            // Disegna baricentro aperto (piÃ¹ trasparente)
             ctx.globalAlpha = 0.5;
             ctx.fillStyle = '#FF5722';
             ctx.strokeStyle = '#FF5722';
@@ -2710,7 +2670,7 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
             // Etichetta "G'"
             ctx.fillText("G'", Gopen.x + 12, Gopen.y - 8);
             
-            // ARCO che collega G → G' (traiettoria circolare attorno all'origine)
+            // ARCO che collega G â†’ G' (traiettoria circolare attorno all'origine)
             ctx.setLineDash([3, 3]);
             ctx.strokeStyle = '#FF5722';
             ctx.lineWidth = 1;
@@ -2736,334 +2696,69 @@ function drawSolutions(R1, R2, L, alfa, solutions) {
         
 
 // ================================================================
-// 🔷 MODULO 2+3: MATH & GEOMETRY — logica nel Cloudflare Worker
+// ðŸ”· MODULO 2+3: MATH & GEOMETRY â€” logica nel Cloudflare Worker
 // ================================================================
 
 
 
 // ================================================================
-// ⚛️ MODULO 4: PHYSICS (Fisica delle Molle)
+// âš›ï¸ MODULO 4: PHYSICS (Fisica delle Molle)
 // ================================================================
 
 // ================================================================
-// 📋 CATALOGO MOLLE — caricato da file JSON esterni
+// ðŸ“‹ CATALOGO MOLLE â€” caricato da file JSON esterni
 // ================================================================
 
-const SPRING_CATALOG = {
-    'AGS G45 G45': {
-        description: 'Ø12/4mm - Applicazioni con corse e spinte limitate',
-        brand: 'Vapsint',
-        attacchi: 'G45 - G45',
-        cilindro: 12, stelo: 4,
-        forceRange: [20, 150],
-        forceStep: 10,
-        models: [
-            { L: 70, corsa: 20, code: 'AGS-70-20', desc: 'AGS G45 G45 - L70 × C20' },
-            { L: 90, corsa: 30, code: 'AGS-90-30', desc: 'AGS G45 G45 - L90 × C30' },
-            { L: 110, corsa: 40, code: 'AGS-110-40', desc: 'AGS G45 G45 - L110 × C40' },
-            { L: 130, corsa: 50, code: 'AGS-130-50', desc: 'AGS G45 G45 - L130 × C50' },
-            { L: 150, corsa: 60, code: 'AGS-150-60', desc: 'AGS G45 G45 - L150 × C60' },
-            { L: 190, corsa: 80, code: 'AGS-190-80', desc: 'AGS G45 G45 - L190 × C80' },
-            { L: 230, corsa: 100, code: 'AGS-230-100', desc: 'AGS G45 G45 - L230 × C100' },
-            { L: 250, corsa: 110, code: 'AGS-250-110', desc: 'AGS G45 G45 - L250 × C110' },
-            { L: 270, corsa: 120, code: 'AGS-270-120', desc: 'AGS G45 G45 - L270 × C120' }
-        ]
-    },
-    'AKS R30 Z20': {
-        description: 'Ø15/6mm - Applicazioni con ingombro minimo e spinte maggiori',
-        brand: 'Vapsint',
-        attacchi: 'R30 - Z20',
-        cilindro: 15, stelo: 6,
-        forceRange: [20, 400],
-        forceStep: 10,
-        models: [
-            { L: 145, corsa: 40, code: 'AKS-145-40', desc: 'AKS R30 Z20 - L145 × C40', forceRange: [20, 400] },
-            { L: 185, corsa: 60, code: 'AKS-185-60', desc: 'AKS R30 Z20 - L185 × C60', forceRange: [20, 400] },
-            { L: 225, corsa: 80, code: 'AKS-225-80', desc: 'AKS R30 Z20 - L225 × C80', forceRange: [20, 400] },
-            { L: 265, corsa: 100, code: 'AKS-265-100', desc: 'AKS R30 Z20 - L265 × C100', forceRange: [20, 400] },
-            { L: 305, corsa: 120, code: 'AKS-305-120', desc: 'AKS R30 Z20 - L305 × C120', forceRange: [20, 400] },
-            { L: 330, corsa: 130, code: 'AKS-330-130', desc: 'AKS R30 Z20 - L330 × C130', forceRange: [20, 400] },
-            { L: 365, corsa: 150, code: 'AKS-365-150', desc: 'AKS R30 Z20 - L365 × C150', forceRange: [20, 400] },
-            { L: 400, corsa: 165, code: 'AKS-400-165', desc: 'AKS R30 Z20 - L400 × C165', forceRange: [20, 400] },
-            { L: 465, corsa: 200, code: 'AKS-465-200', desc: 'AKS R30 Z20 - L465 × C200', forceRange: [20, 200] },
-            { L: 500, corsa: 215, code: 'AKS-500-215', desc: 'AKS R30 Z20 - L500 × C215', forceRange: [20, 200] },
-            { L: 565, corsa: 250, code: 'AKS-565-250', desc: 'AKS R30 Z20 - L565 × C250', forceRange: [20, 200] },
-            { L: 600, corsa: 265, code: 'AKS-600-265', desc: 'AKS R30 Z20 - L600 × C265', forceRange: [20, 200] }
-        ]
-    },
-    'AKS G68 G68': {
-        description: 'Ø15/6mm - Versione con attacchi G68',
-        brand: 'Vapsint',
-        attacchi: 'G68 - G68',
-        cilindro: 15, stelo: 6,
-        forceRange: [20, 400],
-        forceStep: 10,
-        models: [
-            { L: 115, corsa: 40, code: 'AKS-G68-115-40', desc: 'AKS G68 G68 - L115 × C40' },
-            { L: 155, corsa: 60, code: 'AKS-G68-155-60', desc: 'AKS G68 G68 - L155 × C60' },
-            { L: 195, corsa: 80, code: 'AKS-G68-195-80', desc: 'AKS G68 G68 - L195 × C80' },
-            { L: 235, corsa: 100, code: 'AKS-G68-235-100', desc: 'AKS G68 G68 - L235 × C100' },
-            { L: 275, corsa: 120, code: 'AKS-G68-275-120', desc: 'AKS G68 G68 - L275 × C120' },
-            { L: 335, corsa: 150, code: 'AKS-G68-335-150', desc: 'AKS G68 G68 - L335 × C150' },
-            { L: 435, corsa: 200, code: 'AKS-G68-435-200', desc: 'AKS G68 G68 - L435 × C200' }
-        ]
-    },
-    'AMS R20 Z10': {
-        description: 'Ø18.5/8mm - Gamma più versatile, settore industriale e veicoli commerciali',
-        brand: 'Vapsint',
-        attacchi: 'R20 - Z10',
-        cilindro: 18.5, stelo: 8,
-        forceRange: [50, 700],
-        forceStep: 10,
-        models: [
-            { L: 205, corsa: 60, code: 'AMS-205-60', desc: 'AMS R20 Z10 - L205 × C60' },
-            { L: 245, corsa: 80, code: 'AMS-245-80', desc: 'AMS R20 Z10 - L245 × C80' },
-            { L: 255, corsa: 85, code: 'AMS-255-85', desc: 'AMS R20 Z10 - L255 × C85' },
-            { L: 285, corsa: 100, code: 'AMS-285-100', desc: 'AMS R20 Z10 - L285 × C100' },
-            { L: 325, corsa: 120, code: 'AMS-325-120', desc: 'AMS R20 Z10 - L325 × C120' },
-            { L: 355, corsa: 130, code: 'AMS-355-130', desc: 'AMS R20 Z10 - L355 × C130' },
-            { L: 400, corsa: 155, code: 'AMS-400-155', desc: 'AMS R20 Z10 - L400 × C155' },
-            { L: 405, corsa: 160, code: 'AMS-405-160', desc: 'AMS R20 Z10 - L405 × C160' },
-            { L: 445, corsa: 180, code: 'AMS-445-180', desc: 'AMS R20 Z10 - L445 × C180' },
-            { L: 485, corsa: 200, code: 'AMS-485-200', desc: 'AMS R20 Z10 - L485 × C200' },
-            { L: 500, corsa: 205, code: 'AMS-500-205', desc: 'AMS R20 Z10 - L500 × C205' },
-            { L: 525, corsa: 220, code: 'AMS-525-220', desc: 'AMS R20 Z10 - L525 × C220' },
-            { L: 585, corsa: 250, code: 'AMS-585-250', desc: 'AMS R20 Z10 - L585 × C250' },
-            { L: 700, corsa: 305, code: 'AMS-700-305', desc: 'AMS R20 Z10 - L700 × C305' }
-        ]
-    },
-    'AMS G68 G68': {
-        description: 'Ø18.5/8mm - Versione con attacchi G68',
-        brand: 'Vapsint',
-        attacchi: 'G68 - G68',
-        cilindro: 18.5, stelo: 8,
-        forceRange: [50, 700],
-        forceStep: 10,
-        models: [
-            { L: 165, corsa: 60, code: 'AMS-G68-165-60', desc: 'AMS G68 G68 - L165 × C60' },
-            { L: 205, corsa: 80, code: 'AMS-G68-205-80', desc: 'AMS G68 G68 - L205 × C80' },
-            { L: 245, corsa: 100, code: 'AMS-G68-245-100', desc: 'AMS G68 G68 - L245 × C100' },
-            { L: 285, corsa: 120, code: 'AMS-G68-285-120', desc: 'AMS G68 G68 - L285 × C120' },
-            { L: 325, corsa: 140, code: 'AMS-G68-325-140', desc: 'AMS G68 G68 - L325 × C140' },
-            { L: 365, corsa: 160, code: 'AMS-G68-365-160', desc: 'AMS G68 G68 - L365 × C160' },
-            { L: 405, corsa: 180, code: 'AMS-G68-405-180', desc: 'AMS G68 G68 - L405 × C180' },
-            { L: 445, corsa: 200, code: 'AMS-G68-445-200', desc: 'AMS G68 G68 - L445 × C200' },
-            { L: 485, corsa: 220, code: 'AMS-G68-485-220', desc: 'AMS G68 G68 - L485 × C220' },
-            { L: 545, corsa: 250, code: 'AMS-G68-545-250', desc: 'AMS G68 G68 - L545 × C250' },
-            { L: 645, corsa: 300, code: 'AMS-G68-645-300', desc: 'AMS G68 G68 - L645 × C300' }
-        ]
-    },
-    'AOS G68 G68': {
-        description: 'Ø22/8mm - Gamma max 700N',
-        brand: 'Vapsint',
-        attacchi: 'G68 - G68',
-        cilindro: 22, stelo: 8,
-        forceRange: [50, 700],
-        forceStep: 10,
-        models: [
-            { L: 165, corsa: 60, code: 'AOS-165-60', desc: 'AOS G68 G68 - L165 × C60' },
-            { L: 205, corsa: 80, code: 'AOS-205-80', desc: 'AOS G68 G68 - L205 × C80' },
-            { L: 245, corsa: 100, code: 'AOS-245-100', desc: 'AOS G68 G68 - L245 × C100' },
-            { L: 285, corsa: 120, code: 'AOS-285-120', desc: 'AOS G68 G68 - L285 × C120' },
-            { L: 325, corsa: 140, code: 'AOS-325-140', desc: 'AOS G68 G68 - L325 × C140' },
-            { L: 365, corsa: 160, code: 'AOS-365-160', desc: 'AOS G68 G68 - L365 × C160' },
-            { L: 405, corsa: 180, code: 'AOS-405-180', desc: 'AOS G68 G68 - L405 × C180' },
-            { L: 445, corsa: 200, code: 'AOS-445-200', desc: 'AOS G68 G68 - L445 × C200' },
-            { L: 485, corsa: 220, code: 'AOS-485-220', desc: 'AOS G68 G68 - L485 × C220' },
-            { L: 545, corsa: 250, code: 'AOS-545-250', desc: 'AOS G68 G68 - L545 × C250' },
-            { L: 645, corsa: 300, code: 'AOS-645-300', desc: 'AOS G68 G68 - L645 × C300' }
-        ]
-    },
-    'APS R20 Z10': {
-        description: 'Ø22/10mm - Alta forza fino 1300N',
-        brand: 'Vapsint',
-        attacchi: 'R20 - Z10/Z40',
-        cilindro: 22, stelo: 10,
-        forceRange: [100, 1300],
-        forceStep: 10,
-        models: [
-            { L: 285, corsa: 100, code: 'APS-285-100', desc: 'APS R20 Z10 - L285 × C100' },
-            { L: 385, corsa: 150, code: 'APS-385-150', desc: 'APS R20 Z10 - L385 × C150' },
-            { L: 485, corsa: 200, code: 'APS-485-200', desc: 'APS R20 Z10 - L485 × C200' },
-            { L: 585, corsa: 250, code: 'APS-585-250', desc: 'APS R20 Z10 - L585 × C250' },
-            { L: 685, corsa: 300, code: 'APS-685-300', desc: 'APS R20 Z10 - L685 × C300' },
-            { L: 785, corsa: 350, code: 'APS-785-350', desc: 'APS R20 Z10 - L785 × C350' },
-            { L: 885, corsa: 400, code: 'APS-885-400', desc: 'APS R20 Z10 - L885 × C400' },
-            { L: 1085, corsa: 500, code: 'APS-1085-500', desc: 'APS R20 Z10 - L1085 × C500' }
-        ]
-    },
-    'APS F20 B01': {
-        description: 'Ø22/10mm - Versione con attacchi F20/B01',
-        brand: 'Vapsint',
-        attacchi: 'F20 - B01',
-        cilindro: 22, stelo: 10,
-        forceRange: [100, 1300],
-        forceStep: 10,
-        models: [
-            { L: 300, corsa: 100, code: 'APS-F20-300-100', desc: 'APS F20 B01 - L300 × C100' },
-            { L: 350, corsa: 130, code: 'APS-F20-350-130', desc: 'APS F20 B01 - L350 × C130' },
-            { L: 400, corsa: 150, code: 'APS-F20-400-150', desc: 'APS F20 B01 - L400 × C150' },
-            { L: 450, corsa: 180, code: 'APS-F20-450-180', desc: 'APS F20 B01 - L450 × C180' },
-            { L: 500, corsa: 200, code: 'APS-F20-500-200', desc: 'APS F20 B01 - L500 × C200' },
-            { L: 550, corsa: 230, code: 'APS-F20-550-230', desc: 'APS F20 B01 - L550 × C230' },
-            { L: 600, corsa: 250, code: 'APS-F20-600-250', desc: 'APS F20 B01 - L600 × C250' },
-            { L: 650, corsa: 280, code: 'APS-F20-650-280', desc: 'APS F20 B01 - L650 × C280' },
-            { L: 700, corsa: 300, code: 'APS-F20-700-300', desc: 'APS F20 B01 - L700 × C300' },
-            { L: 750, corsa: 330, code: 'APS-F20-750-330', desc: 'APS F20 B01 - L750 × C330' },
-            { L: 800, corsa: 350, code: 'APS-F20-800-350', desc: 'APS F20 B01 - L800 × C350' },
-            { L: 850, corsa: 380, code: 'APS-F20-850-380', desc: 'APS F20 B01 - L850 × C380' },
-            { L: 900, corsa: 400, code: 'APS-F20-900-400', desc: 'APS F20 B01 - L900 × C400' },
-            { L: 950, corsa: 430, code: 'APS-F20-950-430', desc: 'APS F20 B01 - L950 × C430' }
-        ]
-    },
-    'APS G81 G81': {
-        description: 'Ø22/10mm - Versione con attacchi G81',
-        brand: 'Vapsint',
-        attacchi: 'G81 - G81',
-        cilindro: 22, stelo: 10,
-        forceRange: [100, 1300],
-        forceStep: 10,
-        models: [
-            { L: 255, corsa: 100, code: 'APS-G81-255-100', desc: 'APS G81 G81 - L255 × C100' },
-            { L: 355, corsa: 150, code: 'APS-G81-355-150', desc: 'APS G81 G81 - L355 × C150' },
-            { L: 455, corsa: 200, code: 'APS-G81-455-200', desc: 'APS G81 G81 - L455 × C200' },
-            { L: 555, corsa: 250, code: 'APS-G81-555-250', desc: 'APS G81 G81 - L555 × C250' },
-            { L: 655, corsa: 300, code: 'APS-G81-655-300', desc: 'APS G81 G81 - L655 × C300' },
-            { L: 755, corsa: 350, code: 'APS-G81-755-350', desc: 'APS G81 G81 - L755 × C350' },
-            { L: 855, corsa: 400, code: 'APS-G81-855-400', desc: 'APS G81 G81 - L855 × C400' },
-            { L: 1055, corsa: 500, code: 'APS-G81-1055-500', desc: 'APS G81 G81 - L1055 × C500' }
-        ]
-    },
-    'ASS F50 B01': {
-        description: 'Ø28/10mm - Forze elevate fino 1300N',
-        brand: 'Vapsint',
-        attacchi: 'F50 - B01',
-        cilindro: 28, stelo: 10,
-        forceRange: [200, 1300],
-        forceStep: 10,
-        models: [
-            { L: 300, corsa: 100, code: 'ASS-300-100', desc: 'ASS F50 B01 - L300 × C100' },
-            { L: 400, corsa: 150, code: 'ASS-400-150', desc: 'ASS F50 B01 - L400 × C150' },
-            { L: 500, corsa: 200, code: 'ASS-500-200', desc: 'ASS F50 B01 - L500 × C200' },
-            { L: 600, corsa: 250, code: 'ASS-600-250', desc: 'ASS F50 B01 - L600 × C250' },
-            { L: 700, corsa: 300, code: 'ASS-700-300', desc: 'ASS F50 B01 - L700 × C300' },
-            { L: 800, corsa: 350, code: 'ASS-800-350', desc: 'ASS F50 B01 - L800 × C350' },
-            { L: 900, corsa: 400, code: 'ASS-900-400', desc: 'ASS F50 B01 - L900 × C400' }
-        ]
-    },
-    'ASS G81 G81': {
-        description: 'Ø28/10mm - Versione con attacchi G81',
-        brand: 'Vapsint',
-        attacchi: 'G81 - G81',
-        cilindro: 28, stelo: 10,
-        forceRange: [200, 1300],
-        forceStep: 10,
-        models: [
-            { L: 255, corsa: 100, code: 'ASS-G81-255-100', desc: 'ASS G81 G81 - L255 × C100' },
-            { L: 455, corsa: 200, code: 'ASS-G81-455-200', desc: 'ASS G81 G81 - L455 × C200' },
-            { L: 555, corsa: 250, code: 'ASS-G81-555-250', desc: 'ASS G81 G81 - L555 × C250' },
-            { L: 655, corsa: 300, code: 'ASS-G81-655-300', desc: 'ASS G81 G81 - L655 × C300' },
-            { L: 755, corsa: 350, code: 'ASS-G81-755-350', desc: 'ASS G81 G81 - L755 × C350' },
-            { L: 855, corsa: 400, code: 'ASS-G81-855-400', desc: 'ASS G81 G81 - L855 × C400' },
-            { L: 1055, corsa: 500, code: 'ASS-G81-1055-500', desc: 'ASS G81 G81 - L1055 × C500' }
-        ]
-    },
-    'ATS F50 B01': {
-        description: 'Ø28/14mm - Forze molto elevate fino 2500N',
-        brand: 'Vapsint',
-        attacchi: 'F50 - B01/B11',
-        cilindro: 28, stelo: 14,
-        forceRange: [200, 2500],
-        forceStep: 10,
-        models: [
-            { L: 300, corsa: 100, code: 'ATS-300-100', desc: 'ATS F50 B01 - L300 × C100', forceRange: [200, 2500] },
-            { L: 400, corsa: 150, code: 'ATS-400-150', desc: 'ATS F50 B01 - L400 × C150', forceRange: [200, 2500] },
-            { L: 500, corsa: 200, code: 'ATS-500-200', desc: 'ATS F50 B01 - L500 × C200', forceRange: [200, 2500] },
-            { L: 600, corsa: 250, code: 'ATS-600-250', desc: 'ATS F50 B01 - L600 × C250', forceRange: [200, 2500] },
-            { L: 700, corsa: 300, code: 'ATS-700-300', desc: 'ATS F50 B01 - L700 × C300', forceRange: [200, 2500] },
-            { L: 800, corsa: 350, code: 'ATS-800-350', desc: 'ATS F50 B01 - L800 × C350', forceRange: [200, 2500] },
-            { L: 900, corsa: 400, code: 'ATS-900-400', desc: 'ATS F50 B01 - L900 × C400', forceRange: [200, 2500] },
-            { L: 1000, corsa: 450, code: 'ATS-1000-450', desc: 'ATS F50 B01 - L1000 × C450', forceRange: [200, 2500] },
-            { L: 1100, corsa: 500, code: 'ATS-1100-500', desc: 'ATS F50 B01 - L1100 × C500', forceRange: [200, 2100] },
-            { L: 1190, corsa: 550, code: 'ATS-1190-550', desc: 'ATS F50 B01 - L1190 × C550', forceRange: [200, 2100] }
-        ]
-    },
-    'ATS G81 G81': {
-        description: 'Ø28/14mm - Versione con attacchi G81',
-        brand: 'Vapsint',
-        attacchi: 'G81 - G81',
-        cilindro: 28, stelo: 14,
-        forceRange: [200, 2500],
-        forceStep: 10,
-        models: [
-            { L: 255, corsa: 100, code: 'ATS-G81-255-100', desc: 'ATS G81 G81 - L255 × C100' },
-            { L: 455, corsa: 200, code: 'ATS-G81-455-200', desc: 'ATS G81 G81 - L455 × C200' },
-            { L: 555, corsa: 250, code: 'ATS-G81-555-250', desc: 'ATS G81 G81 - L555 × C250' },
-            { L: 655, corsa: 300, code: 'ATS-G81-655-300', desc: 'ATS G81 G81 - L655 × C300' },
-            { L: 755, corsa: 350, code: 'ATS-G81-755-350', desc: 'ATS G81 G81 - L755 × C350' },
-            { L: 855, corsa: 400, code: 'ATS-G81-855-400', desc: 'ATS G81 G81 - L855 × C400' },
-            { L: 1055, corsa: 500, code: 'ATS-G81-1055-500', desc: 'ATS G81 G81 - L1055 × C500' }
-        ]
-    },
-    'AYS G05 G05': {
-        description: 'Ø40/20mm - Prodotto più robusto, forze fino 5200N per applicazioni pesanti',
-        brand: 'Vapsint',
-        attacchi: 'G05 - G05',
-        cilindro: 40, stelo: 20,
-        forceRange: [100, 5200],
-        forceStep: 100,
-        models: [
-            { L: 320, corsa: 100, code: 'AYS-320-100', desc: 'AYS G05 G05 - L320 × C100' },
-            { L: 420, corsa: 150, code: 'AYS-420-150', desc: 'AYS G05 G05 - L420 × C150' },
-            { L: 520, corsa: 200, code: 'AYS-520-200', desc: 'AYS G05 G05 - L520 × C200' },
-            { L: 620, corsa: 250, code: 'AYS-620-250', desc: 'AYS G05 G05 - L620 × C250' },
-            { L: 720, corsa: 300, code: 'AYS-720-300', desc: 'AYS G05 G05 - L720 × C300' },
-            { L: 820, corsa: 350, code: 'AYS-820-350', desc: 'AYS G05 G05 - L820 × C350' },
-            { L: 920, corsa: 400, code: 'AYS-920-400', desc: 'AYS G05 G05 - L920 × C400' },
-            { L: 1120, corsa: 500, code: 'AYS-1120-500', desc: 'AYS G05 G05 - L1120 × C500' },
-            { L: 1320, corsa: 600, code: 'AYS-1320-600', desc: 'AYS G05 G05 - L1320 × C600' },
-            { L: 1720, corsa: 800, code: 'AYS-1720-800', desc: 'AYS G05 G05 - L1720 × C800' }
-        ]
-    },
+let SPRING_CATALOG = {};
 
-    // ===== STABILUS (placeholder - inserire dati reali) =====
-    'Lift-O-Mat 0102': {
-        brand: 'Stabilus',
-        description: 'Ø22mm - Serie standard industriale',
-        attacchi: 'M6 - M6',
-        cilindro: 22, stelo: 10,
-        forceRange: [60, 800], forceStep: 20,
-        models: [
-            { L: 150, corsa: 50,  code: 'LOM-0102-150-50',  desc: 'Lift-O-Mat 0102 - L150 × C50'  },
-            { L: 200, corsa: 80,  code: 'LOM-0102-200-80',  desc: 'Lift-O-Mat 0102 - L200 × C80'  },
-            { L: 250, corsa: 100, code: 'LOM-0102-250-100', desc: 'Lift-O-Mat 0102 - L250 × C100' },
-            { L: 300, corsa: 120, code: 'LOM-0102-300-120', desc: 'Lift-O-Mat 0102 - L300 × C120' }
-        ]
-    },
+async function loadCatalogFromCSV() {
+    try {
+        const response = await fetch('catalogo_vapsint.csv');
+        const text = await response.text();
+        const result = Papa.parse(text, { header: true, skipEmptyLines: true });
 
-    // ===== SUSPA (placeholder - inserire dati reali) =====
-    'Suspa C16': {
-        brand: 'Suspa',
-        description: 'Ø16mm - Serie leggera',
-        attacchi: 'G45 - G45',
-        cilindro: 16, stelo: 8,
-        forceRange: [30, 300], forceStep: 15,
-        models: [
-            { L: 100, corsa: 30, code: 'C16-100-30', desc: 'Suspa C16 - L100 × C30' },
-            { L: 150, corsa: 50, code: 'C16-150-50', desc: 'Suspa C16 - L150 × C50' },
-            { L: 200, corsa: 75, code: 'C16-200-75', desc: 'Suspa C16 - L200 × C75' }
-        ]
+        SPRING_CATALOG = {};
+        for (const row of result.data) {
+            const key = row.serie;
+            if (!SPRING_CATALOG[key]) {
+                SPRING_CATALOG[key] = {
+                    description: row.descrizione,
+                    brand: row.brand,
+                    attacchi: row.attacchi,
+                    cilindro: parseFloat(row.cilindro_mm),
+                    stelo: parseFloat(row.stelo_mm),
+                    forceRange: [parseInt(row.forza_min_N), parseInt(row.forza_max_N)],
+                    forceStep: parseInt(row.forza_step_N),
+                    models: []
+                };
+            }
+            const model = {
+                L: parseInt(row.L_mm),
+                corsa: parseInt(row.corsa_mm),
+                code: row.codice,
+                desc: row.codice
+            };
+            if (row.forza_min_modello_N && row.forza_max_modello_N) {
+                model.forceRange = [parseInt(row.forza_min_modello_N), parseInt(row.forza_max_modello_N)];
+            }
+            SPRING_CATALOG[key].models.push(model);
+        }
+
+        buildCatalogTable();
+        if (typeof populateSeriesFilter === 'function') populateSeriesFilter();
+    } catch (e) {
+        console.error('Errore caricamento catalogo:', e);
     }
-};
+}
 
 // Advanced Mode parameters
 let advancedModeEnabled = false;
-let temperatureEsercizio = 20;  // °C
-let coefficienteAttrito = 0.05; // μ
+let temperatureEsercizio = 20;  // Â°C
+let coefficienteAttrito = 0.05; // Î¼
 let raggioPerno = 6;            // mm
 
 // ================================================================
-// 📊 FUNZIONI DISEGNO GRAFICI
+// ðŸ“Š FUNZIONI DISEGNO GRAFICI
 // ================================================================
 
 // Flag per rendering PDF (tema chiaro)
@@ -3141,7 +2836,7 @@ function drawGraphs() {
     const totalHeight = fixedGraphHeight * numGraphs;
     
     // Imposta altezza canvas in base al numero di grafici
-    // Il contenitore .canvas-panel ha overflow-y:auto quindi scrollerà automaticamente
+    // Il contenitore .canvas-panel ha overflow-y:auto quindi scrollerÃ  automaticamente
     canvas.height = totalHeight;
     
     const graphHeight = fixedGraphHeight;
@@ -3273,7 +2968,7 @@ function drawMomentsGraph(params, area) {
         ctx.lineTo(x, area.y + area.height - marginBottom);
         ctx.stroke();
         ctx.fillStyle = gc('#999', '#444');
-        ctx.fillText(angle.toFixed(0) + '°', x, area.y + area.height - marginBottom + 20);
+        ctx.fillText(angle.toFixed(0) + 'Â°', x, area.y + area.height - marginBottom + 20);
     }
     
     // Curva Momento Peso
@@ -3300,7 +2995,7 @@ function drawMomentsGraph(params, area) {
     }
     ctx.stroke();
     
-    // Legenda orizzontale — riga singola, top-right
+    // Legenda orizzontale â€” riga singola, top-right
     {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
         const legItems = [{label: i18n.t('graph_leg_moment_weight'), color: '#4CAF50'}, {label: i18n.t('graph_leg_moment_spring'), color: '#2196F3'}];
@@ -3484,7 +3179,7 @@ function drawForceGraph(params, area) {
     }
     ctx.stroke();
     
-    // Legenda orizzontale — riga singola, top-right
+    // Legenda orizzontale â€” riga singola, top-right
     {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
         const corsaUtilizzata = corsa - stelo_chiuso;
@@ -3516,7 +3211,7 @@ function drawForceGraph(params, area) {
 }
 
 // ================================================================
-// 📊 GRAFICO 3: SFORZO MANIGLIA (kg)
+// ðŸ“Š GRAFICO 3: SFORZO MANIGLIA (kg)
 // ================================================================
 function drawEffortGraph(params, area) {
     const {alfaDeg, effort_data: raw_effort} = params;
@@ -3611,7 +3306,7 @@ function drawEffortGraph(params, area) {
         ctx.fillStyle = gc('#888', '#444');
         ctx.font = '11px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(angle + '°', x, area.y + area.height - marginBottom + 15);
+        ctx.fillText(angle + 'Â°', x, area.y + area.height - marginBottom + 15);
     }
     ctx.setLineDash([]);
     
@@ -3646,7 +3341,7 @@ function drawEffortGraph(params, area) {
     }
     ctx.stroke();
     
-    // Legenda orizzontale — riga singola, top-right
+    // Legenda orizzontale â€” riga singola, top-right
     {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
         const legItems = [
@@ -3676,7 +3371,7 @@ function drawEffortGraph(params, area) {
 }
 
 // ================================================================
-// 🔩 GRAFICO 4: CARICHI VINCOLARI
+// ðŸ”© GRAFICO 4: CARICHI VINCOLARI
 // ================================================================
 function drawConstraintGraph(params, area) {
     const {alfaDeg, constraint_data} = params;
@@ -3777,10 +3472,10 @@ function drawConstraintGraph(params, area) {
         ctx.lineTo(x, area.y + area.height - marginBottom);
         ctx.stroke();
         ctx.fillStyle = gc('#999', '#444');
-        ctx.fillText(angle.toFixed(0) + '°', x, area.y + area.height - marginBottom + 20);
+        ctx.fillText(angle.toFixed(0) + 'Â°', x, area.y + area.height - marginBottom + 20);
     }
 
-    // Curva |F_A| = |F_B| — cerniera molla (arancione)
+    // Curva |F_A| = |F_B| â€” cerniera molla (arancione)
     ctx.strokeStyle = '#FF9800';
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -3792,7 +3487,7 @@ function drawConstraintGraph(params, area) {
     }
     ctx.stroke();
 
-    // Curva |R_O| — cerniera principale (ciano)
+    // Curva |R_O| â€” cerniera principale (ciano)
     ctx.strokeStyle = '#00BCD4';
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -3804,7 +3499,7 @@ function drawConstraintGraph(params, area) {
     }
     ctx.stroke();
 
-    // Legenda orizzontale — riga singola, top-right
+    // Legenda orizzontale â€” riga singola, top-right
     {
         const legFont = '11px Arial', legPad = 6, legLineW = 20, legGap = 4, legSep = 16;
         const legItems = [
@@ -3832,7 +3527,7 @@ function drawConstraintGraph(params, area) {
         });
     }
 
-    // Valori max — riga informativa sotto il titolo
+    // Valori max â€” riga informativa sotto il titolo
     ctx.fillStyle = gc('#AAA', '#555');
     ctx.font = '10px Arial';
     ctx.textAlign = 'left';
@@ -3859,11 +3554,11 @@ function toggleAdvancedMode() {
 
 
 // ================================================================
-// 📋 CATALOG TABLE GENERATION
+// ðŸ“‹ CATALOG TABLE GENERATION
 // ================================================================
 
-let activeBrands = new Set(['Vapsint', 'Stabilus', 'Suspa']);
-const BRAND_COLORS = { Vapsint: '#FF9800', Stabilus: '#4CAF50', Suspa: '#2196F3' };
+let activeBrands = new Set(['Vapsint']);
+const BRAND_COLORS = { Vapsint: '#FF9800' };
 
 function toggleBrand(brand) {
     if (activeBrands.has(brand)) {
@@ -3908,7 +3603,7 @@ function buildCatalogTable() {
                  style="padding: 15px 20px; background: var(--bg-tertiary); cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
                 <div>
                     <h3 style="margin: 0; color: var(--text-primary); font-size: 16px; font-weight: 600;">
-                        <span id="${seriesId}-icon" style="display: inline-block; transition: transform 0.2s;">▶</span>
+                        <span id="${seriesId}-icon" style="display: inline-block; transition: transform 0.2s;">â–¶</span>
                         ${seriesKey}
                         ${series.brand ? `<span style="font-size:9px;padding:1px 7px;border-radius:10px;background:${(BRAND_COLORS[series.brand]||'#888')}33;color:${BRAND_COLORS[series.brand]||'#888'};border:1px solid ${BRAND_COLORS[series.brand]||'#888'};font-weight:500;">${series.brand}</span>` : ''}
                     </h3>
@@ -3926,7 +3621,7 @@ function buildCatalogTable() {
                         </span>
                     </div>
                     <div style="font-size: 11px; color: var(--text-secondary); margin-top: 5px;">
-                        ${series.attacchi} | Ø${series.cilindro}/${series.stelo}mm
+                        ${series.attacchi} | Ã˜${series.cilindro}/${series.stelo}mm
                     </div>
                 </div>
             </div>
@@ -3989,7 +3684,7 @@ function buildCatalogTable() {
                             <td style="padding: 12px 15px; text-align: center;">
                                 <button onclick="applyForceFromCatalog('${seriesKey}', '${model.code}', '${inputId}', '${errorId}', ${forceMin}, ${forceMax}, ${series.forceStep})" 
                                         style="padding: 6px 12px; font-size: 11px; background: var(--accent-blue); color: white; border: none; border-radius: 3px; cursor: pointer;">
-                                    ✓ Applica
+                                    âœ“ Applica
                                 </button>
                             </td>
                         </tr>
@@ -4050,12 +3745,12 @@ function applyForceFromCatalog(seriesKey, modelCode, inputId, errorId, forceMin,
     // Validazione 2: Controllo step (deve essere multiplo dello step)
     const remainder = (requestedForce - forceMin) % forceStep;
     if (Math.abs(remainder) > 0.01 && Math.abs(remainder - forceStep) > 0.01) {
-        // Arrotonda allo step più vicino
+        // Arrotonda allo step piÃ¹ vicino
         const roundedForce = Math.round(requestedForce / forceStep) * forceStep;
         
         // Controlla che il valore arrotondato sia ancora nel range
         if (roundedForce >= forceMin && roundedForce <= forceMax) {
-            showForceError(errorId, `ℹ️ Arrotondato a ${roundedForce}N (step ${forceStep}N)`);
+            showForceError(errorId, `â„¹ï¸ Arrotondato a ${roundedForce}N (step ${forceStep}N)`);
             forceInput.value = roundedForce;
             
             // Applica dopo 1 secondo
@@ -4081,11 +3776,11 @@ function applyForceFromCatalog(seriesKey, modelCode, inputId, errorId, forceMin,
     }
     
     if (!forceExists) {
-        showForceError(errorId, `❌ Questa forza non esiste nel catalogo per questo modello`);
+        showForceError(errorId, `âŒ Questa forza non esiste nel catalogo per questo modello`);
         return;
     }
     
-    // Tutto OK → Applica
+    // Tutto OK â†’ Applica
     clearForceError(errorId);
     applyValidatedForce(model, requestedForce, modelCode);
 }
@@ -4169,7 +3864,7 @@ function filterCatalogTable() {
 }
 
 // ================================================================
-// 🎯 MODULO: SELECTION MODE (Ricerca Massiva)
+// ðŸŽ¯ MODULO: SELECTION MODE (Ricerca Massiva)
 // ================================================================
 
 function toggleSelectionMode() {
@@ -4179,7 +3874,7 @@ function toggleSelectionMode() {
     if (!selectionModeActive) {
         clearSelectionPoints();
     } else {
-        populateSeriesFilter();   // ← costruisce la lista serie al primo avvio
+        populateSeriesFilter();   // â† costruisce la lista serie al primo avvio
         updateSelectionModeUI();
     }
     const picking = selectionModeActive && (selectionPickStep===1||selectionPickStep===2);
@@ -4187,7 +3882,7 @@ function toggleSelectionMode() {
     updateVisualization();
 }
 
-// ── Popola dinamicamente la lista serie dal catalogo ──
+// â”€â”€ Popola dinamicamente la lista serie dal catalogo â”€â”€
 function populateSeriesFilter() {
     const container = document.getElementById('sel-series-list');
     if (!container) return;
@@ -4201,7 +3896,7 @@ function populateSeriesFilter() {
     }
 
     // Colori brand
-    const brandColors = { 'Vapsint': '#FF9800', 'Stabilus': '#4CAF50', 'Suspa': '#2196F3', 'Altro': '#888' };
+    const brandColors = { 'Vapsint': '#FF9800', 'Altro': '#888' };
 
     let html = '';
     for (const [brand, entries] of Object.entries(brands)) {
@@ -4216,11 +3911,11 @@ function populateSeriesFilter() {
               <button onclick="selFilterBrand('${brand}',true)"
                 style="padding:0 4px; font-size:8px; border-radius:2px; line-height:14px;
                        background:transparent; border:1px solid ${col}55; color:${col};
-                       cursor:pointer; font-family:inherit;">✓</button>
+                       cursor:pointer; font-family:inherit;">âœ“</button>
               <button onclick="selFilterBrand('${brand}',false)"
                 style="padding:0 4px; font-size:8px; border-radius:2px; line-height:14px;
                        background:transparent; border:1px solid #444; color:#666;
-                       cursor:pointer; font-family:inherit;">✗</button>
+                       cursor:pointer; font-family:inherit;">âœ—</button>
             </div>
           </div>`;
 
@@ -4240,7 +3935,7 @@ function populateSeriesFilter() {
                    style="cursor:pointer; accent-color:${col}; width:10px; height:10px;">
             <span style="flex:1; line-height:1.3;">
               <strong style="color:#ccc;">${key}</strong>
-              <span style="color:#555; font-size:8px;"> — Ø${series.cilindro}mm</span>
+              <span style="color:#555; font-size:8px;"> â€” Ã˜${series.cilindro}mm</span>
             </span>
             <span style="color:#444; font-size:8px; font-family:monospace; white-space:nowrap;">${cases}</span>
           </label>`;
@@ -4251,7 +3946,7 @@ function populateSeriesFilter() {
     updateCaseCount();
 }
 
-// Conta casi per una serie (modelli × step forza)
+// Conta casi per una serie (modelli Ã— step forza)
 function countSeriesCases(series) {
     let n = 0;
     for (const model of series.models) {
@@ -4308,7 +4003,7 @@ function updateCaseCount() {
     }
     const color = total > 2000 ? '#cc7700' : total > 500 ? '#aa9900' : '#4a8a4a';
     el.style.color = color;
-    el.textContent = `${selectionSeriesFilter.size} serie → ~${total} casi da analizzare`;
+    el.textContent = `${selectionSeriesFilter.size} serie â†’ ~${total} casi da analizzare`;
 }
 
 function startPickPoint(which) {
@@ -4341,15 +4036,15 @@ function updateSelectionModeUI() {
     if (!statusEl) return;
 
     if (selectionPickStep === 1) {
-        statusEl.textContent = '👆 Clicca sul canvas: Punto A (attacco struttura)';
+        statusEl.textContent = 'ðŸ‘† Clicca sul canvas: Punto A (attacco struttura)';
         statusEl.style.color = '#00FF88';
     } else if (selectionPickStep === 2) {
         statusEl.textContent = i18n.t('canvas_pick_b2');
         statusEl.style.color = '#FF8800';
     } else if (selectionPA && selectionPB) {
         statusEl.textContent = selectionSeriesFilter.size > 0
-            ? '✓ Pronti. Avvia la ricerca!'
-            : '⚠️ Seleziona almeno una serie.';
+            ? 'âœ“ Pronti. Avvia la ricerca!'
+            : 'âš ï¸ Seleziona almeno una serie.';
         statusEl.style.color = selectionSeriesFilter.size > 0 ? '#7ec8e3' : '#cc7700';
     } else {
         statusEl.textContent = 'Scegli i due punti di montaggio desiderati.';
@@ -4380,9 +4075,9 @@ function updateSelectionModeUI() {
     }
 }
 
-// ── quickSolve — logica nel Cloudflare Worker (endpoint /catalog-search) ──
+// â”€â”€ quickSolve â€” logica nel Cloudflare Worker (endpoint /catalog-search) â”€â”€
 
-// ── Ricerca massiva su tutto il catalogo — batch via Worker ──
+// â”€â”€ Ricerca massiva su tutto il catalogo â€” batch via Worker â”€â”€
 async function runMassiveSearch() {
     if (!selectionPA || !selectionPB) return;
     if (selectionSeriesFilter.size === 0) {
@@ -4432,7 +4127,7 @@ async function runMassiveSearch() {
     content.innerHTML = `
         <div style="padding:24px;">
             <div style="color:#7ec8e3; font-size:13px; font-weight:600; margin-bottom:8px;">
-                ⏳ Ricerca massiva in corso…
+                â³ Ricerca massiva in corsoâ€¦
             </div>
             <div style="font-size:10px; color:#555; margin-bottom:12px; line-height:1.5;">
                 Serie: <span style="color:#888;">${seriesList}</span><br>
@@ -4442,14 +4137,14 @@ async function runMassiveSearch() {
                 <div style="height:100%; width:60%; background:linear-gradient(90deg,#007acc,#4ec9b0);
                             animation:pulse 1.2s ease-in-out infinite; border-radius:6px;"></div>
             </div>
-            <div style="font-size:11px; color:#888; font-family:monospace;">Calcolo in corso sul server…</div>
+            <div style="font-size:11px; color:#888; font-family:monospace;">Calcolo in corso sul serverâ€¦</div>
         </div>`;
 
     let apiData;
     try {
         const resp = await fetch(WORKER_URL + '/catalog-search', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-API-Key': sessionPassword },
+            headers: { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY },
             body: JSON.stringify({
                 params: {
                     massa, Xg, Yg, Xm, Ym, Fa, Fc, alfaDeg, k_prog, n_molle,
@@ -4507,24 +4202,24 @@ function showSearchResults(results, totalChecked, PA, PB, rA, rB) {
             <td style="padding:8px 10px; font-size:11px; color:#7ec8e3;">${i+1}</td>
             <td style="padding:8px 10px; font-size:11px;">
                 <div style="font-weight:600; color:#ccc;">${r.modelCode}</div>
-                <div style="font-size:9px; color:#666;">${r.brand} — ${r.desc}</div>
+                <div style="font-size:9px; color:#666;">${r.brand} â€” ${r.desc}</div>
             </td>
             <td style="padding:8px 10px; font-size:11px; text-align:center; color:#ccc;">${r.F_molla} N</td>
             <td style="padding:8px 10px; font-size:11px; text-align:center; color:#ccc;">${r.L_tot} mm</td>
             <td style="padding:8px 10px; font-size:11px; text-align:center; color:#ccc;">${r.corsa} mm</td>
             <td style="padding:8px 10px; font-size:11px; text-align:center;">
-                <span style="color:#00FF88; font-family:monospace;">Δ${r.err_A.toFixed(1)}</span>
+                <span style="color:#00FF88; font-family:monospace;">Î”${r.err_A.toFixed(1)}</span>
             </td>
             <td style="padding:8px 10px; font-size:11px; text-align:center;">
-                <span style="color:#FF8800; font-family:monospace;">Δ${r.err_B.toFixed(1)}</span>
+                <span style="color:#FF8800; font-family:monospace;">Î”${r.err_B.toFixed(1)}</span>
             </td>
             <td style="padding:8px 10px; font-size:11px; color:#888;">${r.B_type}</td>
-            <td style="padding:8px 10px; font-size:11px; text-align:center; color:#aaa; font-family:monospace;">${r.theta_deg.toFixed(1)}°</td>
+            <td style="padding:8px 10px; font-size:11px; text-align:center; color:#aaa; font-family:monospace;">${r.theta_deg.toFixed(1)}Â°</td>
             <td style="padding:8px 10px; text-align:center;">
                 <button onclick="applySearchResult(${i})"
                     style="padding:4px 10px; font-size:10px; background:#007acc; color:#fff;
                            border:none; border-radius:3px; cursor:pointer; font-family:inherit;">
-                    ✓ Applica
+                    âœ“ Applica
                 </button>
             </td>
         </tr>`).join('');
@@ -4549,8 +4244,8 @@ function showSearchResults(results, totalChecked, PA, PB, rA, rB) {
         <thead>
             <tr>
                 <th>#</th><th>${i18n.t('search_col_model')}</th><th>${i18n.t('search_col_force')}</th><th>${i18n.t('search_col_l')}</th><th>${i18n.t('search_col_stroke')}</th>
-                <th style="color:#00FF88;">Δ PA (mm)</th>
-                <th style="color:#FF8800;">Δ PB (mm)</th>
+                <th style="color:#00FF88;">Î” PA (mm)</th>
+                <th style="color:#FF8800;">Î” PB (mm)</th>
                 <th>${i18n.t('search_col_config')}</th>
                 <th>${i18n.t('search_col_rotation')}</th>
                 <th>${i18n.t('search_col_apply')}</th>
@@ -4621,9 +4316,9 @@ async function calculateSpring() {
             const n_molle = parseInt(document.getElementById('n_molle').value) || 1;
 
             const resultsDiv = document.getElementById('details-content'); // Ora punta al modal
-            // ─────────────────────────────────────────────────────────────────
+            // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             // CSS inline per le 3 fasi
-            // ─────────────────────────────────────────────────────────────────
+            // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
             resultsDiv.innerHTML = `
             <style>
             .fase-box { border-radius:8px; margin:14px 0; overflow:hidden; font-size:12px; }
@@ -4666,7 +4361,7 @@ async function calculateSpring() {
             const mu  = advancedModeEnabled ? coefficienteAttrito : 0;
             const r_p = advancedModeEnabled ? raggioPerno : 0;
 
-            // ═══ SEZIONE CALCOLO — via Cloudflare Worker (engine protetto) ═══
+            // â•â•â• SEZIONE CALCOLO â€” via Cloudflare Worker (engine protetto) â•â•â•
             resultsDiv.innerHTML += `
             <div id="api-loading" style="text-align:center;padding:20px;border:1px solid #30363d;border-radius:6px;margin:8px 0;">
               <div style="font-size:13px;color:#8b949e;">Calcolo in corso...</div>
@@ -4678,7 +4373,7 @@ async function calculateSpring() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-API-Key': sessionPassword
+                        'X-API-Key': WORKER_API_KEY
                     },
                     body: JSON.stringify({
                         massa, Xg, Yg, Xm, Ym, Fa, Fc, alfaDeg,
@@ -4717,7 +4412,7 @@ async function calculateSpring() {
                 return;
             }
 
-            // ── Valori calcolati dal Worker ──
+            // â”€â”€ Valori calcolati dal Worker â”€â”€
             const R2               = apiResult.R2;
             const R1_final         = apiResult.R1;
             const L_final          = apiResult.L;
@@ -4750,14 +4445,14 @@ async function calculateSpring() {
             const kT                  = apiResult.kT;
             const F_molla_T           = apiResult.F_aperto;
 
-            // Avviso gravità (basato su risultato Worker)
+            // Avviso gravitÃ  (basato su risultato Worker)
             if (apiResult.warn_gravity) {
                 alert(i18n.t('warn_gravity_title').replace('{deg}', alfaDeg) + '\n' + i18n.t('warn_gravity_body'));
             }
 
-            // ═══════════════════════════════════════════════════════════════
-            // FASE 1 — VERIFICA INIZIO APERTURA (θ = 0°)
-            // ═══════════════════════════════════════════════════════════════
+            // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+            // FASE 1 â€” VERIFICA INIZIO APERTURA (Î¸ = 0Â°)
+            // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
             resultsDiv.innerHTML += `
             <div class="fase-box" style="border:2px solid #1565c0;">
               <div class="fase-header" style="background:#1565c0;color:#fff;">
@@ -4768,17 +4463,17 @@ async function calculateSpring() {
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_xg')}</span><span class="fase-result">${Xg} mm</span></div>
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_dist_handle')}</span><span class="fase-result">${dist_maniglia.toFixed(2)} mm</span></div>
                 <hr class="section-sep">
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mpeso')}</span><span class="fase-result">${M_peso_chiuso.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mman')}</span><span class="fase-result">${M_maniglia_apertura.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mreq')}</span><span class="fase-result">${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mpeso')}</span><span class="fase-result">${M_peso_chiuso.toFixed(2)} NÂ·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mman')}</span><span class="fase-result">${M_maniglia_apertura.toFixed(2)} NÂ·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase1_mreq')}</span><span class="fase-result">${(M_peso_chiuso - M_maniglia_apertura).toFixed(2)} NÂ·mm</span></div>
               </div>
             </div>`;
 
-            // ── FASE 2 — riepilogo convergenza ──
+            // â”€â”€ FASE 2 â€” riepilogo convergenza â”€â”€
             resultsDiv.innerHTML += `
             <div class="fase-box" style="border:2px solid #e65100;">
               <div class="fase-header" style="background:#e65100;color:#fff;">
-                FASE 2 — Calcoli per la convergenza
+                FASE 2 â€” Calcoli per la convergenza
               </div>
               <div class="fase-body">
                 <div class="fase-row"><span class="fase-label">R2:</span><span class="fase-result">${R2.toFixed(2)} mm</span></div>
@@ -4787,7 +4482,7 @@ async function calculateSpring() {
               </div>
             </div>`;
 
-            // ── Popola placeholder Fase 2 con tabella iterazioni ──
+            // â”€â”€ Popola placeholder Fase 2 con tabella iterazioni â”€â”€
             let iterTableRows = '';
             iterHistory.forEach((h, idx) => {
                 const isConv = idx === iterHistory.length - 1;
@@ -4799,7 +4494,7 @@ async function calculateSpring() {
                   <td>${h.distAB1.toFixed(3)}</td>
                   <td>${h.x_new.toFixed(3)}</td>
                   <td>${h.error.toFixed(4)}</td>
-                  <td>${isConv ? '<span class="badge-ok">✓</span>' : ''}</td>
+                  <td>${isConv ? '<span class="badge-ok">âœ“</span>' : ''}</td>
                 </tr>`;
             });
             const fase2Extra = `
@@ -4813,10 +4508,10 @@ async function calculateSpring() {
             const placeholder = resultsDiv.querySelector('#iter-result-placeholder');
             if (placeholder) placeholder.innerHTML = fase2Extra;
             
-            // ═══════════════════════════════════════════════════════════════
-            // FASE 3 — VERIFICA COMPLETAMENTE APERTA (θ = α°)  +  RIEPILOGO
-            // ═══════════════════════════════════════════════════════════════
-            // (valori calcolati dal Worker — vedi sopra)
+            // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+            // FASE 3 â€” VERIFICA COMPLETAMENTE APERTA (Î¸ = Î±Â°)  +  RIEPILOGO
+            // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+            // (valori calcolati dal Worker â€” vedi sopra)
             const c1ok = eq_chiuso_pct < 1;
             const c2ok = eq_aperto_pct < 1;
 
@@ -4827,13 +4522,13 @@ async function calculateSpring() {
               </div>
               <div class="fase-body">
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_xg_rotated').replace('{deg}', alfaDeg)}</span><span class="fase-result">${Xg_aperto.toFixed(2)} mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mpeso')}</span><span class="fase-result">${M_peso_aperto.toFixed(2)} N·mm</span></div>
-                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mman')}</span><span class="fase-result">${M_maniglia_chiusura.toFixed(2)} N·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mpeso')}</span><span class="fase-result">${M_peso_aperto.toFixed(2)} NÂ·mm</span></div>
+                <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_mman')}</span><span class="fase-result">${M_maniglia_chiusura.toFixed(2)} NÂ·mm</span></div>
                 <div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_r2')}</span><span class="fase-result">${R2.toFixed(2)} mm</span></div>
-                ${advancedModeEnabled ? `<div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_temp_corr')}</span><span class="fase-result">kT = ${kT.toFixed(4)} → F_nom_T = ${F_molla_T.toFixed(2)} N</span></div>` : ''}
+                ${advancedModeEnabled ? `<div class="fase-row"><span class="fase-label">${i18n.t('res_phase3_temp_corr')}</span><span class="fase-result">kT = ${kT.toFixed(4)} â†’ F_nom_T = ${F_molla_T.toFixed(2)} N</span></div>` : ''}
                 <hr class="section-sep">
                 <div class="eq-box ${c2ok ? 'eq-ok' : 'eq-err'}">
-                  <span class="fase-check ${c2ok ? 'check-ok' : 'check-err'}">${c2ok ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
+                  <span class="fase-check ${c2ok ? 'check-ok' : 'check-err'}">${c2ok ? 'âœ“ VERIFICATO' : 'âœ— NON VERIFICATO'}</span>
                   <span style="font-size:10px;"> errore: ${eq_aperto_pct.toFixed(3)}%</span>
                 </div>
               </div>
@@ -4847,18 +4542,18 @@ async function calculateSpring() {
               <div class="fase-body">
                 <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:0 0 6px 0;">${i18n.t('res_verify_closed')}</p>
                 <div class="eq-box ${c1ok ? 'eq-ok' : 'eq-err'}">
-                  <span class="fase-check ${c1ok ? 'check-ok' : 'check-err'}">${c1ok ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
+                  <span class="fase-check ${c1ok ? 'check-ok' : 'check-err'}">${c1ok ? 'âœ“ VERIFICATO' : 'âœ— NON VERIFICATO'}</span>
                   <span style="font-size:10px;"> errore: ${eq_chiuso_pct.toFixed(3)}%</span>
                 </div>
                 <hr class="section-sep">
                 <p style="font-size:11px;font-weight:700;color:#6a1b9a;margin:6px 0 4px 0;">${i18n.t('res_verify_geom')}</p>
                 <div class="eq-box ${geom_ok1 ? 'eq-ok' : 'eq-err'}">
-                  <span class="fase-check ${geom_ok1 ? 'check-ok' : 'check-err'}">${geom_ok1 ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
-                  <span style="font-size:10px;"> Δ = ${geom_err1.toFixed(3)} mm</span>
+                  <span class="fase-check ${geom_ok1 ? 'check-ok' : 'check-err'}">${geom_ok1 ? 'âœ“ VERIFICATO' : 'âœ— NON VERIFICATO'}</span>
+                  <span style="font-size:10px;"> Î” = ${geom_err1.toFixed(3)} mm</span>
                 </div>
                 <div class="eq-box ${geom_ok2 ? 'eq-ok' : 'eq-err'}" style="margin-top:6px;">
-                  <span class="fase-check ${geom_ok2 ? 'check-ok' : 'check-err'}">${geom_ok2 ? '✓ VERIFICATO' : '✗ NON VERIFICATO'}</span>
-                  <span style="font-size:10px;"> Δ = ${geom_err2.toFixed(3)} mm</span>
+                  <span class="fase-check ${geom_ok2 ? 'check-ok' : 'check-err'}">${geom_ok2 ? 'âœ“ VERIFICATO' : 'âœ— NON VERIFICATO'}</span>
+                  <span style="font-size:10px;"> Î” = ${geom_err2.toFixed(3)} mm</span>
                 </div>
               </div>
             </div>
@@ -4908,16 +4603,16 @@ async function calculateSpring() {
             fetchGraphData();
         }
         
-        // solveGeometry — logica nel Cloudflare Worker (endpoint /solve-geometry)
+        // solveGeometry â€” logica nel Cloudflare Worker (endpoint /solve-geometry)
 
-        // Fetch dati grafici dal Worker — chiamata dopo calculateSpring()
+        // Fetch dati grafici dal Worker â€” chiamata dopo calculateSpring()
         async function fetchGraphData() {
             if (currentSolutions.length === 0) return;
             const sol = currentSolutions[0];
             try {
                 const resp = await fetch(WORKER_URL + '/graph-data', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-API-Key': sessionPassword },
+                    headers: { 'Content-Type': 'application/json', 'X-API-Key': WORKER_API_KEY },
                     body: JSON.stringify({
                         massa:    parseFloat(document.getElementById('massa').value),
                         Xg:       parseFloat(document.getElementById('Xg').value),
@@ -4947,7 +4642,7 @@ async function calculateSpring() {
         
 
 // ================================================================
-// 🎮 CONTROLLI INTERATTIVI CANVAS (Zoom & Pan)
+// ðŸŽ® CONTROLLI INTERATTIVI CANVAS (Zoom & Pan)
 // ================================================================
 
 // ZOOM con rotella del mouse (centrato sul cursore)
@@ -5003,7 +4698,7 @@ canvas.addEventListener('dblclick', (e) => {
 
 // PAN con bottone centrale del mouse (rotella)
 canvas.addEventListener('mousedown', (e) => {
-    if (e.button === 1) { // Bottone centrale → PAN
+    if (e.button === 1) { // Bottone centrale â†’ PAN
         e.preventDefault();
         isPanning = true;
         lastMouseX = e.clientX;
@@ -5015,7 +4710,7 @@ canvas.addEventListener('mousedown', (e) => {
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
         
-        // ── SELECTION MODE: intercetta il click per picking punti ──
+        // â”€â”€ SELECTION MODE: intercetta il click per picking punti â”€â”€
         if (selectionModeActive && (selectionPickStep === 1 || selectionPickStep === 2) && canvasScale > 0) {
             const wx = canvasCenterX + (mx - canvas.width/2 - panX) / (canvasScale * zoomLevel);
             const wy = canvasCenterY - (my - canvas.height/2 - panY) / (canvasScale * zoomLevel);
@@ -5031,14 +4726,14 @@ canvas.addEventListener('mousedown', (e) => {
             return; // non proseguire con drag molla
         }
         
-        // → SELEZIONA E DRAG MOLLA
+        // â†’ SELEZIONA E DRAG MOLLA
         
         // RICALCOLA posizioni molle AL VOLO usando parametri globali
         let minDist = Infinity;
         let clickedOriginalIdx = -1; // Indice nella soluzione ORIGINALE
         
         displayedSolutions.forEach((sol, displayIdx) => {
-            // Mappa indice visualizzato → indice originale
+            // Mappa indice visualizzato â†’ indice originale
             const originalIdx = solutionIndexMap[displayIdx];
             
             // Applica rotazione attuale alla soluzione (usa indice ORIGINALE)
@@ -5127,7 +4822,7 @@ canvas.addEventListener('mousemove', (e) => {
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
         
-        // Check quale elemento è sotto il mouse
+        // Check quale elemento Ã¨ sotto il mouse
         let newHovered = null;
         
         // Check baricentro G
@@ -5159,7 +4854,7 @@ canvas.addEventListener('mousemove', (e) => {
             }
         }
         
-        // Se l'hover è cambiato, ridisegna
+        // Se l'hover Ã¨ cambiato, ridisegna
         if (newHovered !== hoveredElement) {
             hoveredElement = newHovered;
             updateVisualization();
@@ -5225,11 +4920,11 @@ function updatePanIndicator() {
 
 
 // ================================================================
-// 🌓 MODULO 7: THEME (Gestione Temi)
+// ðŸŒ“ MODULO 7: THEME (Gestione Temi)
 // ================================================================
 
 // ================================================================
-// 🔄 SWITCH TAB
+// ðŸ”„ SWITCH TAB
 // ================================================================
 
 function switchTab(tabName) {
@@ -5311,14 +5006,14 @@ function switchTab(tabName) {
     }
     
     // IMPORTANTE: Se siamo nella tab catalog, non aggiornare visualizzazione
-    // Il canvas è nascosto e updateVisualization() causerebbe errori
+    // Il canvas Ã¨ nascosto e updateVisualization() causerebbe errori
     if (tabName === 'catalog') {
         return; // Early return - evita chiamate a updateVisualization
     }
     
     // Ridisegna visualizzazione (solo per tab con canvas visibile)
     updateVisualization();    
-    // Ricalcola dimensioni canvas dopo cambio visibilità controlli
+    // Ricalcola dimensioni canvas dopo cambio visibilitÃ  controlli
     requestAnimationFrame(() => {
         const c = document.getElementById('canvas');
         const rect = c.getBoundingClientRect();
@@ -5354,7 +5049,7 @@ function switchTab(tabName) {
 }
 
 // ================================================================
-// 🎬 FUNZIONI ANIMAZIONE
+// ðŸŽ¬ FUNZIONI ANIMAZIONE
 // ================================================================
 
 function toggleAnimation() {
@@ -5362,11 +5057,11 @@ function toggleAnimation() {
     const btn = document.getElementById('btn-play');
     
     if (isAnimating) {
-        btn.textContent = '⏸ Pause';
+        btn.textContent = 'â¸ Pause';
         btn.style.background = '#FF9800';
         animate();
     } else {
-        btn.textContent = '▶ Play';
+        btn.textContent = 'â–¶ Play';
         btn.style.background = '#4CAF50';
         if (animationId) {
             cancelAnimationFrame(animationId);
@@ -5386,7 +5081,7 @@ function animate() {
         animationProgress = 1;
         isAnimating = false;
         const btn = document.getElementById('btn-play');
-        if (btn) btn.textContent = '▶ Play';
+        if (btn) btn.textContent = 'â–¶ Play';
     }
     
     // Aggiorna UI
@@ -5438,7 +5133,7 @@ function resetAnimation() {
     if (isAnimating) {
         isAnimating = false;
         const btn = document.getElementById('btn-play');
-        btn.textContent = '▶ Play';
+        btn.textContent = 'â–¶ Play';
         btn.style.background = '#4CAF50';
         if (animationId) {
             cancelAnimationFrame(animationId);
@@ -5468,12 +5163,12 @@ function updateAnimationUI() {
     document.getElementById('anim-percentage').textContent = Math.round(animationProgress * 100);
     const alfa = parseFloat(document.getElementById('alfa').value) || 0;
     const el = document.getElementById('anim-degrees');
-    if (el) el.textContent = (alfa * animationProgress).toFixed(1) + '°';
+    if (el) el.textContent = (alfa * animationProgress).toFixed(1) + 'Â°';
 }
 
 
 // ================================================================
-// 🌓 MODULO 7: THEME (Gestione Temi)
+// ðŸŒ“ MODULO 7: THEME (Gestione Temi)
 // ================================================================
 
 function toggleTheme() {
@@ -5484,45 +5179,13 @@ function toggleTheme() {
 
         // Load saved theme
         window.addEventListener('DOMContentLoaded', () => {
-            // ── Auth overlay logic ──
-            const authOverlay = document.getElementById('auth-overlay');
-            const authInput   = document.getElementById('auth-password');
-            const authBtn     = document.getElementById('auth-submit');
-            const authErr     = document.getElementById('auth-error');
-
-            async function tryLogin() {
-                const pwd = authInput.value.trim();
-                if (!pwd) return;
-                authBtn.disabled = true;
-                authErr.textContent = '';
-                try {
-                    const res = await fetch(WORKER_URL + '/auth', {
-                        headers: { 'X-API-Key': pwd }
-                    });
-                    if (res.ok) {
-                        sessionPassword = pwd;
-                        authOverlay.style.display = 'none';
-                    } else {
-                        authErr.textContent = 'Password errata.';
-                        authInput.value = '';
-                        authInput.focus();
-                    }
-                } catch (e) {
-                    authErr.textContent = 'Errore di connessione: ' + e.message;
-                } finally {
-                    authBtn.disabled = false;
-                }
-            }
-
-            authBtn.addEventListener('click', tryLogin);
-            authInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
-            authInput.focus();
-
-
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
                 document.body.classList.add('light-theme');
             }
+
+            // Carica il catalogo molle da CSV
+            loadCatalogFromCSV();
             
             // Inizializza tab corretta (mostra controlli Vista 3D)
             switchTab('realistic');
@@ -5536,7 +5199,7 @@ function toggleTheme() {
                 // Gestisci altezza in base alla vista
                 let h;
                 if (activeTab === 'graphs') {
-                    // Per i grafici, NON sovrascrivere - l'altezza è gestita da drawGraphs()
+                    // Per i grafici, NON sovrascrivere - l'altezza Ã¨ gestita da drawGraphs()
                     // Impostiamo solo la larghezza
                     if (c.width !== w) {
                         c.width = w;
@@ -5547,7 +5210,7 @@ function toggleTheme() {
                     return; // Esci senza toccare l'altezza
                 } else {
                     // Usa l'altezza CSS effettiva del canvas (determinata da flex)
-                    // così buffer e display coincidono e i cerchi non risultano ovali
+                    // cosÃ¬ buffer e display coincidono e i cerchi non risultano ovali
                     h = Math.floor(rect.height);
                 }
                 
@@ -5588,7 +5251,7 @@ function toggleTheme() {
         });
 
         // ================================================================
-        // 📋 FUNZIONI MODAL CALCOLI DETTAGLIATI
+        // ðŸ“‹ FUNZIONI MODAL CALCOLI DETTAGLIATI
         // ================================================================
         
         let detailedCalculations = ''; // Store per calcoli dettagliati
@@ -5620,7 +5283,7 @@ function toggleTheme() {
             const summaryDiv = document.getElementById('results-summary');
             summaryDiv.innerHTML = `
                 <div class="result-card" style="border-left: 3px solid #d32f2f;">
-                    <div class="result-card-title" style="color: #f44336;">❌ ${title}</div>
+                    <div class="result-card-title" style="color: #f44336;">âŒ ${title}</div>
                     <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
                         ${message}
                     </p>
@@ -5686,7 +5349,7 @@ function toggleTheme() {
         }
 
 // ================================================================
-// 📁 FILE MENU - Salva/Carica/Esporta
+// ðŸ“ FILE MENU - Salva/Carica/Esporta
 // ================================================================
 
 function saveProject() {
@@ -5759,7 +5422,7 @@ function loadProject() {
                 
                 alert(i18n.t('alert_loaded'));
             } catch (err) {
-                alert('❌ Errore nel caricamento del file: ' + err.message);
+                alert('âŒ Errore nel caricamento del file: ' + err.message);
             }
         };
         reader.readAsText(file);
@@ -5784,28 +5447,28 @@ async function exportPDF() {
         const CONTENT_W = PAGE_W - MARGIN * 2;
         let yPos = MARGIN;
 
-        // ── Funzione helper: aggiunge linea divisoria ──
+        // â”€â”€ Funzione helper: aggiunge linea divisoria â”€â”€
         function hLine(y) {
             pdf.setDrawColor(80, 80, 120);
             pdf.setLineWidth(0.3);
             pdf.line(MARGIN, y, PAGE_W - MARGIN, y);
         }
 
-        // ── Titolo ──
+        // â”€â”€ Titolo â”€â”€
         pdf.setFillColor(30, 35, 60);
         pdf.rect(0, 0, PAGE_W, 28, 'F');
         pdf.setTextColor(255, 255, 255);
         pdf.setFontSize(16);
         pdf.setFont(undefined, 'bold');
-        pdf.text('GasSpring Pro — Report Progetto', PAGE_W / 2, 13, { align: 'center' });
+        pdf.text('GasSpring Pro â€” Report Progetto', PAGE_W / 2, 13, { align: 'center' });
         pdf.setFontSize(9);
         pdf.setFont(undefined, 'normal');
-        const dxfLabel = (typeof dxfIntegra !== 'undefined' && dxfIntegra._active) ? ' · DXF integrato' : '';
+        const dxfLabel = (typeof dxfIntegra !== 'undefined' && dxfIntegra._active) ? ' Â· DXF integrato' : '';
         pdf.text(`Data: ${new Date().toLocaleDateString('it-IT')}${dxfLabel}`, PAGE_W / 2, 22, { align: 'center' });
         pdf.setTextColor(0, 0, 0);
         yPos = 36;
 
-        // ── Parametri Fisici ──
+        // â”€â”€ Parametri Fisici â”€â”€
         pdf.setFontSize(11);
         pdf.setFont(undefined, 'bold');
         pdf.setTextColor(40, 60, 160);
@@ -5820,7 +5483,7 @@ async function exportPDF() {
             [i18n.t('pdf_mass'), `${document.getElementById('massa').value} kg`],
             [`Baricentro G`, `(${document.getElementById('Xg').value}, ${document.getElementById('Yg').value}) mm`],
             [`Maniglia M`, `(${document.getElementById('Xm').value}, ${document.getElementById('Ym').value}) mm`],
-            [i18n.t('pdf_angle'), `${document.getElementById('alfa').value}°`],
+            [i18n.t('pdf_angle'), `${document.getElementById('alfa').value}Â°`],
             [i18n.t('pdf_forces'), `${document.getElementById('Fa').value} kg / ${document.getElementById('Fc').value} kg`]
         ];
         params.forEach(([label, val]) => {
@@ -5832,7 +5495,7 @@ async function exportPDF() {
         });
         yPos += 4;
 
-        // ── Parametri Molla ──
+        // â”€â”€ Parametri Molla â”€â”€
         pdf.setFontSize(11);
         pdf.setFont(undefined, 'bold');
         pdf.setTextColor(40, 60, 160);
@@ -5846,9 +5509,9 @@ async function exportPDF() {
         const mollaParams = [
             [i18n.t('pdf_force_f1'), `${document.getElementById('F_molla').value} N`],
             [`Progressione k`, `${document.getElementById('k_prog').value}`],
-            [`Lunghezza L₀`, `${document.getElementById('L0').value} mm`],
+            [`Lunghezza Lâ‚€`, `${document.getElementById('L0').value} mm`],
             [`Corsa`, `${document.getElementById('corsa').value} mm`],
-            [`N° molle`, `${document.getElementById('n_molle').value}`]
+            [`NÂ° molle`, `${document.getElementById('n_molle').value}`]
         ];
         mollaParams.forEach(([label, val]) => {
             pdf.setFont(undefined, 'bold');
@@ -5859,7 +5522,7 @@ async function exportPDF() {
         });
         yPos += 4;
 
-        // ── Soluzioni ──
+        // â”€â”€ Soluzioni â”€â”€
         pdf.setFontSize(11);
         pdf.setFont(undefined, 'bold');
         pdf.setTextColor(40, 60, 160);
@@ -5880,7 +5543,7 @@ async function exportPDF() {
             pdf.text(`${i18n.t('pdf_b_open')} (${sol.B2.x.toFixed(1)}, ${sol.B2.y.toFixed(1)}) mm`, MARGIN + 8, yPos); yPos += 6;
         });
 
-        // ── VISTA 3D (realistica, con o senza DXF) ──
+        // â”€â”€ VISTA 3D (realistica, con o senza DXF) â”€â”€
         const canvas = document.getElementById('canvas');
         const originalTab = activeTab;
 
@@ -5890,14 +5553,14 @@ async function exportPDF() {
         await new Promise(resolve => setTimeout(resolve, 400));
 
         const hasDxf = (typeof dxfIntegra !== 'undefined' && dxfIntegra._active);
-        const viewTitle = hasDxf ? 'Vista 3D con DXF integrato' : 'Vista 3D — Posizione Molle';
+        const viewTitle = hasDxf ? 'Vista 3D con DXF integrato' : 'Vista 3D â€” Posizione Molle';
 
         // Calcola spazio disponibile nella pagina corrente
         const spaceLeft = PAGE_H - MARGIN - yPos;
         const desiredH = 80; // altezza desiderata immagine in mm
 
         if (spaceLeft < desiredH + 16) {
-            // Non c'è spazio: nuova pagina
+            // Non c'Ã¨ spazio: nuova pagina
             pdf.addPage();
             yPos = MARGIN;
         }
@@ -5909,8 +5572,8 @@ async function exportPDF() {
         yPos += 2;
         hLine(yPos); yPos += 5;
 
-        // ── Cattura canvas 3D ad alta risoluzione (4×) senza flickering ──
-        // 1) Nascondi il canvas panel così l'utente non vede nulla
+        // â”€â”€ Cattura canvas 3D ad alta risoluzione (4Ã—) senza flickering â”€â”€
+        // 1) Nascondi il canvas panel cosÃ¬ l'utente non vede nulla
         const canvasPanel = canvas.closest('.canvas-panel') || canvas.parentElement;
         const prevVisibility = canvasPanel.style.visibility;
         canvasPanel.style.visibility = 'hidden';
@@ -5921,7 +5584,7 @@ async function exportPDF() {
 
         // 2) Scala panX/panY proporzionalmente: toCanvas() usa canvas.width/2 + panX
         //    Quando il canvas cresce di EXPORT_SCALE, anche il termine canvas.width/2
-        //    cresce → panX deve crescere dello stesso fattore per mantenere la stessa vista.
+        //    cresce â†’ panX deve crescere dello stesso fattore per mantenere la stessa vista.
         const savedPanX = panX;
         const savedPanY = panY;
         panX = panX * EXPORT_SCALE;
@@ -5953,7 +5616,7 @@ async function exportPDF() {
         pdf.addImage(img3d, 'PNG', MARGIN, yPos, imgW3d, imgH3d);
         yPos += imgH3d + 5;
 
-        // ── PAGINA 2: Grafici (tema chiaro) ──
+        // â”€â”€ PAGINA 2: Grafici (tema chiaro) â”€â”€
         pdf.addPage();
         yPos = MARGIN;
 
@@ -5982,19 +5645,19 @@ async function exportPDF() {
         // Ripristina tab originale
         switchTab(originalTab);
 
-        // ── Footer su tutte le pagine ──
+        // â”€â”€ Footer su tutte le pagine â”€â”€
         const totalPages = pdf.internal.getNumberOfPages();
         for (let p = 1; p <= totalPages; p++) {
             pdf.setPage(p);
             pdf.setFontSize(7);
             pdf.setTextColor(140, 140, 140);
-            pdf.text(`GasSpring Pro  ·  pagina ${p} di ${totalPages}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
+            pdf.text(`GasSpring Pro  Â·  pagina ${p} di ${totalPages}`, PAGE_W / 2, PAGE_H - 8, { align: 'center' });
         }
 
         pdf.save(`gasspring_report_${new Date().toISOString().split('T')[0]}.pdf`);
         alert(i18n.t('alert_pdf_ok'));
     } catch (err) {
-        alert('❌ Errore nella generazione PDF: ' + err.message);
+        alert('âŒ Errore nella generazione PDF: ' + err.message);
         console.error(err);
     }
 }
@@ -6002,11 +5665,11 @@ async function exportPDF() {
     
 
 // ================================================================
-// DXF INTEGRA MODULE — Integrazione DXF nel solver Gas Spring Pro
+// DXF INTEGRA MODULE â€” Integrazione DXF nel solver Gas Spring Pro
 // ================================================================
 const dxfIntegra = (function() {
 
-  // ── Stato ──
+  // â”€â”€ Stato â”€â”€
   let dxfData    = null;
   let viewOff    = { x:0, y:0 };
   let viewScale  = 1;
@@ -6016,7 +5679,7 @@ const dxfIntegra = (function() {
   let pickedPivot=null, pickedManiglia=null, pickedBari=null;
   let ctrlDone   = false;
 
-  // ── Parser DXF (inline, identico a dxf_viewer2) ──
+  // â”€â”€ Parser DXF (inline, identico a dxf_viewer2) â”€â”€
   function parseDXF(text) {
     const lines = text.split(/\r?\n/).map(l => l.trim());
     let i = 0;
@@ -6115,7 +5778,7 @@ const dxfIntegra = (function() {
     return{entities:all,bounds:{minX:x1,minY:y1,maxX:x2,maxY:y2,w:x2-x1,h:y2-y1}};
   }
 
-  // ── Snap geometrico ──
+  // â”€â”€ Snap geometrico â”€â”€
   function snapToGeometry(cx,cy){
     const SNAP=22;let best=null,bestD=Infinity;
     function try_(dx,dy){const px=viewOff.x+dx*viewScale,py=viewOff.y-dy*viewScale,d=Math.sqrt((cx-px)**2+(cy-py)**2);if(d<SNAP&&d<bestD){bestD=d;best={x:dx,y:dy};}}
@@ -6138,7 +5801,7 @@ const dxfIntegra = (function() {
     return best;
   }
 
-  // ── Fit view ──
+  // â”€â”€ Fit view â”€â”€
   function fitView(){
     if(!dxfData)return;
     const cv=document.getElementById('dxf-canvas');
@@ -6147,7 +5810,7 @@ const dxfIntegra = (function() {
     viewOff={x:W/2-(b.minX+b.w/2)*viewScale,y:H/2+(b.minY+b.h/2)*viewScale};
   }
 
-  // ── Redraw DXF canvas ──
+  // â”€â”€ Redraw DXF canvas â”€â”€
   function redraw(){
     const cv=document.getElementById('dxf-canvas');
     if(!cv||!dxfData)return;
@@ -6196,7 +5859,7 @@ const dxfIntegra = (function() {
       }
     }
 
-    // Punti già assegnati
+    // Punti giÃ  assegnati
     function drawMark(x,y,col,lbl){
       const c=tc(x,y);
       const g=ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,14);
@@ -6211,7 +5874,7 @@ const dxfIntegra = (function() {
     if(pickedBari)     drawMark(pickedBari.x,      pickedBari.y,     '#4CAF50','Baricentro');
   }
 
-  // ── Setup mouse sul dxf-canvas ──
+  // â”€â”€ Setup mouse sul dxf-canvas â”€â”€
   function setupMouseControls(){
     if(ctrlDone)return; ctrlDone=true;
     const cv=document.getElementById('dxf-canvas');
@@ -6247,7 +5910,7 @@ const dxfIntegra = (function() {
     window.addEventListener('mouseup',()=>{if(!isPanning)return;isPanning=false;document.getElementById('dxf-canvas').style.cursor=pickMode?'crosshair':'grab';});
   }
 
-  // ── Aggiorna pannello ──
+  // â”€â”€ Aggiorna pannello â”€â”€
   function updatePanel(){
     const st=(id,val,done)=>{
       const btn=document.getElementById(id);
@@ -6257,12 +5920,12 @@ const dxfIntegra = (function() {
       btn.style.background   = pickMode===id.replace('dxf-btn-','') ? '#18160a' : done ? '#0c160c' : '#111';
       if(stEl) stEl.textContent=val;
     };
-    st('dxf-btn-pivot',    pickedPivot    ?`✓ ${pickedPivot.x.toFixed(1)},${pickedPivot.y.toFixed(1)}`:'non assegnato',   !!pickedPivot);
-    st('dxf-btn-maniglia', pickedManiglia ?`✓ ${pickedManiglia.x.toFixed(1)},${pickedManiglia.y.toFixed(1)}`:'non assegnato',!!pickedManiglia);
-    st('dxf-btn-bari',     pickedBari     ?`✓ ${pickedBari.x.toFixed(1)},${pickedBari.y.toFixed(1)}`:'non assegnato',     !!pickedBari);
+    st('dxf-btn-pivot',    pickedPivot    ?`âœ“ ${pickedPivot.x.toFixed(1)},${pickedPivot.y.toFixed(1)}`:'non assegnato',   !!pickedPivot);
+    st('dxf-btn-maniglia', pickedManiglia ?`âœ“ ${pickedManiglia.x.toFixed(1)},${pickedManiglia.y.toFixed(1)}`:'non assegnato',!!pickedManiglia);
+    st('dxf-btn-bari',     pickedBari     ?`âœ“ ${pickedBari.x.toFixed(1)},${pickedBari.y.toFixed(1)}`:'non assegnato',     !!pickedBari);
 
     const hint=document.getElementById('dxf-pick-hint');
-    if(pickMode==='pivot')       hint.textContent='👆 Clicca sul FULCRO';
+    if(pickMode==='pivot')       hint.textContent='ðŸ‘† Clicca sul FULCRO';
     else if(pickMode==='maniglia') hint.textContent=i18n.t('dxf_click_handle');
     else if(pickMode==='baricentro') hint.textContent=i18n.t('dxf_click_cog');
     else hint.textContent='';
@@ -6280,7 +5943,7 @@ const dxfIntegra = (function() {
     if(cv) cv.style.cursor=pickMode?'crosshair':'grab';
   }
 
-  // ── API pubblica ──
+  // â”€â”€ API pubblica â”€â”€
   return {
 
     loadFile(file){
@@ -6332,7 +5995,7 @@ const dxfIntegra = (function() {
       document.getElementById('Xg').value=Xg;
       document.getElementById('Yg').value=Yg;
 
-      // Trasla entità: fulcro → (0,0)
+      // Trasla entitÃ : fulcro â†’ (0,0)
       dxfData.entities=dxfData.entities.map(e=>{
         const e2={...e};
         if(e.type==='LINE'){e2.x1=e.x1-ox;e2.y1=e.y1-oy;e2.x2=e.x2-ox;e2.y2=e.y2-oy;}
@@ -6448,8 +6111,8 @@ const dxfIntegra = (function() {
     const sc = parseFloat(document.getElementById('dxf-scale-select').value) || 1;
     // Riapplica scala dal raw originale
     const scaled = sc!==1 ? dxfIntegra._applyScale(window.dxfDataRaw, sc) : window.dxfDataRaw;
-    // Aggiorna dxfData dentro l'IIFE via loadFile non è possibile direttamente,
-    // ma _applyScale restituisce i dati — dobbiamo aggiornare dxfData dentro l'IIFE
+    // Aggiorna dxfData dentro l'IIFE via loadFile non Ã¨ possibile direttamente,
+    // ma _applyScale restituisce i dati â€” dobbiamo aggiornare dxfData dentro l'IIFE
     // Lo facciamo richiamando un metodo setter pubblico
     dxfIntegra._setData(scaled);
     dxfIntegra.rescale();
