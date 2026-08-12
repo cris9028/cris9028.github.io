@@ -33,13 +33,13 @@
 <header>
   <a href="index.html">&#8592; BetaCri Studios</a>
   <h1>Privacy Policy</h1>
-  <p>HiRes Player &mdash; Ultimo aggiornamento: 25 luglio 2026</p>
+  <p>HiRes Player &mdash; Ultimo aggiornamento: 12 agosto 2026</p>
 </header>
 
 <div class="container">
 
   <div class="card">
-    <p><span class="highlight">In sintesi:</span> HiRes Player non raccoglie, non trasmette e non vende alcun dato personale. Tutti i dati dell'app rimangono sul tuo dispositivo. L'accesso a Internet viene usato esclusivamente per recuperare copertine, testi e metadati musicali da servizi pubblici.</p>
+    <p><span class="highlight">In sintesi:</span> HiRes Player non raccoglie, non trasmette e non vende alcun dato personale. Tutti i dati dell'app rimangono sul tuo dispositivo. L'App funziona interamente offline: non scarica copertine, testi né metadati da servizi online. L'accesso alla rete serve soltanto per trasmettere la musica a un dispositivo Chromecast sulla tua rete di casa.</p>
   </div>
 
   <h2>1. Informazioni generali</h2>
@@ -56,52 +56,58 @@
   </ul>
 
   <h2>3. Accesso a Internet</h2>
-  <p>L'App si connette a Internet solo per le seguenti operazioni:</p>
+  <p><span class="highlight">L'App non scarica copertine, testi né metadati da servizi online.</span> Le copertine provengono dall'immagine incorporata nei file musicali dell'utente o da un'immagine scelta manualmente; i testi sincronizzati da file <code>.lrc</code> presenti accanto ai brani o incollati dall'utente. L'App non integra alcuna libreria di rete per il recupero di dati musicali.</p>
+  <p>L'accesso alla rete viene usato esclusivamente per:</p>
   <ul>
-    <li><span class="highlight">Copertine album:</span> scaricate da iTunes Search API e MusicBrainz Cover Art Archive in base ad artista e titolo. Nessun dato personale viene inviato.</li>
-    <li><span class="highlight">Testi sincronizzati:</span> recuperati da LRCLIB (lrclib.net) in base a titolo, artista e durata della traccia.</li>
-    <li><span class="highlight">Metadati musicali:</span> arricchimento opzionale tramite MusicBrainz (musicbrainz.org).</li>
-    <li><span class="highlight">Database Moodream (funzione premium):</span> scaricato una tantum su richiesta dell'utente per l'analisi dell'umore musicale. Il file viene conservato localmente.</li>
+    <li><span class="highlight">Riproduzione su Chromecast:</span> quando l'utente sceglie di trasmettere l'audio a un dispositivo Chromecast, l'App avvia un server temporaneo sulla rete locale per inviargli il file. Il flusso resta all'interno della rete Wi-Fi dell'utente e non transita da server di BetaCri Studios né di terze parti.</li>
+    <li><span class="highlight">Ricerca manuale di una copertina:</span> solo su richiesta esplicita dell'utente, l'App apre il browser di sistema su una ricerca per immagini con il nome dell'album. La navigazione avviene nel browser, fuori dall'App.</li>
   </ul>
-  <p>Queste richieste di rete contengono solo metadati musicali (nome artista, titolo brano) e non includono informazioni personali identificabili.</p>
+  <p>Nessuna richiesta di rete contiene informazioni personali identificabili.</p>
 
-  <h2>4. Acquisti in-app</h2>
+  <h2>4. Android Auto</h2>
+  <p>L'App supporta Android Auto. Quando il telefono è collegato al veicolo, titolo, artista, durata e copertina del brano in riproduzione &mdash; insieme all'elenco della libreria da sfogliare &mdash; vengono comunicati al sistema Android Auto di Google per essere mostrati sullo schermo dell'auto. Lo scambio avviene tra l'App e il sistema operativo del dispositivo: BetaCri Studios non riceve alcuna informazione. Il trattamento da parte di Android Auto è regolato dalla privacy policy di Google.</p>
+
+  <h2>5. Moodream (funzione premium)</h2>
+  <p>L'analisi dell'umore dei brani avviene <span class="highlight">interamente sul dispositivo</span>, elaborando i file audio già presenti nella libreria dell'utente. Nessun file, nessuna porzione di audio e nessun risultato dell'analisi lascia il telefono. Le valutazioni e le correzioni inserite dall'utente restano nel database locale dell'App.</p>
+
+  <h2>6. Acquisti in-app</h2>
   <p>L'App offre un acquisto in-app opzionale ("HiRes Dream") tramite Google Play Billing. La transazione viene gestita interamente da Google LLC secondo le proprie policy sulla privacy (<a href="https://policies.google.com/privacy" target="_blank">policies.google.com/privacy</a>). BetaCri Studios non riceve né memorizza dati di pagamento.</p>
 
-  <h2>5. Permessi richiesti</h2>
+  <h2>7. Permessi richiesti</h2>
   <ul>
-    <li><span class="highlight">READ_MEDIA_AUDIO / READ_EXTERNAL_STORAGE:</span> necessario per accedere ai file audio selezionati dall'utente.</li>
-    <li><span class="highlight">INTERNET:</span> necessario per il recupero di copertine, testi e metadati come descritto sopra.</li>
-    <li><span class="highlight">FOREGROUND_SERVICE / WAKE_LOCK:</span> necessario per la riproduzione audio in background e le notifiche media.</li>
+    <li><span class="highlight">READ_MEDIA_AUDIO / READ_EXTERNAL_STORAGE:</span> necessario per accedere ai file audio presenti sul dispositivo.</li>
+    <li><span class="highlight">WRITE_EXTERNAL_STORAGE</span> (solo Android 9 e precedenti): necessario per eliminare un file audio quando l'utente lo richiede.</li>
+    <li><span class="highlight">INTERNET / ACCESS_NETWORK_STATE / ACCESS_WIFI_STATE:</span> necessari per individuare i dispositivi Chromecast sulla rete locale e trasmettere loro l'audio.</li>
+    <li><span class="highlight">FOREGROUND_SERVICE / FOREGROUND_SERVICE_MEDIA_PLAYBACK / WAKE_LOCK:</span> necessari per la riproduzione audio in background, le notifiche media e il funzionamento in auto.</li>
     <li><span class="highlight">POST_NOTIFICATIONS:</span> necessario per mostrare i controlli di riproduzione nella barra delle notifiche (Android 13+).</li>
     <li><span class="highlight">WRITE_SETTINGS:</span> necessario per impostare la suoneria del dispositivo (funzione opzionale).</li>
   </ul>
 
-  <h2>6. Dati di terze parti</h2>
-  <p>L'App si avvale dei seguenti servizi di terze parti, ognuno con la propria privacy policy:</p>
+  <h2>8. Dati di terze parti</h2>
+  <p>L'App si avvale dei seguenti servizi, ognuno con la propria privacy policy:</p>
   <ul>
-    <li>iTunes Search API &mdash; Apple Inc.</li>
-    <li>MusicBrainz &mdash; MetaBrainz Foundation (CC0)</li>
-    <li>LRCLIB &mdash; lrclib.net (MIT License)</li>
-    <li>Google Play Billing &mdash; Google LLC</li>
+    <li>Google Play Billing &mdash; Google LLC (acquisto in-app)</li>
+    <li>Google Cast &mdash; Google LLC (riproduzione su Chromecast)</li>
+    <li>Android Auto &mdash; Google LLC (riproduzione in auto)</li>
   </ul>
+  <p>Non sono presenti SDK pubblicitari, di analisi o di tracciamento di alcun tipo.</p>
 
-  <h2>7. Conservazione dei dati</h2>
+  <h2>9. Conservazione dei dati</h2>
   <p>Tutti i dati (statistiche, preferenze, playlist, copertine in cache) sono conservati localmente sul dispositivo dell'utente. La disinstallazione dell'App rimuove tutti i dati associati.</p>
 
-  <h2>8. Minori</h2>
+  <h2>10. Minori</h2>
   <p>L'App non è rivolta a minori di 13 anni e non raccoglie consapevolmente informazioni da minori.</p>
 
-  <h2>9. Modifiche a questa policy</h2>
+  <h2>11. Modifiche a questa policy</h2>
   <p>Eventuali aggiornamenti a questa Privacy Policy saranno pubblicati su questa pagina con la data di revisione aggiornata. L'uso continuato dell'App dopo la pubblicazione delle modifiche costituisce accettazione delle stesse.</p>
 
-  <h2>10. Contatti</h2>
+  <h2>12. Contatti</h2>
   <p>Per qualsiasi domanda relativa a questa Privacy Policy contattare:</p>
-  <p><a href="mailto:cristianbettanin90@gmail.com">cristianbettanin90@gmail.com</a></p>
+  <p><a href="mailto:betacristudios@gmail.com">betacristudios@gmail.com</a></p>
 
   <hr>
   <p style="font-size:13px; color: var(--muted); text-align:center;">
-    &copy; 2025 BetaCri Studios &mdash; <a href="index.html">Torna al sito</a>
+    &copy; 2026 BetaCri Studios &mdash; <a href="index.html">Torna al sito</a>
   </p>
 
 </div>
