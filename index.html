@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BetaCri Studios</title>
-  <meta name="description" content="BetaCri Studios — App Android innovative. Scopri HiRes Player e GasSpring Pro." />
+  <meta name="description" content="BetaCri Studios — App Android innovative. HiRes Player: lettore musicale hi-res offline con Android Auto, equalizzatore 10 bande e Chromecast. E GasSpring Pro, calcolatore per molle a gas." />
   <meta name="google-site-verification" content="-hgdmkvNrmTUl8hP97XTr7_-bbZSrauLAU3CJVHpQlE" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -61,6 +61,10 @@
     .stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:.45s }
     .stagger.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay:.55s }
     .stagger.visible > *:nth-child(7) { opacity:1; transform:none; transition-delay:.65s }
+    .stagger.visible > *:nth-child(8) { opacity:1; transform:none; transition-delay:.75s }
+    .stagger.visible > *:nth-child(9) { opacity:1; transform:none; transition-delay:.85s }
+    /* rete di sicurezza: dal decimo in poi compaiono comunque */
+    .stagger.visible > *:nth-child(n+10) { opacity:1; transform:none; transition-delay:.95s }
 
     /* ── Nav ──────────────────────────────────────────────── */
     nav {
@@ -269,6 +273,14 @@
       letter-spacing: .06em; text-transform: uppercase;
     }
 
+    .app-badge-soon {
+      display: inline-block; font-size: .72rem; font-weight: 700;
+      background: rgba(255,255,255,0.06); color: var(--silver);
+      border: 1px solid rgba(255,255,255,0.18); border-radius: 50px;
+      padding: 2px 10px; margin-bottom: 10px;
+      letter-spacing: .06em; text-transform: uppercase;
+    }
+
     .app-info p { color: var(--muted); font-size: .95rem; line-height: 1.7; margin-bottom: 20px; }
 
     .feature-list { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
@@ -424,8 +436,10 @@
         <span class="app-badge">Disponibile su Play Store</span>
         <p>
           Lettore musicale offline in alta risoluzione per Android. Audio lossless fino a
-          24 bit / 192 kHz, equalizzatore a 10 bande con DSP PCM puro, accordatura a 432 Hz,
-          testi sincronizzati, copertine automatiche e Chromecast.
+          24 bit / 192 kHz, equalizzatore a 10 bande con DSP PCM puro, accordatura a 432 e
+          528 Hz, testi sincronizzati, <strong>Android Auto</strong> e Chromecast.
+          Funziona senza connessione: musica, copertine e testi restano sul tuo dispositivo,
+          senza account e senza tracciamento.
           Pensato per chi non vuole scendere a compromessi sulla qualità del suono.
         </p>
         <a href="https://play.google.com/store/apps/details?id=com.hirezplayer.app" class="btn btn-primary" style="margin-bottom:20px;" target="_blank" rel="noopener">
@@ -433,13 +447,47 @@
           Scarica su Google Play
         </a>
         <ul class="feature-list stagger">
+          <li>Android Auto</li>
           <li>Equalizzatore 10 bande</li>
+          <li>Chromecast</li>
           <li>Testi sincronizzati</li>
-          <li>Cover art automatiche</li>
+          <li>Widget</li>
           <li>Gestione cartelle</li>
-          <li>Preferiti & playlist</li>
+          <li>Preferiti &amp; playlist</li>
           <li>Moodream</li>
           <li>Formati hi-res</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- HiRes Music Converter -->
+    <div class="app-card reveal">
+      <div class="app-icon" style="background:#1b1b1b; font-size:36px; color:#4caf50;">
+        &#8646;
+      </div>
+      <div class="app-info">
+        <h3>HiRes Music Converter</h3>
+        <span class="app-badge-soon">Prossimamente su Google Play</span>
+        <p>
+          Convertitore audio per Android, <strong>gratis e senza pubblicità</strong>.
+          Converte fra FLAC, ALAC, WAV, AIFF, MP3, AAC, Opus e Vorbis, con controllo su
+          profondità di bit e frequenza di campionamento, selezione multipla dei brani e
+          accordatura a 432 e 528 Hz.
+          <strong>Non apre nessuna connessione</strong>: non chiede nemmeno il permesso
+          INTERNET, quindi è Android stesso a impedirle di parlare con l'esterno.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+          <a href="/hires-converter-privacy.html" class="btn btn-outline">
+            Informativa sulla privacy
+          </a>
+        </div>
+        <ul class="feature-list stagger">
+          <li>Gratis, senza pubblicità</li>
+          <li>Nessuna connessione</li>
+          <li>Formati lossless</li>
+          <li>Selezione multipla</li>
+          <li>432 / 528 Hz</li>
+          <li>Conversione in background</li>
         </ul>
       </div>
     </div>
@@ -517,10 +565,10 @@
   <div class="section-inner">
     <p class="section-label reveal">Informativa</p>
     <h2 class="section-title reveal">Privacy Policy</h2>
-    <p class="section-sub reveal">Valida per tutte le app sviluppate da BetaCri Studios.</p>
+    <p class="section-sub reveal">Valida per tutte le app sviluppate da BetaCri Studios. Versioni estese: <a href="/privacy.html" style="color:#c8cdd6; border-bottom:1px solid rgba(255,255,255,0.2);">HiRes Player</a> · <a href="/hires-converter-privacy.html" style="color:#c8cdd6; border-bottom:1px solid rgba(255,255,255,0.2);">HiRes Music Converter</a>.</p>
 
     <div class="privacy-box reveal">
-      <p class="privacy-updated">Ultimo aggiornamento: marzo 2026</p>
+      <p class="privacy-updated">Ultimo aggiornamento: 12 agosto 2026</p>
 
       <h3>1. Chi siamo</h3>
       <p>BetaCri Studios e uno sviluppatore indie italiano. Questa privacy policy descrive come vengono trattati i dati nelle nostre app Android, in particolare <strong>HiRes Player</strong>.</p>
@@ -528,33 +576,32 @@
       <h3>2. Dati raccolti</h3>
       <p>HiRes Player <strong>non raccoglie, non trasmette e non vende dati personali</strong>. Tutte le informazioni (libreria musicale, preferenze, preferiti, playlist, statistiche di ascolto) vengono salvate localmente sul dispositivo dell'utente.</p>
 
-      <h3>3. Servizi di terze parti</h3>
-      <p>L'app si connette a servizi esterni esclusivamente per recuperare metadati pubblici (copertine, testi, informazioni artisti). Nessun dato personale viene trasmesso a questi servizi:</p>
-      <ul>
-        <li><strong>MusicBrainz</strong> — metadati musicali (musicbrainz.org)</li>
-        <li><strong>iTunes Search API</strong> — copertine album (apple.com)</li>
-        <li><strong>LRCLIB</strong> — testi sincronizzati (lrclib.net)</li>
-      </ul>
-      <p style="margin-top:10px;">Le richieste verso questi servizi contengono solo il titolo della canzone o il nome dell'artista, mai dati identificativi dell'utente.</p>
+      <h3>3. Connessione a Internet</h3>
+      <p>HiRes Player <strong>non scarica copertine, testi né metadati da servizi online</strong>, e non contiene alcun SDK pubblicitario, di analisi o di tracciamento. Le copertine vengono lette dai file musicali dell'utente o scelte da lui a mano; i testi sincronizzati arrivano da file <code>.lrc</code> sul dispositivo o incollati dall'utente.</p>
+      <p style="margin-top:10px;">La rete serve per due sole cose: trasmettere l'audio a un <strong>Chromecast</strong> sulla rete locale di casa, e aprire il browser di sistema quando sei tu a chiedere di cercare una copertina.</p>
 
-      <h3>4. Permessi richiesti</h3>
+      <h3>4. Android Auto</h3>
+      <p>Con il telefono collegato all'auto, titolo, artista e copertina del brano — e la libreria da sfogliare — vengono passati al sistema Android Auto di Google per comparire sullo schermo del veicolo. Lo scambio resta fra l'app e il sistema operativo: a noi non arriva nulla.</p>
+
+      <h3>5. Permessi richiesti</h3>
       <ul>
         <li><strong>READ_MEDIA_AUDIO / READ_EXTERNAL_STORAGE</strong> — per leggere i file musicali sul dispositivo</li>
-        <li><strong>INTERNET</strong> — per recuperare copertine e testi da internet</li>
-        <li><strong>FOREGROUND_SERVICE</strong> — per la riproduzione in background e le notifiche media</li>
+        <li><strong>INTERNET / ACCESS_WIFI_STATE / ACCESS_NETWORK_STATE</strong> — per trovare i Chromecast sulla rete locale e trasmettere loro l'audio</li>
+        <li><strong>FOREGROUND_SERVICE / WAKE_LOCK</strong> — per la riproduzione in background, le notifiche media e il funzionamento in auto</li>
         <li><strong>POST_NOTIFICATIONS</strong> — per mostrare i controlli nella barra delle notifiche</li>
+        <li><strong>WRITE_SETTINGS</strong> — solo se scegli di impostare un brano come suoneria</li>
       </ul>
 
-      <h3>5. Acquisti in-app</h3>
+      <h3>6. Acquisti in-app</h3>
       <p>Alcune funzionalita premium sono acquistabili tramite Google Play Billing. BetaCri Studios non gestisce direttamente i pagamenti: la transazione avviene interamente tramite Google Play. Per informazioni sulle policy di acquisto, consulta la <a href="https://policies.google.com/privacy" target="_blank" style="color:#c8cdd6; border-bottom:1px solid rgba(255,255,255,0.2);">privacy policy di Google</a>.</p>
 
-      <h3>6. Dati dei minori</h3>
+      <h3>7. Dati dei minori</h3>
       <p>Le nostre app non sono indirizzate a bambini sotto i 13 anni e non raccolgono consapevolmente dati da minori.</p>
 
-      <h3>7. Modifiche</h3>
+      <h3>8. Modifiche</h3>
       <p>Eventuali aggiornamenti a questa policy saranno pubblicati su questa pagina. L'uso continuato dell'app dopo le modifiche implica l'accettazione della nuova versione.</p>
 
-      <h3>8. Contatti</h3>
+      <h3>9. Contatti</h3>
       <p>Per qualsiasi domanda sulla privacy scrivici a <strong>betacristudios@gmail.com</strong>.</p>
     </div>
   </div>
